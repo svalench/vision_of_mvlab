@@ -4,6 +4,7 @@ from structure.models import Reserv_1, Reserv_2
 
 
 class Command(BaseCommand):
+    """команда для создание в резервных таблицах структуры связей"""
     help = 'add reserve struct'
 
     def add_arguments(self, parser):
