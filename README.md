@@ -32,7 +32,7 @@
 - [ ] произвести создание начальной структуры
 
 ```python3 manage.py add_reserv <name1> <name2>```
-> описание команды смотри [здесь](../structure/management/README.md)
+> описание команды смотри [здесь](structure/management/README.md)
 - [x] создание окружения
 - [x] установка зависимостей
 - [x] провести миграции
