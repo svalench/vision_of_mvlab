@@ -16,7 +16,7 @@
 
 >Перед тем как провести миграции необходимо настроить подключение к БД
 
-```python3 manage.py makemigrations```
+```python3 manage.py makemigrations```  
 ```python3 manage.py migrate```
 
 - [x] создание окружения
