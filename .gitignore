@@ -1,5 +1,6 @@
 /venv/
 /db.sqlite3
 .idea/
-/users/migrations
-/recorder/migrations
+/users/migrations/
+/recorder/migrations/
+/structure/migrations/
