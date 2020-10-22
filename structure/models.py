@@ -1,4 +1,5 @@
-from django.db import models, connection
+
+from django.db import models
 
 
 class Reserv_1(models.Model):
@@ -70,25 +71,3 @@ class Sensors(models.Model):
     def __str__(self):
         return self.name
 
-
-class ValueSensor(models.Model):
-    sensor = models.ForeignKey(Sensors, on_delete=models.CASCADE)
-    name = models.CharField(max_length=255, default='no name')
-    name_connection = models.CharField(max_length=255, default='no name connection')
-    table_name = models.CharField(max_length=255, default='no table name')
-    up_level_alarm = models.FloatField(default=0.00)
-    down_level_alarm = models.FloatField(default=0.00)
-    up_level = models.FloatField(default=0.00)
-    down_level = models.FloatField(default=0.00)
-    rate_change = models.FloatField(default=0.00)
-
-    def __str__(self):
-        return self.name
-
-    def get_period(self, start, end):
-        curs = connection.cursor()
-        curs.execute(
-            "SELECT * FROM `" + str(self.table_name) + "` WHERE now_time >= " +
-            str(start) + " AND now_time<" + str(end) + ";")
-        result = curs.fetchall()
-        return result
