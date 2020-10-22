@@ -26,17 +26,10 @@ class ValueSensor(models.Model):
         return result
 
     def get_last_shift(self):
-        now = datetime.now()
-        dt = datetime(now.year, now.month, now.day, now.hour, now.minute, now.second)
-        if (now.hour >= 1 and now.hour < 8):
-            dn = datetime(now.year, now.month, now.day, 1, 0, 0)
-        elif (now.hour >= 8 and now.hour < 16):
-            dn = datetime(now.year, now.month, now.day, 8, 0, 0)
-        elif ((now.hour >= 16 and now.hour < 24) or (now.hour >= 0 and now.hour < 1)):
-            if (now.hour <= 24):
-                dn = datetime(now.year, now.month, now.day, 16, 0, 0)
-            else:
-                dn = datetime(now.year, now.month, now.day - 1, 16, 0, 0)
+        now = datetime.now().time().strftime('%H:%M:%S')
+        shifts = self.sensor.agregat.dep.shift_set.filter(start__lte=now, end__gt = now)
+        dn = datetime(now.year, now.month, now.day, shifts[0].start.hour, shifts[0].start.minute, 0)
+        de = datetime(now.year, now.month, now.day, shifts[0].end.hour, shifts[0].end.minute, 0)
         start = (dn - datetime(1970, 1, 1)).total_seconds()
-        end = (dt - datetime(1970, 1, 1)).total_seconds()
+        end = (de - datetime(1970, 1, 1)).total_seconds()
         return self.get_period(start=start, end=end)

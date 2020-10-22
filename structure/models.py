@@ -1,4 +1,3 @@
-
 from django.db import models
 
 
@@ -71,3 +70,5 @@ class Sensors(models.Model):
     def __str__(self):
         return self.name
 
+    def get_parent(self):
+        return self.agregat
