@@ -46,3 +46,6 @@ class ValueSensor(models.Model):
         start = (dn - datetime(1970, 1, 1)).total_seconds()
         end = (de - datetime(1970, 1, 1)).total_seconds()
         return self.get_period(start=start, end=end)
+
+    def get_last_hour(self):
+        now = datetime.now().time()
