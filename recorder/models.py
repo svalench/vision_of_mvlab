@@ -27,11 +27,11 @@ class ValueSensor(models.Model):
         result = curs.fetchall()
         return result
 
-    def get_last_shift(self):
+    def get_last_shift(self) -> object:
         """метод возвращает данные за текущую смену"""
         now = datetime.now().time().strftime('%H:%M:%S')
         now_t = datetime.now().time()
-        shifts = self.sensor.agregat.dep.shift_set.filter(start__lte=now, end__gt = now)
+        shifts = self.sensor.agregat.dep.shift_set.filter(start__lte=now, end__gt=now)
         dn = datetime(now_t.year, now_t.month, now_t.day, shifts[0].start.hour, shifts[0].start.minute, 0)
         de = datetime(now_t.year, now_t.month, now_t.day, shifts[0].end.hour, shifts[0].end.minute, 0)
         start = (dn - datetime(1970, 1, 1)).total_seconds()
@@ -41,11 +41,17 @@ class ValueSensor(models.Model):
     def get_last_day(self):
         """метод возвращает данные за последний день"""
         now = datetime.now().time()
-        dn = datetime(now.year, now.month, now.day-1, now.hour, now.minute, 0)
+        dn = datetime(now.year, now.month, now.day - 1, now.hour, now.minute, 0)
         de = datetime(now.year, now.month, now.day, now.hour, now.minute, 0)
         start = (dn - datetime(1970, 1, 1)).total_seconds()
         end = (de - datetime(1970, 1, 1)).total_seconds()
         return self.get_period(start=start, end=end)
 
     def get_last_hour(self):
+        """возвращает значения за последний час"""
         now = datetime.now().time()
+        dn = datetime(now.year, now.month, now.day, now.hour - 1, now.minute, 0)
+        de = datetime(now.year, now.month, now.day, now.hour, now.minute, 0)
+        start = (dn - datetime(1970, 1, 1)).total_seconds()
+        end = (de - datetime(1970, 1, 1)).total_seconds()
+        return self.get_period(start=start, end=end)
