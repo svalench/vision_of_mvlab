@@ -23,8 +23,8 @@ class GetAllTable():
                                 "AND name NOT LIKE 'django_%' AND name NOT LIKE 'web_%';")
         elif(self.engine == 'postgresql'):
             self._cursor.execute("SELECT table_name FROM "
-                            " information_schema.tables WHERE table_schema = 'public'  AND name NOT LIKE 'web_%'"
-                            " AND name NOT LIKE 'auth_%' AND name NOT LIKE 'django_%' "
+                            " information_schema.tables WHERE table_schema = 'public'  AND table_name NOT LIKE 'web_%'"
+                            " AND table_name NOT LIKE 'auth_%' AND table_name NOT LIKE 'django_%' "
                             " ORDER BY table_name;")
         else:
             return 'error driver'
