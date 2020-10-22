@@ -18,7 +18,7 @@ class ValueSensor(models.Model):
     def __str__(self):
         return self.name
 
-    def get_period(self, start, end):
+    def get_period(self, start, end) -> object:
         """метод возвращает данные за период start - end"""
         curs = connection.cursor()
         curs.execute(
@@ -38,7 +38,7 @@ class ValueSensor(models.Model):
         end = (de - datetime(1970, 1, 1)).total_seconds()
         return self.get_period(start=start, end=end)
 
-    def get_last_day(self):
+    def get_last_day(self) -> object:
         """метод возвращает данные за последний день"""
         now = datetime.now().time()
         dn = datetime(now.year, now.month, now.day - 1, now.hour, now.minute, 0)
@@ -47,7 +47,7 @@ class ValueSensor(models.Model):
         end = (de - datetime(1970, 1, 1)).total_seconds()
         return self.get_period(start=start, end=end)
 
-    def get_last_hour(self):
+    def get_last_hour(self) -> object:
         """возвращает значения за последний час"""
         now = datetime.now().time()
         dn = datetime(now.year, now.month, now.day, now.hour - 1, now.minute, 0)
