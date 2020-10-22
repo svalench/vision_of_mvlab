@@ -1,6 +1,8 @@
+from django.core.exceptions import ValidationError
 from django.db import models, connection
 from structure.models import Sensors
 from datetime import datetime
+from django.utils.translation import ugettext_lazy as _
 
 
 class ValueSensor(models.Model):
@@ -17,6 +19,15 @@ class ValueSensor(models.Model):
 
     def __str__(self):
         return self.name
+
+    def save(self):
+        if (self._check_table_name(self.table_name)):
+            super(ValueSensor, self).save()
+        else:
+            raise ValidationError(_('Table with this name = "%s" does not exist'),
+                                  params=(self.name,),
+                                  code='invalid'
+                                  )
 
     def get_period(self, start, end) -> object:
         """метод возвращает данные за период start - end"""
@@ -54,3 +65,29 @@ class ValueSensor(models.Model):
         start = (start - datetime(1970, 1, 1)).total_seconds()
         end = (end - datetime(1970, 1, 1)).total_seconds()
         return self.get_period(start=start, end=end)
+
+    def _check_table_name(self, name):
+        """проверка на наличие таблицы с  именем <name> """
+        engine = connection.vendor
+        curs = connection.cursor()
+        if (engine == 'sqlite'):
+            #try:
+                curs.execute("SELECT name FROM  sqlite_master WHERE type ='table' AND 'name' = '"+ str(name)+"' ;")
+                print("SELECT name FROM  sqlite_master WHERE type ='table' AND `name` = '"+ str(name)+"' ;")
+            #except:
+                #return False
+        elif (engine == 'postgresql'):
+            try:
+                curs.execute("SELECT table_name FROM "
+                             " information_schema.tables WHERE table_schema = 'public' "
+                             " AND table_name = '" + str(name) + "' ;")
+            except:
+                return False
+        else:
+            return False
+        result = curs.fetchall()
+        print(result)
+        if len(result) == 0:
+            return False
+        else:
+            return True
