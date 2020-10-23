@@ -71,10 +71,7 @@ class ValueSensor(models.Model):
         engine = connection.vendor
         curs = connection.cursor()
         if (engine == 'sqlite'):
-            # try:
             curs.execute("SELECT name FROM  'sqlite_master' WHERE type ='table' AND name=%s;", [str(name)])
-            # except:
-            # return False
         elif (engine == 'postgresql'):
             try:
                 curs.execute("SELECT table_name FROM "
