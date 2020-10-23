@@ -25,7 +25,7 @@ class ValueSensor(models.Model):
             super(ValueSensor, self).save()
         else:
             raise ValidationError(_('Table with this name = "%s" does not exist'),
-                                  params=(self.name,),
+                                  params=(self.table_name,),
                                   code='invalid'
                                   )
 
@@ -71,16 +71,15 @@ class ValueSensor(models.Model):
         engine = connection.vendor
         curs = connection.cursor()
         if (engine == 'sqlite'):
-            #try:
-                curs.execute("SELECT name FROM  sqlite_master WHERE type ='table' AND 'name' = '"+ str(name)+"' ;")
-                print("SELECT name FROM  sqlite_master WHERE type ='table' AND `name` = '"+ str(name)+"' ;")
-            #except:
-                #return False
+            # try:
+            curs.execute("SELECT name FROM  'sqlite_master' WHERE type ='table' AND name=%s;", [str(name)])
+            # except:
+            # return False
         elif (engine == 'postgresql'):
             try:
                 curs.execute("SELECT table_name FROM "
                              " information_schema.tables WHERE table_schema = 'public' "
-                             " AND table_name = '" + str(name) + "' ;")
+                             " AND table_name =%s;", [str(name)])
             except:
                 return False
         else:
