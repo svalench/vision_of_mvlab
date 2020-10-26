@@ -10,7 +10,9 @@
 Отображает поле:
 * «id» - тип данных IntegerField
 * «Name» - тип CharField
-* «res2» - внешний ключ с таблицей «Reserv_2»
+* «res2» - внешний ключ с таблицей «Reserv_2» 
+
+Структура данныйх:
 ```
     {
         {
@@ -33,7 +35,9 @@
 Отображает поля:
 * «id» - тип данных IntegerField
 * «corp» - внешний ключ с таблицей [«Corparation»](#corp)
-* «name» - тип CharField
+* «name» - тип CharField 
+
+Структура данныйх:
 ```
     {
         {
@@ -56,7 +60,9 @@
 Отображает поля:
 * «id» - тип данных IntegerField
 * «factory» - внешний ключ с таблицей [«Factory»](#fact)
-* «name» - тип CharField
+* «name» - тип CharField 
+
+Структура данныйх:
 ```
     {
         {
@@ -81,7 +87,9 @@
 * «dep» - внешний ключ с таблицей [«Department»](#depa)
 * «name» - тип CharField
 * «start» - тип TimeField
-* «end» - тип TimeField
+* «end» - тип TimeField 
+
+Структура данныйх:
 ```
     {
         {
@@ -100,7 +108,7 @@
     }
 ```
 
-### <a name="lunc"> */api/Lunch/
+### <a name="lunc"> */api/Lunch/* </a>
 Хранит информацию об агрегатах.
 Имеет метод GET, POST.
 Отображает поля:
@@ -108,7 +116,9 @@
 * «shift» - внешний ключ с таблицей [«Shift»](#shif)
 * «name» - тип CharField
 * «start» - тип TimeField
-* «end» - тип TimeField
+* «end» - тип TimeField 
+
+Структура данныйх:
 ```
     {
         {
@@ -133,7 +143,9 @@
 Отображает поля:
 * «id» - тип данных IntegerField
 * «dep» - внешний ключ с таблицей [«Department»](#depa)
-* «name» - тип CharField
+* «name» - тип CharField 
+
+Структура данныйх:
 ```
     {
         {
@@ -157,7 +169,9 @@
 * «id» - тип данных IntegerField
 * «agregat» - внешний ключ с таблицей [«Agreagat»](#agre)
 * «name» - тип CharField
-* «designation» - тип CharField
+* «designation» - тип CharField 
+
+Структура данныйх:
 ```
     {
         {
@@ -188,7 +202,9 @@
 * «down_level_alarm» - тип FloatField
 * «up_level» - тип FloatField
 * «down_level» - тип FloatField
-* «rate_change» - тип FloatField
+* «rate_change» - тип FloatField 
+
+Структура данныйх:
 ```
     {
         {
