@@ -10,7 +10,7 @@ from rest_framework.views import APIView
 from structure.models import Department
 
 
-#@permission_classes([IsAuthenticated])
+@permission_classes([IsAuthenticated])
 class Recorder(APIView):
     def get(self, request, format=None):
         id = self.request.query_params.get('id')
