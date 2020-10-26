@@ -7,10 +7,10 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from structure.models import Department
+from structure.models import Department, Agreagat
 
 
-@permission_classes([IsAuthenticated])
+#@permission_classes([IsAuthenticated])
 class Recorder(APIView):
     def get(self, request, format=None):
         id = self.request.query_params.get('id')
@@ -19,18 +19,30 @@ class Recorder(APIView):
             try:
                 Department.objects.get(pk=id)
                 deps = [{
-                    "id": dep.pk,
-                    "name": dep.name,
-                    "factory_name": dep.factory.name,
-                    "corparation_name": dep.factory.corp.name
-                } for dep in Department.objects.filter(pk=id)]
+                    "id": agr.pk,
+                    "name": agr.name,
+                    "department_name":agr.dep.name,
+                    "factory_name": agr.dep.factory.name,
+                    "corparation_name": agr.dep.factory.corp.name,
+                    'list_point':[{'sensor_id':p.pk,
+                                   'sensor_name':p.name,
+                                   "designation":p.designation,
+                                   'values':[{
+                                                    'id':v.pk,
+                                                    'name':v.name,
+                                                    'table_name':v.table_name,
+                                                    'name_connection':v.name_connection
+                                                } for v in p.valuesensor_set.all()],
+                                   } for p in agr.sensors_set.all()]
+                } for agr in Agreagat.objects.filter(pk=id)]
             except Department.DoesNotExist:
                 raise Http404
         else:
             deps = [{
-                "id": dep.pk,
-                "name": dep.name,
-                "factory_name": dep.factory.name,
-                "corparation_name":dep.factory.corp.name
-                    } for dep in Department.objects.all()]
+                "id": agr.pk,
+                "name": agr.name,
+                "department_name": agr.dep.name,
+                "factory_name": agr.factory.name,
+                "corparation_name":agr.factory.corp.name
+                    } for agr in Agreagat.objects.all()]
         return Response(deps)

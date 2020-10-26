@@ -1,6 +1,6 @@
 /venv/
 /db.sqlite3
 .idea/
-/users/migrations/
-/recorder/migrations/
-/structure/migrations/
+**/migrations/**
+!**/migrations
+!**/migrations/__init__.py
