@@ -4,3 +4,4 @@
 **/migrations/**
 !**/migrations
 !**/migrations/__init__.py
+/db123.sqlite3
