@@ -12,3 +12,8 @@ router1.register(r'Lunch', LunchView)
 router1.register(r'Agreagat', AgreagatView)
 router1.register(r'Sensors', SensorsView)
 
+# urlpatterns = [
+#     path('Corparation/', CorparationView.as_view()),
+# ]
+#
+# urlpatterns += router1.urls

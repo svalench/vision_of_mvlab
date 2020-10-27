@@ -1,10 +1,10 @@
 ## Маршруты обращения
-### */api/*
+### */structure/*
 Имеет метод GET.
 Хранит информацию url адреса страниц: 
  «Corparation», «Factory», «Department», «Shift», «Lunch», «Agreagat», «Sensors», «ValueSensor»
 
-### <a name="corp"> */api/Corparation/* </a>
+### <a name="corp"> */structure/Corparation/* </a>
 Хранит информацию о корпорациях(имя и т.д.). 
 Имеет метод GET, POST.
 Отображает поле:
@@ -29,7 +29,7 @@
     }
 ```
 
-### <a name="fact"> */api/Factory/* </a>
+### <a name="fact"> */structure/Factory/* </a>
 Хранит информацию о заводах. 
 Имеет метод GET, POST.
 Отображает поля:
@@ -54,7 +54,7 @@
     }
 ```
 
-### <a name="depa"> */api/Department/* </a>
+### <a name="depa"> */structure/Department/* </a>
 Хранит информацию об отделах.
 Имеет метод GET, POST.
 Отображает поля:
@@ -79,7 +79,7 @@
     }
 ```
 
-### <a name="shif"> */api/Shift/* </a>
+### <a name="shif"> */structure/Shift/* </a>
 Хранит информацию об агрегатах.
 Имеет метод GET, POST.
 Отображает поля:
@@ -108,7 +108,7 @@
     }
 ```
 
-### <a name="lunc"> */api/Lunch/* </a>
+### <a name="lunc"> */structure/Lunch/* </a>
 Хранит информацию об агрегатах.
 Имеет метод GET, POST.
 Отображает поля:
@@ -137,7 +137,7 @@
     }
 ```
 
-### <a name="agre"> */api/Agreagat/* </a>
+### <a name="agre"> */structure/Agreagat/* </a>
 Хранит информацию об агрегатах.
 Имеет метод GET, POST.
 Отображает поля:
@@ -162,7 +162,7 @@
     }
 ```
 
-### <a name="sens"> */api/Sensors/* </a>
+### <a name="sens"> */structure/Sensors/* </a>
 Хранит информацию о датчиках.
 Имеет метод GET, POST.
 Отображает поля:
@@ -189,7 +189,7 @@
     }
 ```
 
-### /api/ValueSensor/
+### /structure/ValueSensor/
 Хранит информацию о показаниях датчиков. 
 Имеет метод GET, POST.
 Отображает поля:
