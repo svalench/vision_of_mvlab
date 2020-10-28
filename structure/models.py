@@ -1,4 +1,5 @@
 from django.db import models
+from datetime import datetime
 
 
 class Reserv_1(models.Model):
@@ -33,6 +34,15 @@ class Department(models.Model):
     def __str__(self):
         return self.name
 
+    def now_shift(self) -> object:
+        """возвращает текущую смену департамента"""
+        now1 = datetime.time(datetime.now())
+        print(now1)
+        now = datetime.now().time().strftime('%H:%M:%S')
+        print(now)
+        shift = self.shift_set.filter(start__lt=now, end__gte=now)
+        return shift
+
 
 class Shift(models.Model):
     dep = models.ForeignKey(Department, on_delete=models.CASCADE)
@@ -42,6 +52,14 @@ class Shift(models.Model):
 
     def __str__(self):
         return self.name
+
+    def all_shift_now(self) -> object:
+        """возвращает текущие смены всех департаментов"""
+        now = datetime.time(datetime.now())
+        shift = Shift.objects.filter(start__lt=now, end__gte=now)
+        return shift
+
+
 
 
 class Lunch(models.Model):
