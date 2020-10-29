@@ -2,7 +2,7 @@ import math
 import random
 from datetime import datetime
 import string
-from django.contrib.auth.models import User
+from .models import User
 from django.shortcuts import render
 from rest_framework import status
 from rest_framework.authtoken.views import ObtainAuthToken

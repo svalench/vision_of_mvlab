@@ -83,7 +83,7 @@ WSGI_APPLICATION = 'project_v_0_0_1.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': str(BASE_DIR / 'db.sqlite3'),
+        'NAME': str(BASE_DIR / 'db123.sqlite3'),
     }
 }
 
@@ -120,13 +120,13 @@ CORS_ALLOWED_ORIGINS = [
     "http://localhost:8000",
 ]
 
-
+AUTH_USER_MODEL = 'users.UserP'
 # Internationalization
 # https://docs.djangoproject.com/en/3.1/topics/i18n/
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'Europe/Minsk'
 
 USE_I18N = True
 
