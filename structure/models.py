@@ -36,10 +36,7 @@ class Department(models.Model):
 
     def now_shift(self) -> object:
         """возвращает текущую смену департамента"""
-        now1 = datetime.time(datetime.now())
-        print(now1)
         now = datetime.now().time().strftime('%H:%M:%S')
-        print(now)
         shift = self.shift_set.filter(start__lt=now, end__gte=now)
         return shift
 
