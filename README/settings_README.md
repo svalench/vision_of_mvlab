@@ -45,3 +45,32 @@
     "result": "empty"
 }
 ```
+
+## Создание цеха
+
+Для добавлени цеха необходимо передать на url
+```
+settings/create/department
+```
+POST запрос со следующим содержанием
+```
+{
+    name:<str>,
+    factory_id:<int>,
+    shifts:[
+        {
+            start:<str:HH:MM:SS>
+            end:<str:HH:MM:SS>
+            lanch:[
+                {
+                    start:<str:HH:MM:SS>
+                    end:<str:HH:MM:SS>
+                },
+                ....
+            ]
+        },
+        ....
+        
+    ]
+}
+```
