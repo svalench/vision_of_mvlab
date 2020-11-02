@@ -1,6 +1,52 @@
+import json
+
+from django.core.serializers.json import DjangoJSONEncoder
 from django.db import models
 from datetime import datetime
 
+
+class JSONField(models.TextField):
+    """
+    JSONField es un campo TextField que serializa/deserializa objetos JSON.
+    Django snippet #1478
+
+    Ejemplo:
+        class Page(models.Model):
+            data = JSONField(blank=True, null=True)
+
+        page = Page.objects.get(pk=5)
+        page.data = {'title': 'test', 'type': 3}
+        page.save()
+    """
+    def to_python(self, value):
+        if value == "":
+            return None
+
+        try:
+            if isinstance(value, str):
+                return json.loads(value)
+        except ValueError:
+            pass
+        return value
+
+    def from_db_value(self, value, *args):
+        return self.to_python(value)
+
+    def get_db_prep_save(self, value, *args, **kwargs):
+        if value == "":
+            return None
+        if isinstance(value, dict):
+            value = json.dumps(value, cls=DjangoJSONEncoder)
+        return value
+
+
+class FirstObject(models.Model):
+    name = models.CharField(max_length=255, default='no name')
+    customer = models.CharField(max_length=255, default='no customer')
+    contract = models.CharField(max_length=255, default='no contract')
+    date_add = models.DateTimeField(auto_now_add=True)
+    date_update = models.DateTimeField(auto_now=True)
+    structure = JSONField(null=True, blank=True)
 
 class Reserv_1(models.Model):
     name = models.CharField(max_length=255, default='no name')
@@ -13,6 +59,7 @@ class Reserv_2(models.Model):
 
 class Corparation(models.Model):
     name = models.CharField(max_length=255, default='no name')
+
     res2 = models.ForeignKey(Reserv_2, on_delete=models.CASCADE)
 
     def __str__(self):

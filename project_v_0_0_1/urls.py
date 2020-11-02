@@ -23,6 +23,7 @@ urlpatterns = [
     path('api/', include(router.urls)),
 #    path('structure/', include('structure.urls')),
     path('structure/', include(router1.urls)),
+    path('settings/',include('structure.urls')),
     path('user/', include('users.urls')),
     path('recorder/', include('recorder.urls')),
 ]
