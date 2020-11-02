@@ -22,6 +22,7 @@ class Corparation(models.Model):
 class Factory(models.Model):
     corp = models.ForeignKey(Corparation, on_delete=models.CASCADE)
     name = models.CharField(max_length=255, default='no name')
+    address = models.CharField(max_length=255, default='no address')
 
     def __str__(self):
         return self.name

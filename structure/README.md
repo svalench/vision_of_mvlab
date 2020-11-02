@@ -12,7 +12,7 @@
 * «Name» - тип CharField
 * «res2» - внешний ключ с таблицей «Reserv_2» 
 
-Структура данныйх:
+Структура данных:
 ```
     {
         {
@@ -36,8 +36,9 @@
 * «id» - тип данных IntegerField
 * «corp» - внешний ключ с таблицей [«Corparation»](#corp)
 * «name» - тип CharField 
+* «address» - тип CharField 
 
-Структура данныйх:
+Структура данных:
 ```
     {
         {
@@ -62,7 +63,7 @@
 * «factory» - внешний ключ с таблицей [«Factory»](#fact)
 * «name» - тип CharField 
 
-Структура данныйх:
+Структура данных:
 ```
     {
         {
@@ -80,7 +81,7 @@
 ```
 
 ### <a name="shif"> */structure/Shift/* </a>
-Хранит информацию об агрегатах.
+Хранит информацию о сменах.
 Имеет метод GET, POST.
 Отображает поля:
 * «id» - тип данных IntegerField
@@ -89,7 +90,7 @@
 * «start» - тип TimeField
 * «end» - тип TimeField 
 
-Структура данныйх:
+Структура данных:
 ```
     {
         {
@@ -109,7 +110,7 @@
 ```
 
 ### <a name="lunc"> */structure/Lunch/* </a>
-Хранит информацию об агрегатах.
+Хранит информацию об обедах.
 Имеет метод GET, POST.
 Отображает поля:
 * «id» - тип данных IntegerField
@@ -118,7 +119,7 @@
 * «start» - тип TimeField
 * «end» - тип TimeField 
 
-Структура данныйх:
+Структура данных:
 ```
     {
         {
@@ -145,7 +146,7 @@
 * «dep» - внешний ключ с таблицей [«Department»](#depa)
 * «name» - тип CharField 
 
-Структура данныйх:
+Структура данных:
 ```
     {
         {
@@ -171,7 +172,7 @@
 * «name» - тип CharField
 * «designation» - тип CharField 
 
-Структура данныйх:
+Структура данных:
 ```
     {
         {
@@ -179,45 +180,6 @@
             "agregat":<Query Object>,
             "name":str,
             "designation":str
-        },
-        {
-            -//-
-        },
-        .
-        .
-        .
-    }
-```
-
-### /structure/ValueSensor/
-Хранит информацию о показаниях датчиков. 
-Имеет метод GET, POST.
-Отображает поля:
-* «id» - тип данных IntegerField
-* «sensor» - внешний ключ с таблицей [«Sensors»](#sens)
-* «name» - тип CharField
-* «name_connection» - тип CharField
-* «table_name» - тип CharField
-* «up_level_alarm» - тип FloatField
-* «down_level_alarm» - тип FloatField
-* «up_level» - тип FloatField
-* «down_level» - тип FloatField
-* «rate_change» - тип FloatField 
-
-Структура данныйх:
-```
-    {
-        {
-            "id":int,
-            "sensor":<Query Object>,
-            "name":str,
-            "name_connection":str,
-            "table_name":str,
-            "up_level_alarm":float,
-            "down_level_alarm":float,
-            "up_level":float,
-            "down_level":float,
-            "rate_change":float
         },
         {
             -//-
