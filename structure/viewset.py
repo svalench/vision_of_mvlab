@@ -5,6 +5,31 @@ from rest_framework.permissions import IsAuthenticated
 
 from .serializer import *
 
+class Reserv_1View(viewsets.ModelViewSet):
+    queryset = Reserv_1.objects.all()
+    serializer_class = Reserv_1Serializer
+
+    def get_permissions(self):
+        if self.request.method == 'GET':
+            self.permission_classes = [IsAuthenticated]
+        else:
+            self.permission_classes = [IsAdminUser]
+        return super(Reserv_1View, self).get_permissions()
+
+
+class Reserv_2View(viewsets.ModelViewSet):
+    queryset = Reserv_2.objects.all()
+    serializer_class = Reserv_2Serializer
+
+    def get_permissions(self):
+        if self.request.method == 'GET':
+            self.permission_classes = [IsAuthenticated]
+        else:
+            self.permission_classes = [IsAdminUser]
+        return super(Reserv_2View, self).get_permissions()
+
+
+
 class CorparationView(viewsets.ModelViewSet):
     queryset = Corparation.objects.all()
     serializer_class = CorparationSerializer

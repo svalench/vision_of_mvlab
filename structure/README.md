@@ -2,7 +2,85 @@
 ### */structure/*
 Имеет метод GET.
 Хранит информацию url адреса страниц: 
- «Corparation», «Factory», «Department», «Shift», «Lunch», «Agreagat», «Sensors», «ValueSensor»
+ «Reserv_1», «Reserv_2», «Corparation», «Factory», «Department», «Shift», «Lunch», «Agreagat», «Sensors», «ValueSensor»
+
+### <a name="res1"> */structure/Reserv_1/* </a>
+Хранит информацию о резервах 1. 
+Имеет метод GET, POST.
+Отображает поле:
+* «id» - тип данных IntegerField
+* «Name» - тип CharField  
+
+Структура данных:
+```
+    {
+        {
+            "id": int,
+            "name":str
+        },
+        {
+            -//-
+        }, 
+        .
+        .
+        .
+    }
+```
+
+###  */structure/Reserv_1/\<int:id>/* 
+Хранит информацию о конкретной резерве 1. 
+Имеет метод GET, PUT, DELETE.
+Отображает поле:
+* «id» - тип данных IntegerField
+* «Name» - тип CharField 
+```
+{
+    "id": int,
+    "name": str
+}
+```
+
+### <a name="res2"> */structure/Reserv_2/* </a>
+Хранит информацию о резервах 1. 
+Имеет метод GET, POST.
+Отображает поле:
+* «id» - тип данных IntegerField
+* «Name» - тип CharField  
+* «res1» - внешний ключ с таблицей [«Reserv_1»](#res1)
+
+Структура данных:
+```
+    {
+        {
+            "id": int,
+            "name":str,
+            "res1":<Query Object>
+        },
+        {
+            -//-
+        }, 
+        .
+        .
+        .
+    }
+```
+
+###  */structure/Reserv_1/\<int:id>/* 
+Хранит информацию о конкретной резерве 1. 
+Имеет метод GET, PUT, DELETE.
+Отображает поле:
+* «id» - тип данных IntegerField
+* «Name» - тип CharField 
+* «res1» - внешний ключ с таблицей «Reserv_1»
+```
+{
+    "id": int,
+    "name": str,
+    "res1":<Query Object>
+}
+```
+///////////////////////
+
 
 ### <a name="corp"> */structure/Corparation/* </a>
 Хранит информацию о корпорациях(имя и т.д.). 
@@ -10,7 +88,7 @@
 Отображает поле:
 * «id» - тип данных IntegerField
 * «Name» - тип CharField
-* «res2» - внешний ключ с таблицей «Reserv_2» 
+* «res2» - внешний ключ с таблицей [«Reserv_2»](#res2) 
 
 Структура данных:
 ```

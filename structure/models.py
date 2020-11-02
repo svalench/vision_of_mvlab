@@ -65,9 +65,16 @@ class Corparation(models.Model):
     def __str__(self):
         return self.name
 
+class Company(models.Model):
+    name = models.CharField(max_length=255, default='no name')
+    corp = models.ForeignKey(Corparation, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return self.name
+
 
 class Factory(models.Model):
-    corp = models.ForeignKey(Corparation, on_delete=models.CASCADE)
+    comp = models.ForeignKey(Company, on_delete=models.CASCADE)
     name = models.CharField(max_length=255, default='no name')
     address = models.CharField(max_length=255, default='no address')
 

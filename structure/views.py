@@ -10,7 +10,8 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from structure.models import FirstObject, Shift, Department, Lunch
-
+from .models import *
+from .serializer import *
 
 # @permission_classes([IsAuthenticated])
 @renderer_classes((TemplateHTMLRenderer, JSONRenderer))
@@ -65,3 +66,45 @@ class Parametrs(APIView):
                 lunch.save()
             k += 1
         return Response({'result': 'success'})
+
+class Reserv2_Search(APIView):
+    def get(self, request, pk):
+        art = Reserv_2.objects.filter(res1=pk)
+        # the many param informs the serializer that it will be serializing more than a single article.
+        serializer = Reserv_2Serializer(art, many=True)
+        return Response(serializer.data)
+
+class Corparation_Search(APIView):
+    def get(self, request, pk):
+        art = Corparation.objects.filter(res2=pk)
+        # the many param informs the serializer that it will be serializing more than a single article.
+        serializer = CorparationSerializer(art, many=True)
+        return Response(serializer.data)
+
+class Company_Search(APIView):
+    def get(self, request, pk):
+        art = Company.objects.filter(corp=pk)
+        # the many param informs the serializer that it will be serializing more than a single article.
+        serializer = CompanySerializer(art, many=True)
+        return Response(serializer.data)
+
+class Factory_Search(APIView):
+    def get(self, request, pk):
+        art = Factory.objects.filter(comp=pk)
+        # the many param informs the serializer that it will be serializing more than a single article.
+        serializer = FactorySerializer(art, many=True)
+        return Response(serializer.data)
+
+class Department_Search(APIView):
+    def get(self, request, pk):
+        art = Department.objects.filter(factory=pk)
+        # the many param informs the serializer that it will be serializing more than a single article.
+        serializer = DepartmentSerializer(art, many=True)
+        return Response(serializer.data)
+
+class Agreagat_Search(APIView):
+    def get(self, request, pk):
+        art = Agreagat.objects.filter(dep=pk)
+        # the many param informs the serializer that it will be serializing more than a single article.
+        serializer = AgreagatSerializer(art, many=True)
+        return Response(serializer.data)
