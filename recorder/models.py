@@ -82,7 +82,6 @@ class ValueSensor(models.Model):
         else:
             return False
         result = curs.fetchall()
-        print(result)
         if len(result) == 0:
             return False
         else:
