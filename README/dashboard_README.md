@@ -29,7 +29,7 @@
 ```
 
 
-### */dashboard/duration/\<date>/smena/\<int:id>/*
+### */dashboard/duration/\<date>/shift/\<int:id>/*
 Хранятся данные для виджета «Продолжительность работы, ч», с выбранной конкретной смены. 
 
 Данные в маршруте:
@@ -188,7 +188,7 @@
 }
 ```
 
-### */dashboard/edition/\<date>/smena/\<int:id>/*
+### */dashboard/edition/\<date>/shift/\<int:id>/*
 Хранятся данные виджета «Выпуск панелей» для вкладки «смена», с выбранной конкретной смены.
 
 Данные в маршруте:
@@ -272,7 +272,7 @@
 }
 ```
 
-### */dashboard/sumexpense/\<date>/smena/\<int:id>/*
+### */dashboard/sumexpense/\<date>/shift/\<int:id>/*
 Хранятся данные виджета «Суммарный расход» для вкладки «смена», с выбранной конкретной смены.  
 
 Данные в маршруте:
@@ -334,7 +334,7 @@
 }
 ```
 
-### */dashboard/energyconsumption/\<date>/smena/\<int:id>/*
+### */dashboard/energyconsumption/\<date>/shift/\<int:id>/*
 Хранятся данные виджета «Расход энергоресурсов» для вкладки «смена», с выбранной конкретной смены.  
 
 Данные в маршруте:
@@ -403,7 +403,7 @@
 ```
 
 
-### */dashboard/specificconsumption/\<date>/smena/\<int:id>/*
+### */dashboard/specificconsumption/\<date>/shift/\<int:id>/*
 Хранятся данные виджета «Удельный расход на км» для вкладки «смена», с выбранной конкретной смены.  
 
 Данные в маршруте:
@@ -500,7 +500,7 @@
 ```
 
 
-### */dashboard/comparison/smena/\<date1>/\<int:id1>/\<date2>/\<int:id2>/*
+### */dashboard/comparison/shift/\<date1>/\<int:id1>/\<date2>/\<int:id2>/*
 Хранятся данные виджета «Модуль сравнения» для вкладки «смена», с выбранными конкретными сменами.  
 
 Данные в маршруте:
