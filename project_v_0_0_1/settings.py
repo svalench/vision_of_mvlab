@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     'users',
     'recorder',
     'structure',
+    'dashboard',
 ]
 
 MIDDLEWARE = [
