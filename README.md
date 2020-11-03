@@ -4,6 +4,7 @@
 ### [Обязательноые команды](#comands)
 ### [Авторизация пользователя](#autUser)
 ### [Структура предприятия](#structFactory)
+### [Dashboard](#Dashboard)
 
 ## <a name="description"> *Описание* </a>
 ###  Для чего
@@ -45,3 +46,6 @@
 ## <a name="structFactory"> *Структрура предприятия* </a>
  В данном разделе будет опиасние модуля структуры предприятия  
  Описание API структуры предприятия [ЗДЕСЬ](structure/README.md)
+ 
+ ## <a name="Dashboard"> *Dashboard * </a>
+ Подробная документация по API для модуля Dashboard находится [здесь](README/dashboard_README.md)

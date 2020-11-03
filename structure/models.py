@@ -47,14 +47,20 @@ class FirstObject(models.Model):
     date_add = models.DateTimeField(auto_now_add=True)
     date_update = models.DateTimeField(auto_now=True)
     structure = JSONField(null=True, blank=True)
+    def __str__(self):
+        return self.name
 
 class Reserv_1(models.Model):
     name = models.CharField(max_length=255, default='no name')
+    def __str__(self):
+        return self.name
 
 
 class Reserv_2(models.Model):
     name = models.CharField(max_length=255, default='no name')
     res1 = models.ForeignKey(Reserv_1, on_delete=models.CASCADE)
+    def __str__(self):
+        return self.name
 
 
 class Corparation(models.Model):
