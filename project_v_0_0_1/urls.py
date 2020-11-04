@@ -26,4 +26,5 @@ urlpatterns = [
     path('settings/',include('structure.urls')),
     path('user/', include('users.urls')),
     path('recorder/', include('recorder.urls')),
+    path('dashboard/', include('api.urls')),
 ]
