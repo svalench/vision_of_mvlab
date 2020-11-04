@@ -85,7 +85,6 @@ class ValueSensor(models.Model):
         if len(result) == 0:
             return False
         else:
-            self._get_average_by_periods()
             return True
 
     def _get_average_by_periods(self, var=5, periods=100) -> dict or bool:
