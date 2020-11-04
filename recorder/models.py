@@ -86,3 +86,30 @@ class ValueSensor(models.Model):
             return False
         else:
             return True
+
+    def _get_average_by_periods(self, var, periods) -> object:
+        """
+        :param var: шаг в минутах
+        :param periods: интервал в минутах
+        :return: object
+
+        """
+        curs = connection.cursor()
+        sql = "with period_t as (" \
+              "SELECT" \
+              "(SELECT max(now_time)::timestamp from " + str(self.table_name) + ")+((n-" + str(
+            var) + ") || 'minutes')::interval start_time," \
+                   "(SELECT max(now_time)::timestamp from " + str(
+            self.table_name) + ")+(n || 'minutes')::interval end_time " \
+                               "from generate_series(0," + str(periods) + "," + str(var) + ") n" \
+                                                                                           ")" \
+                                                                                           "SELECT a.start_time, a.end_time, AVG(b.value) asv value from " + str(
+            self.table_name) + " b right join" \
+                               "period_t a ON b.now_time>=a.start_time AND b.now_time<a.end_time GROUP BY a.start_time, a.end_time" \
+                               "ORDER BY a.start_time desc"
+        try:
+            curs.execute(sql)
+        except:
+            return False
+        result = curs.fetchall()
+        return result
