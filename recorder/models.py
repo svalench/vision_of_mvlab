@@ -85,14 +85,17 @@ class ValueSensor(models.Model):
         if len(result) == 0:
             return False
         else:
+            self._get_average_by_periods()
             return True
 
-    def _get_average_by_periods(self, var, periods) -> object:
+    def _get_average_by_periods(self, var=5, periods=100) -> dict or bool:
         """
-        :param var: шаг в минутах
-        :param periods: интервал в минутах
-        :return: object
+        Возвращет объект с усреднеными значениями из периода periods (в минутах) разбитый по частям на интервалы var минут
 
+        :param int var: шаг в минутах
+        :param int periods: интервал в минутах
+        :return: dictionary
+        :raises ValueError: Вернет False
         """
         curs = connection.cursor()
         sql = "with period_t as (" \
@@ -101,9 +104,9 @@ class ValueSensor(models.Model):
             var) + ") || 'minutes')::interval start_time," \
                    "(SELECT max(now_time)::timestamp from " + str(
             self.table_name) + ")+(n || 'minutes')::interval end_time " \
-                               "from generate_series(0," + str(periods) + "," + str(var) + ") n" \
-                                                                                           ")" \
-                                                                                           "SELECT a.start_time, a.end_time, AVG(b.value) asv value from " + str(
+                               "from generate_series(0,-" + str(periods) + ",-" + str(var) + ") n" \
+                                                                                             ")" \
+                                                                                             "SELECT a.start_time, a.end_time, AVG(b.value) asv value from " + str(
             self.table_name) + " b right join" \
                                "period_t a ON b.now_time>=a.start_time AND b.now_time<a.end_time GROUP BY a.start_time, a.end_time" \
                                "ORDER BY a.start_time desc"
