@@ -5,21 +5,22 @@ from .serializer import *
 import json
 from datetime import datetime, timedelta
 
-class DashboardViews(APIView):
-    def get(self, request):
-        art = Dashboard.objects.all()
-        # the many param informs the serializer that it will be serializing more than a single article.
-        serializer = DashboardSerializer(art, many=True)
-        return Response(serializer.data)
+# class DashboardViews(APIView):
+#     def get(self, request):
+#         art = Dashboard.objects.all()
+#         # the many param informs the serializer that it will be serializing more than a single article.
+#         serializer = DashboardSerializer(art, many=True)
+#         return Response(serializer.data)
+#
+# class DateViews(APIView):
+#     def get(self, request):
+#         art = Date.objects.all()
+#         # the many param informs the serializer that it will be serializing more than a single article.
+#         serializer = DateSerializer(art, many=True)
+#         return Response(serializer.data)
 
-class DateViews(APIView):
-    def get(self, request):
-        art = Date.objects.all()
-        # the many param informs the serializer that it will be serializing more than a single article.
-        serializer = DateSerializer(art, many=True)
-        return Response(serializer.data)
 
-class DurationViews(APIView):
+class DurationIntervalDayViews(APIView):
     def get(self, request, date):
         dateb = Date.objects.get(date=date)
         art = DurationIntervalDay.objects.filter(date=dateb.id)
@@ -86,7 +87,7 @@ class RemainderViews(APIView):
         }
         return Response(data)
 
-class EditionViews(APIView):
+class EditionDayViews(APIView):
     def get(self, request, date):
         delt = timedelta(days=1)
         date_del = date-delt
@@ -108,6 +109,63 @@ class EditionViews(APIView):
         }
         return Response(data)
 
+
+class EditionMonthViews(APIView):
+    def get(self, request, date):
+        delt = timedelta(days=1)
+        # date_del = date-delt
+        data_pred = date - timedelta(days=date.day)
+        sh = date.day
+        dat = date
+        #текущий месяц
+        suitable = 0
+        substandard = 0
+        defect = 0
+        flooded = 0
+        sum = 0
+        while sh != 0:
+            dateb = Date.objects.get(date=dat)
+            art = EditionDay.objects.get(date=dateb.id)
+            suitable = suitable + art.suitable
+            substandard = substandard + art.suitable
+            defect = defect + art.defect
+            flooded = flooded + art.flooded
+            sum = sum + art.sum
+            dat = dat - delt
+            sh = sh - 1
+        sh = data_pred.day
+
+
+        #пред. месяц
+        suitable_pr = 0
+        substandard_pr = 0
+        defect_pr = 0
+        flooded_pr = 0
+        sum_pr = 0
+        while sh != 0:
+            dateb = Date.objects.get(date=data_pred)
+            art = EditionDay.objects.get(date=dateb.id)
+            suitable_pr = suitable_pr + art.suitable
+            substandard_pr = substandard_pr + art.substandard
+            defect_pr = defect_pr + art.defect
+            flooded_pr = flooded_pr + art.flooded
+            sum_pr = sum_pr + art.sum_pr
+            data_pred = data_pred - delt
+            sh = sh - 1
+        data = {
+            "suitable": suitable,
+            "change_suitable": (((suitable/suitable_pr)-1)*100),
+            "substandard": substandard,
+            "change_substandard": (((substandard/substandard_pr)-1)*100),
+            "defect": defect,
+            "change_defect": (((defect/defect_pr)-1)*100),
+            "flooded": flooded,
+            "change_flooded": (((flooded/flooded_pr)-1)*100),
+            "sum": sum,
+            "change_sum": (((sum/sum_pr)-1)*100)
+        }
+        return Response(data)
+
 class SumexpenseDayViews(APIView):
     def get(self, request, date):
         dateb = Date.objects.get(date=date)
@@ -122,6 +180,39 @@ class SumexpenseDayViews(APIView):
         }
         return Response(data)
 
+
+class SumexpenseMonthViews(APIView):
+    def get(self, request, date):
+        sh = date.day
+        dat = date
+        delt = timedelta(days=1)
+        iso = 0
+        pol = 0
+        pen = 0
+        kat1 = 0
+        kat2 = 0
+        kat3 = 0
+        while sh != 0:
+            dateb = Date.objects.get(date=dat)
+            art = SumexpenseDay.objects.get(date=dateb.id)
+            iso = iso + art.iso
+            pol = pol + art.pol
+            pen = pen + art.pen
+            kat1 = kat1 + art.kat1
+            kat2 = kat2 + art.kat2
+            kat3 = kat3 + art.kat3
+            dat = dat - delt
+            sh = sh - 1
+        data = {
+            "iso": iso,
+            "pol": pol,
+            "pen": pen,
+            "kat1": kat1,
+            "kat2": kat2,
+            "kat3": kat3
+        }
+        return Response(data)
+
 class EnergyConsumptionDayViews(APIView):
     def get(self, request, date):
         dateb = Date.objects.get(date=date)
@@ -130,6 +221,30 @@ class EnergyConsumptionDayViews(APIView):
             "input1": art.input1,
             "input2": art.input2,
             "gas": art.gas
+        }
+        return Response(data)
+
+
+class EnergyConsumptionMonthViews(APIView):
+    def get(self, request, date):
+        sh = date.day
+        dat = date
+        delt = timedelta(days=1)
+        input1 = 0
+        input2 = 0
+        gas = 0
+        while sh != 0:
+            dateb = Date.objects.get(date=dat)
+            art = EnergyConsumptionDay.objects.get(date=dateb.id)
+            input1 = input1 + art.input1
+            input2 = input2 + art.input2
+            gas = gas + art.gas
+            dat = dat -delt
+            sh = sh -1
+        data = {
+            "input1": input1,
+            "input2": input2,
+            "gas": gas
         }
         return Response(data)
 
@@ -147,7 +262,39 @@ class SpecificConsumptionDayViews(APIView):
         }
         return Response(data)
 
-class ComparisonViews(APIView):
+class SpecificConsumptionMonthViews(APIView):
+    def get(self, request, date):
+        sh = date.day
+        dat = date
+        delt = timedelta(days=1)
+        iso = 0
+        pol = 0
+        pen = 0
+        kat1 = 0
+        kat2 = 0
+        kat3 = 0
+        while sh != 0:
+            dateb = Date.objects.get(date=dat)
+            art = SpecificConsumptionDay.objects.get(date=dateb.id)
+            iso = iso + art.iso
+            pol = pol + art.pol
+            pen = pen + art.pen
+            kat1 = kat1 + art.kat1
+            kat2 = kat2 + art.kat2
+            kat3 = kat3 + art.kat3
+            dat = dat -delt
+            sh = sh -1
+        data = {
+            "iso": iso,
+            "pol": pol,
+            "pen": pen,
+            "kat1": kat1,
+            "kat2": kat2,
+            "kat3": kat3
+        }
+        return Response(data)
+
+class ComparisonDayViews(APIView):
     def get(self, request, date1, date2):
         dateb1 = Date.objects.get(date=date1)
         dateb2 = Date.objects.get(date=date2)
@@ -164,5 +311,57 @@ class ComparisonViews(APIView):
             "flooded2": art2.flooded,
             "sum1": art1.sum,
             "sum2": art2.sum
+        }
+        return Response(data)
+
+
+class ComparisonMonthViews(APIView):
+    def get(self, request, date1, date2):
+        sh1 = date1.day
+        dat1 = date1
+        sh2 = date2.day
+        dat2 = date2
+        delt = timedelta(days=1)
+        suitable1 = 0
+        suitable2 = 0
+        substandard1 = 0
+        substandard2 = 0
+        defect1 = 0
+        defect2 = 0
+        flooded1 = 0
+        flooded2 = 0
+        sum1 = 0
+        sum2 = 0
+        while sh1 != 0:
+            dateb = Date.objects.get(date=dat1)
+            art = EditionDay.objects.get(date=dateb.id)
+            suitable1 = suitable1 + art.suitable
+            substandard1 = substandard1 + art.substandard
+            defect1 = defect1 + art.defect
+            flooded1 = flooded1 + art.flooded
+            sum1 = sum1 + art.sum
+            dat1 = dat1 -delt
+            sh1 = sh1 -1
+        while sh2 != 0:
+            dateb = Date.objects.get(date=dat2)
+            art = EditionDay.objects.get(date=dateb.id)
+            suitable2 = suitable2 + art.suitable
+            substandard2 = substandard2 + art.substandard
+            defect2 = defect2 + art.defect
+            flooded2 = flooded2 + art.flooded
+            sum2 = sum2 + art.sum
+            dat2 = dat2 -delt
+            sh2 = sh2 -1
+        data = {
+            "suitable1": suitable1,
+            "suitable2": suitable2,
+            "substandard1": substandard1,
+            "substandard2": substandard2,
+            "defect1": defect1,
+            "defect2": defect2,
+            "flooded1": flooded1,
+            "flooded2": flooded2,
+            "sum1": sum1,
+            "sum2": sum2
         }
         return Response(data)
