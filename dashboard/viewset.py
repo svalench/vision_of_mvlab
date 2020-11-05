@@ -3,7 +3,10 @@ from rest_framework.response import Response
 from .models import *
 from .serializer import *
 import json
+from users.models import UserP
 from datetime import datetime, timedelta
+from rest_framework.decorators import permission_classes
+from rest_framework.permissions import IsAuthenticated
 
 # class DashboardViews(APIView):
 #     def get(self, request):
@@ -19,10 +22,13 @@ from datetime import datetime, timedelta
 #         serializer = DateSerializer(art, many=True)
 #         return Response(serializer.data)
 
-
+#виджет «Продолжительность работы, ч», вкладка день
+@permission_classes([IsAuthenticated])
 class DurationIntervalDayViews(APIView):
     def get(self, request, date):
-        dateb = Date.objects.get(date=date)
+        user = UserP.objects.get(id=request.user.pk)
+        dash = Dashboard.objects.get(user=user.id)
+        dateb = Date.objects.filter(dashboard=dash.id).get(date=date)
         art = DurationIntervalDay.objects.filter(date=dateb.id)
         DurationIntervalDayS = DurationIntervalDaySerializer(art, many=True)
         sum = 0
@@ -46,9 +52,18 @@ class DurationIntervalDayViews(APIView):
         # json_string = json.dumps(data)
         return Response(data)
 
+#виджет «Продолжительность работы, ч», вкладка смена
+@permission_classes([IsAuthenticated])
+class DurationIntervalShiftViews(APIView):
+    pass
+
+#виджет «Остатки на складах»
+@permission_classes([IsAuthenticated])
 class RemainderViews(APIView):
     def get(self, request, date):
-        dateb = Date.objects.get(date=date)
+        user = UserP.objects.get(id=request.user.pk)
+        dash = Dashboard.objects.get(user=user.id)
+        dateb = Date.objects.filter(dashboard=dash.id).get(date=date)
         art = RemainderStorehouse.objects.filter(date=dateb.id)
         storehouse = []
         isosum = 0
@@ -87,12 +102,16 @@ class RemainderViews(APIView):
         }
         return Response(data)
 
+#виджет «Выпуск панелей» для вкладки «день»
+@permission_classes([IsAuthenticated])
 class EditionDayViews(APIView):
     def get(self, request, date):
+        user = UserP.objects.get(id=request.user.pk)
+        dash = Dashboard.objects.get(user=user.id)
         delt = timedelta(days=1)
         date_del = date-delt
-        dateb = Date.objects.get(date=date)
-        dateb_del = Date.objects.get(date=date_del)
+        dateb = Date.objects.filter(dashboard=dash.id).get(date=date)
+        dateb_del = Date.objects.filter(dashboard=dash.id).get(date=date_del)
         art_del = EditionDay.objects.get(date=dateb_del.id)
         art = EditionDay.objects.get(date=dateb.id)
         data = {
@@ -109,10 +128,14 @@ class EditionDayViews(APIView):
         }
         return Response(data)
 
-
+#виджет «Выпуск панелей» для вкладки «месяц»
+@permission_classes([IsAuthenticated])
 class EditionMonthViews(APIView):
     def get(self, request, date):
+        user = UserP.objects.get(id=request.user.pk)
+        dash = Dashboard.objects.get(user=user.id)
         delt = timedelta(days=1)
+
         # date_del = date-delt
         data_pred = date - timedelta(days=date.day)
         sh = date.day
@@ -124,7 +147,7 @@ class EditionMonthViews(APIView):
         flooded = 0
         sum = 0
         while sh != 0:
-            dateb = Date.objects.get(date=dat)
+            dateb = Date.objects.filter(dashboard=dash.id).get(date=dat)
             art = EditionDay.objects.get(date=dateb.id)
             suitable = suitable + art.suitable
             substandard = substandard + art.suitable
@@ -143,13 +166,13 @@ class EditionMonthViews(APIView):
         flooded_pr = 0
         sum_pr = 0
         while sh != 0:
-            dateb = Date.objects.get(date=data_pred)
+            dateb = Date.objects.filter(dashboard=dash.id).get(date=data_pred)
             art = EditionDay.objects.get(date=dateb.id)
             suitable_pr = suitable_pr + art.suitable
             substandard_pr = substandard_pr + art.substandard
             defect_pr = defect_pr + art.defect
             flooded_pr = flooded_pr + art.flooded
-            sum_pr = sum_pr + art.sum_pr
+            sum_pr = sum_pr + art.sum
             data_pred = data_pred - delt
             sh = sh - 1
         data = {
@@ -166,9 +189,19 @@ class EditionMonthViews(APIView):
         }
         return Response(data)
 
+#виджет «Выпуск панелей» для вкладки «смена»
+@permission_classes([IsAuthenticated])
+class EditionShiftViews(APIView):
+    pass
+
+
+#виджет «Суммарный расход» для вкладки «день»
+@permission_classes([IsAuthenticated])
 class SumexpenseDayViews(APIView):
     def get(self, request, date):
-        dateb = Date.objects.get(date=date)
+        user = UserP.objects.get(id=request.user.pk)
+        dash = Dashboard.objects.get(user=user.id)
+        dateb = Date.objects.filter(dashboard=dash.id).get(date=date)
         art = SumexpenseDay.objects.get(date=dateb.id)
         data = {
             "iso": art.iso,
@@ -181,8 +214,12 @@ class SumexpenseDayViews(APIView):
         return Response(data)
 
 
+#виджет «Суммарный расход» для вкладки «месяц»
+@permission_classes([IsAuthenticated])
 class SumexpenseMonthViews(APIView):
     def get(self, request, date):
+        user = UserP.objects.get(id=request.user.pk)
+        dash = Dashboard.objects.get(user=user.id)
         sh = date.day
         dat = date
         delt = timedelta(days=1)
@@ -193,7 +230,7 @@ class SumexpenseMonthViews(APIView):
         kat2 = 0
         kat3 = 0
         while sh != 0:
-            dateb = Date.objects.get(date=dat)
+            dateb = Date.objects.filter(dashboard=dash.id).get(date=dat)
             art = SumexpenseDay.objects.get(date=dateb.id)
             iso = iso + art.iso
             pol = pol + art.pol
@@ -213,9 +250,18 @@ class SumexpenseMonthViews(APIView):
         }
         return Response(data)
 
+#виджет «Суммарный расход» для вкладки «смена»
+@permission_classes([IsAuthenticated])
+class SumexpenseShiftViews(APIView):
+    pass
+
+#виджет «Расход энергоресурсов» для вкладки «день»
+@permission_classes([IsAuthenticated])
 class EnergyConsumptionDayViews(APIView):
     def get(self, request, date):
-        dateb = Date.objects.get(date=date)
+        user = UserP.objects.get(id=request.user.pk)
+        dash = Dashboard.objects.get(user=user.id)
+        dateb = Date.objects.filter(dashboard=dash.id).get(date=date)
         art = EnergyConsumptionDay.objects.get(date=dateb.id)
         data = {
             "input1": art.input1,
@@ -224,9 +270,12 @@ class EnergyConsumptionDayViews(APIView):
         }
         return Response(data)
 
-
+#виджет «Расход энергоресурсов» для вкладки «месяц»
+@permission_classes([IsAuthenticated])
 class EnergyConsumptionMonthViews(APIView):
     def get(self, request, date):
+        user = UserP.objects.get(id=request.user.pk)
+        dash = Dashboard.objects.get(user=user.id)
         sh = date.day
         dat = date
         delt = timedelta(days=1)
@@ -234,7 +283,7 @@ class EnergyConsumptionMonthViews(APIView):
         input2 = 0
         gas = 0
         while sh != 0:
-            dateb = Date.objects.get(date=dat)
+            dateb = Date.objects.filter(dashboard=dash.id).get(date=dat)
             art = EnergyConsumptionDay.objects.get(date=dateb.id)
             input1 = input1 + art.input1
             input2 = input2 + art.input2
@@ -248,9 +297,21 @@ class EnergyConsumptionMonthViews(APIView):
         }
         return Response(data)
 
+
+
+#виджет «Расход энергоресурсов» для вкладки «смена»
+@permission_classes([IsAuthenticated])
+class EnergyConsumptionShiftViews(APIView):
+    pass
+
+
+#виджет «Удельный расход на км» для вкладки «день»
+@permission_classes([IsAuthenticated])
 class SpecificConsumptionDayViews(APIView):
     def get(self, request, date):
-        dateb = Date.objects.get(date=date)
+        user = UserP.objects.get(id=request.user.pk)
+        dash = Dashboard.objects.get(user=user.id)
+        dateb = Date.objects.filter(dashboard=dash.id).get(date=date)
         art = SpecificConsumptionDay.objects.get(date=dateb.id)
         data = {
             "iso": art.iso,
@@ -262,8 +323,13 @@ class SpecificConsumptionDayViews(APIView):
         }
         return Response(data)
 
+
+#виджет «Удельный расход на км» для вкладки «месяц»
+@permission_classes([IsAuthenticated])
 class SpecificConsumptionMonthViews(APIView):
     def get(self, request, date):
+        user = UserP.objects.get(id=request.user.pk)
+        dash = Dashboard.objects.get(user=user.id)
         sh = date.day
         dat = date
         delt = timedelta(days=1)
@@ -274,7 +340,7 @@ class SpecificConsumptionMonthViews(APIView):
         kat2 = 0
         kat3 = 0
         while sh != 0:
-            dateb = Date.objects.get(date=dat)
+            dateb = Date.objects.filter(dashboard=dash.id).get(date=dat)
             art = SpecificConsumptionDay.objects.get(date=dateb.id)
             iso = iso + art.iso
             pol = pol + art.pol
@@ -294,10 +360,22 @@ class SpecificConsumptionMonthViews(APIView):
         }
         return Response(data)
 
+
+
+#виджет «Удельный расход на км» для вкладки «смена»
+@permission_classes([IsAuthenticated])
+class SpecificConsumptionShiftViews(APIView):
+    pass
+
+
+#виджет «Модуль сравнения» для вкладки «день»
+@permission_classes([IsAuthenticated])
 class ComparisonDayViews(APIView):
     def get(self, request, date1, date2):
-        dateb1 = Date.objects.get(date=date1)
-        dateb2 = Date.objects.get(date=date2)
+        user = UserP.objects.get(id=request.user.pk)
+        dash = Dashboard.objects.get(user=user.id)
+        dateb1 = Date.objects.filter(dashboard=dash.id).get(date=date1)
+        dateb2 = Date.objects.filter(dashboard=dash.id).get(date=date2)
         art1 = EditionDay.objects.get(date=dateb1.id)
         art2 = EditionDay.objects.get(date=dateb2.id)
         data = {
@@ -315,8 +393,13 @@ class ComparisonDayViews(APIView):
         return Response(data)
 
 
+
+#виджет «Модуль сравнения» для вкладки «месяц»
+@permission_classes([IsAuthenticated])
 class ComparisonMonthViews(APIView):
     def get(self, request, date1, date2):
+        user = UserP.objects.get(id=request.user.pk)
+        dash = Dashboard.objects.get(user=user.id)
         sh1 = date1.day
         dat1 = date1
         sh2 = date2.day
@@ -333,7 +416,7 @@ class ComparisonMonthViews(APIView):
         sum1 = 0
         sum2 = 0
         while sh1 != 0:
-            dateb = Date.objects.get(date=dat1)
+            dateb = Date.objects.filter(dashboard=dash.id).get(date=dat1)
             art = EditionDay.objects.get(date=dateb.id)
             suitable1 = suitable1 + art.suitable
             substandard1 = substandard1 + art.substandard
@@ -343,7 +426,7 @@ class ComparisonMonthViews(APIView):
             dat1 = dat1 -delt
             sh1 = sh1 -1
         while sh2 != 0:
-            dateb = Date.objects.get(date=dat2)
+            dateb = Date.objects.filter(dashboard=dash.id).get(date=dat2)
             art = EditionDay.objects.get(date=dateb.id)
             suitable2 = suitable2 + art.suitable
             substandard2 = substandard2 + art.substandard
@@ -365,3 +448,9 @@ class ComparisonMonthViews(APIView):
             "sum2": sum2
         }
         return Response(data)
+
+
+#виджет «Модуль сравнения» для вкладки «месяц»
+@permission_classes([IsAuthenticated])
+class ComparisonShiftViews(APIView):
+    pass

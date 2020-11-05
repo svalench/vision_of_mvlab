@@ -49,7 +49,7 @@ class EditionDay(models.Model):
     defect = models.FloatField()
     flooded = models.FloatField()
     sum = models.FloatField()
-    date = models.ForeignKey(Date, on_delete=models.CASCADE)
+    date = models.OneToOneField(Date, on_delete=models.CASCADE)
 
 
 # для виджета Суммарный расход
@@ -60,7 +60,7 @@ class SumexpenseDay(models.Model):
     kat1 = models.FloatField()
     kat2 = models.FloatField()
     kat3 = models.FloatField()
-    date = models.ForeignKey(Date, on_delete=models.CASCADE)
+    date = models.OneToOneField(Date, on_delete=models.CASCADE)
 
 
 
@@ -70,7 +70,7 @@ class EnergyConsumptionDay(models.Model):
     input1 = models.FloatField()
     input2 = models.FloatField()
     gas = models.FloatField()
-    date = models.ForeignKey(Date, on_delete=models.CASCADE)
+    date = models.OneToOneField(Date, on_delete=models.CASCADE)
 
 
 
@@ -84,5 +84,5 @@ class SpecificConsumptionDay(models.Model):
     kat1 = models.FloatField()
     kat2 = models.FloatField()
     kat3 = models.FloatField()
-    date = models.ForeignKey(Date, on_delete=models.CASCADE)
+    date = models.OneToOneField(Date, on_delete=models.CASCADE)
 
