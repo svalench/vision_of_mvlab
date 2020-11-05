@@ -62,12 +62,21 @@ class ValueSensor(models.Model):
         return self._time_conversion(start=start, end=end)
 
     def _time_conversion(self, start, end) -> object:
+        """
+        преобразование времени к формату
+        :param datetime start: начало периода
+        :param datetime end: конец периода
+
+        """
         start = (start - datetime(1970, 1, 1)).total_seconds()
         end = (end - datetime(1970, 1, 1)).total_seconds()
         return self.get_period(start=start, end=end)
 
     def _check_table_name(self, name):
-        """проверка на наличие таблицы с  именем <name> """
+        """проверка на наличие таблицы с  именем <name>
+        :param str name: название таблицы
+
+        """
         engine = connection.vendor
         curs = connection.cursor()
         if (engine == 'sqlite'):
