@@ -70,13 +70,29 @@ class ValueSensor(models.Model):
         :param float end: конец периода
         :return: list
         """
-        curs = connection.cursor()
-        curs.execute(
-            "SELECT * FROM `" + str(self.table_name) + "` WHERE now_time >= " +
-            str(start) + " AND now_time<" + str(end) + ";")
-        result = curs.fetchall()
-        return result
+        if (((end - start) / 60) < 100):
+            curs = connection.cursor()
+            curs.execute(
+                "SELECT * FROM `" + str(self.table_name) + "` WHERE now_time >= " +
+                str(start) + " AND now_time<" + str(end) + ";")
+            result = curs.fetchall()
+            return result
+        else:
+            a = self._generate_period_min(start, end)
+            return self._get_mode_by_periods(var=a['var'], periods=a['period'])
 
+    def _generate_period_min(self, start, end) -> dict:
+        """
+        пересчитывает время в интервалы для метода моды и среднего исходя из заданного количество точек points
+
+        :param real start: начало периода
+        :param real end: конец периода
+        :return: dict {'var':real,'periods':real}
+        """
+        points = 100  # количество точек
+        minutes = (end - start) / 60
+        interval = minutes / points
+        return {'var': interval, 'periods': minutes}
 
     def _check_table_name(self, name):
         """проверка на наличие таблицы с  именем <name>
@@ -108,7 +124,7 @@ class ValueSensor(models.Model):
 
         :param int var: шаг в минутах
         :param int periods: интервал в минутах
-        :return: list [{'start_time':timestamp,'end_time':timestamp,'value':real}]
+        :return: list [{'start_time':datetime,'end_time':datetime,'value':real}]
         :raises ValueError: Вернет False
         """
         curs = connection.cursor()
@@ -137,7 +153,7 @@ class ValueSensor(models.Model):
 
         :param int var: шаг в минутах
         :param int periods: интервал в минутах
-        :return: list [{'start_time':timestamp,'end_time':timestamp,'modevar':real}]
+        :return: list [{'start_time':datetime,'end_time':datetime,'modevar':real}]
         :raises ValueError: Вернет False
         """
         curs = connection.cursor()
@@ -148,9 +164,10 @@ class ValueSensor(models.Model):
                    "(SELECT max(now_time)::timestamp from " + str(
             self.table_name) + ")+(n || 'minutes')::interval end_time " \
                                "from generate_series(0,-" + str(periods) + ",-" + str(var) + ") n" \
-                               ")" \
-                               "SELECT a.start_time, a.end_time, (SELECT mode() WITH GROUP (ORDER BY value) as modevar" \
-                               " FROM "+str(self.table_name)+" r WHERE  r.now_time>=f.start_time and r.now_time<f.end_time) as value from " + str(
+                                                                                             ")" \
+                                                                                             "SELECT a.start_time, a.end_time, (SELECT mode() WITH GROUP (ORDER BY value) as modevar" \
+                                                                                             " FROM " + str(
+            self.table_name) + " r WHERE  r.now_time>=f.start_time and r.now_time<f.end_time) as value from " + str(
             self.table_name) + " b right join" \
                                "period_t a ON b.now_time>=a.start_time AND b.now_time<a.end_time GROUP BY a.start_time, a.end_time" \
                                "ORDER BY a.start_time desc"
