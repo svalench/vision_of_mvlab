@@ -65,6 +65,7 @@ class ValueSensor(models.Model):
 
     def get_period(self, start, end) -> list:
         """метод возвращает данные за период start - end
+
         :param float start: начало периода
         :param float end: конец периода
         :return: list
