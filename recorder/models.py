@@ -96,13 +96,13 @@ class ValueSensor(models.Model):
         else:
             return True
 
-    def _get_average_by_periods(self, var=5, periods=100) -> dict or bool:
+    def _get_average_by_periods(self, var=5, periods=100) -> list or bool:
         """
         Возвращет объект с усреднеными значениями из периода periods (в минутах) разбитый по частям на интервалы var минут
 
         :param int var: шаг в минутах
         :param int periods: интервал в минутах
-        :return: dictionary
+        :return: list [{'start_time':timestamp,'end_time':timestamp,'value':real}]
         :raises ValueError: Вернет False
         """
         curs = connection.cursor()
@@ -114,7 +114,37 @@ class ValueSensor(models.Model):
             self.table_name) + ")+(n || 'minutes')::interval end_time " \
                                "from generate_series(0,-" + str(periods) + ",-" + str(var) + ") n" \
                                                                                              ")" \
-                                                                                             "SELECT a.start_time, a.end_time, AVG(b.value) asv value from " + str(
+                                                                                             "SELECT a.start_time, a.end_time, AVG(b.value) as value from " + str(
+            self.table_name) + " b right join" \
+                               "period_t a ON b.now_time>=a.start_time AND b.now_time<a.end_time GROUP BY a.start_time, a.end_time" \
+                               "ORDER BY a.start_time desc"
+        try:
+            curs.execute(sql)
+        except:
+            return False
+        result = curs.fetchall()
+        return result
+
+    def _get_mode_by_periods(self, var=5, periods=100) -> list or bool:
+        """
+        Возвращет объект со значениями по МОДЫ из периода periods (в минутах) разбитый по частям на интервалы var минут
+
+        :param int var: шаг в минутах
+        :param int periods: интервал в минутах
+        :return: list [{'start_time':timestamp,'end_time':timestamp,'modevar':real}]
+        :raises ValueError: Вернет False
+        """
+        curs = connection.cursor()
+        sql = "with period_t as (" \
+              "SELECT" \
+              "(SELECT max(now_time)::timestamp from " + str(self.table_name) + ")+((n-" + str(
+            var) + ") || 'minutes')::interval start_time," \
+                   "(SELECT max(now_time)::timestamp from " + str(
+            self.table_name) + ")+(n || 'minutes')::interval end_time " \
+                               "from generate_series(0,-" + str(periods) + ",-" + str(var) + ") n" \
+                               ")" \
+                               "SELECT a.start_time, a.end_time, (SELECT mode() WITH GROUP (ORDER BY value) as modevar" \
+                               " FROM "+str(self.table_name)+" r WHERE  r.now_time>=f.start_time and r.now_time<f.end_time) as value from " + str(
             self.table_name) + " b right join" \
                                "period_t a ON b.now_time>=a.start_time AND b.now_time<a.end_time GROUP BY a.start_time, a.end_time" \
                                "ORDER BY a.start_time desc"
