@@ -29,15 +29,6 @@ class ValueSensor(models.Model):
                                   code='invalid'
                                   )
 
-    def get_period(self, start, end) -> object:
-        """метод возвращает данные за период start - end"""
-        curs = connection.cursor()
-        curs.execute(
-            "SELECT * FROM `" + str(self.table_name) + "` WHERE now_time >= " +
-            str(start) + " AND now_time<" + str(end) + ";")
-        result = curs.fetchall()
-        return result
-
     def get_last_shift(self) -> object:
         """метод возвращает данные за текущую смену"""
         now = datetime.now().time().strftime('%H:%M:%S')
@@ -71,6 +62,20 @@ class ValueSensor(models.Model):
         start = (start - datetime(1970, 1, 1)).total_seconds()
         end = (end - datetime(1970, 1, 1)).total_seconds()
         return self.get_period(start=start, end=end)
+
+    def get_period(self, start, end) -> list:
+        """метод возвращает данные за период start - end
+        :param float start: начало периода
+        :param float end: конец периода
+        :return: list
+        """
+        curs = connection.cursor()
+        curs.execute(
+            "SELECT * FROM `" + str(self.table_name) + "` WHERE now_time >= " +
+            str(start) + " AND now_time<" + str(end) + ";")
+        result = curs.fetchall()
+        return result
+
 
     def _check_table_name(self, name):
         """проверка на наличие таблицы с  именем <name>
