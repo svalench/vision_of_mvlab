@@ -97,4 +97,3 @@ class SpecificConsumptionDay(models.Model):
     kat2 = models.FloatField()
     kat3 = models.FloatField()
     date = models.DateField(auto_now=False, auto_now_add=False, unique=True)
-
