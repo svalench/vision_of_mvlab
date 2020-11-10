@@ -67,6 +67,7 @@ class Parametrs(APIView):
             k += 1
         return Response({'result': 'success'})
 
+@permission_classes([IsAuthenticated])
 class Reserv2_Search(APIView):
     def get(self, request, pk):
         art = Reserv_2.objects.filter(res1=pk)
@@ -74,6 +75,7 @@ class Reserv2_Search(APIView):
         serializer = Reserv_2Serializer(art, many=True)
         return Response(serializer.data)
 
+@permission_classes([IsAuthenticated])
 class Corparation_Search(APIView):
     def get(self, request, pk):
         art = Corparation.objects.filter(res2=pk)
@@ -81,6 +83,7 @@ class Corparation_Search(APIView):
         serializer = CorparationSerializer(art, many=True)
         return Response(serializer.data)
 
+@permission_classes([IsAuthenticated])
 class Company_Search(APIView):
     def get(self, request, pk):
         art = Company.objects.filter(corp=pk)
@@ -88,6 +91,7 @@ class Company_Search(APIView):
         serializer = CompanySerializer(art, many=True)
         return Response(serializer.data)
 
+@permission_classes([IsAuthenticated])
 class Factory_Search(APIView):
     def get(self, request, pk):
         art = Factory.objects.filter(comp=pk)
@@ -95,6 +99,7 @@ class Factory_Search(APIView):
         serializer = FactorySerializer(art, many=True)
         return Response(serializer.data)
 
+@permission_classes([IsAuthenticated])
 class Department_Search(APIView):
     def get(self, request, pk):
         art = Department.objects.filter(factory=pk)
@@ -102,6 +107,7 @@ class Department_Search(APIView):
         serializer = DepartmentSerializer(art, many=True)
         return Response(serializer.data)
 
+@permission_classes([IsAuthenticated])
 class Agreagat_Search(APIView):
     def get(self, request, pk):
         art = Agreagat.objects.filter(dep=pk)

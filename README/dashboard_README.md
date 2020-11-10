@@ -86,27 +86,27 @@
 	"storehouse":[
 		{
                     "name":str,
-                    "iso":{
+                    "iso":[
                         float,
                         float,
                         .
                         .
                         .
-                        },
-                    "pol":{
+                        ],
+                    "pol":[
                         float,
                         float,
                         .
                         .
                         .
-                        },
-                    "pen":{
+                        ],
+                    "pen":[
                         float,
                         float,
                         .
                         .
                         .
-                        }
+                        ]
 		},
 		{
 			-//-
