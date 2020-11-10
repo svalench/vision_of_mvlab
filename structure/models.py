@@ -242,7 +242,7 @@ class Shift(models.Model):
     def __str__(self):
         return self.name
 
-    def all_shift_now(self) -> object:
+    def all_shift_now(self) -> list:
         """возвращает текущие смены всех департаментов"""
         now = datetime.time(datetime.now())
         shift = Shift.objects.filter(start__lt=now, end__gte=now)
