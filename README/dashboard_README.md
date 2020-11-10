@@ -441,26 +441,36 @@
   
 Данные:
 * "suitable1" - тип данных float, хранит значение поля "годно" для "date1"
+* "sui1_ch" - тип данных float, хранит значение изменения в процентах
 * "suitable2" - тип данных float, хранит значение поля "годно" для "date2"
 * "substandard1" - тип данных float, хранит значение поля "некондиция"для "date1"
+* "sub1_ch" - тип данных float, хранит значение изменения в процентах
 * "substandard2" - тип данных float, хранит значение поля "некондиция"для "date2"
 * "defect1" - тип данных float, хранит значение поля "брак"для "date1"
+* "def1_ch" - тип данных float, хранит значение изменения в процентах
 * "defect2" - тип данных float, хранит значение поля "брак"для "date2"
 * "flooded1" - тип данных float, хранит значение поля "залито метров"для "date1"
+* "flo_ch" - тип данных float, хранит значение изменения в процентах
 * "flooded2" - тип данных float, хранит значение поля "залито метров"для "date2"
 * "sum1" - тип данных float, хранит сумарное значениедля "date1"
+* "sum1_ch" - тип данных float, хранит значение изменения в процентах
 * "sum2" - тип данных float, хранит сумарное значениедля "date2"
 ```
 {
 	"suitable1":float,
+    "sui1_ch":float,
 	"suitable2":float,
 	"substandard1":float,
+    "sub1_ch":float,
 	"substandard2":float,
 	"defect1":float,
+    "def1_ch":float,
 	"defect2":float,
 	"flooded1":float,
+    "flo_ch":float,
 	"flooded2":float,
 	"sum1":float,
+    "sum1_ch":float,
 	"sum2":float
 }
 ```
@@ -475,26 +485,36 @@
 
 Данные:
 * "suitable1" - тип данных float, хранит значение поля "годно" для "date1"
+* "sui1_ch" - тип данных float, хранит значение изменения в процентах
 * "suitable2" - тип данных float, хранит значение поля "годно" для "date2"
 * "substandard1" - тип данных float, хранит значение поля "некондиция"для "date1"
+* "sub1_ch" - тип данных float, хранит значение изменения в процентах
 * "substandard2" - тип данных float, хранит значение поля "некондиция"для "date2"
 * "defect1" - тип данных float, хранит значение поля "брак"для "date1"
+* "def1_ch" - тип данных float, хранит значение изменения в процентах
 * "defect2" - тип данных float, хранит значение поля "брак"для "date2"
 * "flooded1" - тип данных float, хранит значение поля "залито метров"для "date1"
+* "flo_ch" - тип данных float, хранит значение изменения в процентах
 * "flooded2" - тип данных float, хранит значение поля "залито метров"для "date2"
 * "sum1" - тип данных float, хранит сумарное значениедля "date1"
+* "sum1_ch" - тип данных float, хранит значение изменения в процентах
 * "sum2" - тип данных float, хранит сумарное значениедля "date2"
 ```
 {
 	"suitable1":float,
+    "sui1_ch":float,
 	"suitable2":float,
 	"substandard1":float,
+    "sub1_ch":float,
 	"substandard2":float,
 	"defect1":float,
+    "def1_ch":float,
 	"defect2":float,
 	"flooded1":float,
+    "flo_ch":float,
 	"flooded2":float,
 	"sum1":float,
+    "sum1_ch":float,
 	"sum2":float
 }
 ```
@@ -511,26 +531,36 @@
 
 Данные:
 * "suitable1" - тип данных float, хранит значение поля "годно" для "date1"
+* "sui1_ch" - тип данных float, хранит значение изменения в процентах
 * "suitable2" - тип данных float, хранит значение поля "годно" для "date2"
 * "substandard1" - тип данных float, хранит значение поля "некондиция"для "date1"
+* "sub1_ch" - тип данных float, хранит значение изменения в процентах
 * "substandard2" - тип данных float, хранит значение поля "некондиция"для "date2"
 * "defect1" - тип данных float, хранит значение поля "брак"для "date1"
+* "def1_ch" - тип данных float, хранит значение изменения в процентах
 * "defect2" - тип данных float, хранит значение поля "брак"для "date2"
 * "flooded1" - тип данных float, хранит значение поля "залито метров"для "date1"
+* "flo_ch" - тип данных float, хранит значение изменения в процентах
 * "flooded2" - тип данных float, хранит значение поля "залито метров"для "date2"
 * "sum1" - тип данных float, хранит сумарное значениедля "date1"
+* "sum1_ch" - тип данных float, хранит значение изменения в процентах
 * "sum2" - тип данных float, хранит сумарное значениедля "date2"
 ```
 {
 	"suitable1":float,
+    "sui1_ch":float,
 	"suitable2":float,
 	"substandard1":float,
+    "sub1_ch":float,
 	"substandard2":float,
 	"defect1":float,
+    "def1_ch":float,
 	"defect2":float,
 	"flooded1":float,
+    "flo_ch":float,
 	"flooded2":float,
 	"sum1":float,
+    "sum1_ch":float,
 	"sum2":float
 }
 ```
