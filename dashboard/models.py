@@ -61,7 +61,7 @@ class EditionDay(models.Model):
     defect = models.FloatField()
     flooded = models.FloatField()
     sum = models.FloatField()
-    date = models.DateField(auto_now=False, auto_now_add=False)
+    date = models.DateField(auto_now=False, auto_now_add=False, unique=True)
 
 
 # для виджета Суммарный расход
@@ -72,7 +72,7 @@ class SumexpenseDay(models.Model):
     kat1 = models.FloatField()
     kat2 = models.FloatField()
     kat3 = models.FloatField()
-    date = models.DateField(auto_now=False, auto_now_add=False)
+    date = models.DateField(auto_now=False, auto_now_add=False, unique=True)
 
 
 
@@ -82,7 +82,7 @@ class EnergyConsumptionDay(models.Model):
     input1 = models.FloatField()
     input2 = models.FloatField()
     gas = models.FloatField()
-    date = models.DateField(auto_now=False, auto_now_add=False)
+    date = models.DateField(auto_now=False, auto_now_add=False, unique=True)
 
 
 
@@ -96,5 +96,5 @@ class SpecificConsumptionDay(models.Model):
     kat1 = models.FloatField()
     kat2 = models.FloatField()
     kat3 = models.FloatField()
-    date = models.DateField(auto_now=False, auto_now_add=False)
+    date = models.DateField(auto_now=False, auto_now_add=False, unique=True)
 
