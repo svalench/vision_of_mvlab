@@ -66,14 +66,14 @@ class ValueSensor(models.Model):
     def get_last_day(self) -> object:
         """метод возвращает данные за последний день"""
         now = datetime.now().time()
-        start = datetime(now.year, now.month, now.day - 1, now.hour, now.minute, 0)
+        start = datetime(now.year, now.month, now.day, now.hour - 24, now.minute, 0)
         end = datetime(now.year, now.month, now.day, now.hour, now.minute, 0)
         return self._time_conversion(start=start, end=end)
 
     def get_last_hour(self) -> object:
         """возвращает значения за последний час"""
         now = datetime.now().time()
-        start = datetime(now.year, now.month, now.day, now.hour - 1, now.minute, 0)
+        start = datetime(now.year, now.month, now.day, now.hour, now.minute - 60, 0)
         end = datetime(now.year, now.month, now.day, now.hour, now.minute, 0)
         return self._time_conversion(start=start, end=end)
 
