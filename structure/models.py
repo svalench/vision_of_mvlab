@@ -120,7 +120,7 @@ class Corparation(models.Model):
      Attributes
     ===========
 
-    - name - str - название для резевной структуры
+    - name - str - название записи
     - res2 - FK - внешний ключ для связи с резервной таблицой Reserv_2
 
      Methods
@@ -142,7 +142,7 @@ class Company(models.Model):
      Attributes
     ===========
 
-    - name - str - название для резевной структуры
+    - name - str - название записи
     - corp - FK - внешний ключ для связи с сущностью  Corparation
 
 
@@ -167,7 +167,7 @@ class Factory(models.Model):
      Attributes
     ===========
 
-    - name - str - название для резевной структуры
+    - name - str - название записи
     - comp - FK - внешний ключ для связи с сущностью  Company
     - address - str - поля для адреса завода
 
@@ -194,7 +194,7 @@ class Department(models.Model):
      Attributes
     ===========
 
-    - name - str - название для резевной структуры
+    - name - str - название записи
     - factory - FK - внешний ключ для связи с сущностью  Factory
 
      Methods
@@ -223,7 +223,7 @@ class Shift(models.Model):
      Attributes
     ===========
 
-    - name - str - название для резевной структуры
+    - name - str - название записи
     - dep - FK - внешний ключ для связи с сущностью  Department
     - start - time - начало смены
     - end - time -  конец смены
@@ -252,6 +252,23 @@ class Shift(models.Model):
 
 
 class Lunch(models.Model):
+    """
+    Сущность для определения смен в цеху в структуре предпрития (если выбрано в FirstObject)
+
+     Attributes
+    ===========
+
+    - name - str - название для записи
+    - shift - FK - внешний ключ для связи с сущностью  Shift
+    - start - time - начало обеда
+    - end - time -  конец конец обеда
+
+     Methods
+    =============
+
+    - None
+
+    """
     shift = models.ForeignKey(Shift, on_delete=models.CASCADE)
     name = models.CharField(max_length=255, default='no name')
     start = models.TimeField('start shift')
