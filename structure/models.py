@@ -4,6 +4,8 @@ from django.core.serializers.json import DjangoJSONEncoder
 from django.db import models
 from datetime import datetime
 
+from django.db.models import CharField
+
 
 class JSONField(models.TextField):
     """
@@ -41,6 +43,25 @@ class JSONField(models.TextField):
 
 
 class FirstObject(models.Model):
+    """
+    Предназначена для создания структуры предприятя исходя из полей заполненых пользователем
+
+     Attributes
+    ===========
+
+    - name -  поле для строкового обозначения структуры
+    - customer - название заказчика
+    - contract - название контракта
+    - date_add - дата создания
+    - date_update - дата обновления
+    - structure - сформированная структура в формате JSON
+
+     Methods
+    =========
+
+    - none
+
+    """
     name = models.CharField(max_length=255, default='no name')
     customer = models.CharField(max_length=255, default='no customer')
     contract = models.CharField(max_length=255, default='no contract')
@@ -51,12 +72,41 @@ class FirstObject(models.Model):
         return self.name
 
 class Reserv_1(models.Model):
+    """
+    Резервный класс для структуры предприятия
+
+     Attributes
+    ===========
+
+    - name - str - название для резевной структуры
+
+     Methods
+    =============
+
+    - none
+
+    """
     name = models.CharField(max_length=255, default='no name')
     def __str__(self):
         return self.name
 
 
 class Reserv_2(models.Model):
+    """
+    Резервный класс для структуры предприятия
+
+     Attributes
+    ===========
+
+    - name - str - название для резевной структуры
+    - res1 - FK - внешний ключ для связи с резервной таблицой Reserv_1
+
+     Methods
+    =============
+
+    - none
+
+    """
     name = models.CharField(max_length=255, default='no name')
     res1 = models.ForeignKey(Reserv_1, on_delete=models.CASCADE)
     def __str__(self):
@@ -64,14 +114,44 @@ class Reserv_2(models.Model):
 
 
 class Corparation(models.Model):
-    name = models.CharField(max_length=255, default='no name')
+    """
+    Сущность для определения объединения в структуре предпрития (если выбрано в FirstObject)
 
+     Attributes
+    ===========
+
+    - name - str - название для резевной структуры
+    - res2 - FK - внешний ключ для связи с резервной таблицой Reserv_2
+
+     Methods
+    =============
+
+    - none
+
+    """
+    name = models.CharField(max_length=255, default='no name')
     res2 = models.ForeignKey(Reserv_2, on_delete=models.CASCADE)
 
     def __str__(self):
         return self.name
 
 class Company(models.Model):
+    """
+    Сущность для определения огранизации в структуре предпрития (если выбрано в FirstObject)
+
+     Attributes
+    ===========
+
+    - name - str - название для резевной структуры
+    - corp - FK - внешний ключ для связи с сущностью  Corparation
+
+
+     Methods
+    =============
+
+    - none
+
+    """
     name = models.CharField(max_length=255, default='no name')
     corp = models.ForeignKey(Corparation, on_delete=models.CASCADE)
 
@@ -80,6 +160,24 @@ class Company(models.Model):
 
 
 class Factory(models.Model):
+    """
+    Сущность для определения завода в структуре предпрития (если выбрано в FirstObject)
+
+
+     Attributes
+    ===========
+
+    - name - str - название для резевной структуры
+    - comp - FK - внешний ключ для связи с сущностью  Company
+    - address - str - поля для адреса завода
+
+
+     Methods
+    =============
+
+    - none
+
+    """
     comp = models.ForeignKey(Company, on_delete=models.CASCADE)
     name = models.CharField(max_length=255, default='no name')
     address = models.CharField(max_length=255, default='no address')
@@ -89,20 +187,53 @@ class Factory(models.Model):
 
 
 class Department(models.Model):
+    """
+    Сущность для определения цеха на заводе в структуре предпрития (если выбрано в FirstObject)
+
+
+     Attributes
+    ===========
+
+    - name - str - название для резевной структуры
+    - factory - FK - внешний ключ для связи с сущностью  Factory
+
+     Methods
+    =============
+
+    - now_shift - возвращает текущую смену департамента
+
+    """
     factory = models.ForeignKey(Factory, on_delete=models.CASCADE)
     name = models.CharField(max_length=255, default='no name')
 
     def __str__(self):
         return self.name
 
-    def now_shift(self) -> object:
-        """возвращает текущую смену департамента"""
+    def now_shift(self) -> list:
+        """возвращает текущую смену департамента как list с вложенным словарем"""
         now = datetime.now().time().strftime('%H:%M:%S')
         shift = self.shift_set.filter(start__lt=now, end__gte=now)
         return shift
 
 
 class Shift(models.Model):
+    """
+    Сущность для определения смен в цеху в структуре предпрития (если выбрано в FirstObject)
+
+     Attributes
+    ===========
+
+    - name - str - название для резевной структуры
+    - dep - FK - внешний ключ для связи с сущностью  Department
+    - start - time - начало смены
+    - end - time -  конец смены
+
+     Methods
+    =============
+
+    - all_shift_now - возвращает текущие смены всех департаментов
+
+    """
     dep = models.ForeignKey(Department, on_delete=models.CASCADE)
     name = models.CharField(max_length=255, default='no name')
     start = models.TimeField('start shift')
