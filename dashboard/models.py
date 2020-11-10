@@ -2,13 +2,25 @@ from django.db import models
 from users.models import *
 # Create your models here.
 
+
+
+
+
 class Dashboard(models.Model):
     name = models.CharField(max_length=255, default='no name')
-    user = models.ForeignKey(UserP, on_delete=models.CASCADE)
 
-class Date(models.Model):
-    date = models.DateField(auto_now=False, auto_now_add=False)
-    dashboard =  models.ForeignKey(Dashboard, on_delete=models.CASCADE)
+    def __str__(self):
+        return self.name
+
+class Role(models.Model):
+    name = models.CharField(max_length=255, default='no name')
+    user = models.ManyToManyField(UserP)
+    dashboard = models.ManyToManyField(Dashboard)
+
+
+# class Date(models.Model):
+#     date = models.DateField(auto_now=False, auto_now_add=False)
+#     dashboard = models.ForeignKey(Dashboard, on_delete=models.CASCADE)
 
 
 
@@ -17,7 +29,7 @@ class Date(models.Model):
 class DurationIntervalDay(models.Model):
     start = models.TimeField('start work')
     end = models.TimeField('end work')
-    date = models.ForeignKey(Date, on_delete=models.CASCADE)
+    date = models.DateField(auto_now=False, auto_now_add=False)
 
 
 
@@ -26,7 +38,7 @@ class DurationIntervalDay(models.Model):
 # для виджета остатки на складах
 class RemainderStorehouse(models.Model):
     name = models.CharField(max_length=255, default='no name')
-    date = models.ForeignKey(Date, on_delete=models.CASCADE)
+    date = models.DateField(auto_now=False, auto_now_add=False)
 
 class RemainderIso(models.Model):
     quantity = models.FloatField()
@@ -49,7 +61,7 @@ class EditionDay(models.Model):
     defect = models.FloatField()
     flooded = models.FloatField()
     sum = models.FloatField()
-    date = models.OneToOneField(Date, on_delete=models.CASCADE)
+    date = models.DateField(auto_now=False, auto_now_add=False, unique=True)
 
 
 # для виджета Суммарный расход
@@ -60,7 +72,7 @@ class SumexpenseDay(models.Model):
     kat1 = models.FloatField()
     kat2 = models.FloatField()
     kat3 = models.FloatField()
-    date = models.OneToOneField(Date, on_delete=models.CASCADE)
+    date = models.DateField(auto_now=False, auto_now_add=False, unique=True)
 
 
 
@@ -70,7 +82,7 @@ class EnergyConsumptionDay(models.Model):
     input1 = models.FloatField()
     input2 = models.FloatField()
     gas = models.FloatField()
-    date = models.OneToOneField(Date, on_delete=models.CASCADE)
+    date = models.DateField(auto_now=False, auto_now_add=False, unique=True)
 
 
 
@@ -84,5 +96,4 @@ class SpecificConsumptionDay(models.Model):
     kat1 = models.FloatField()
     kat2 = models.FloatField()
     kat3 = models.FloatField()
-    date = models.OneToOneField(Date, on_delete=models.CASCADE)
-
+    date = models.DateField(auto_now=False, auto_now_add=False, unique=True)

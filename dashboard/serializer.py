@@ -6,10 +6,10 @@ class DashboardSerializer(serializers.ModelSerializer):
         model = Dashboard
         fields = '__all__'
 
-class DateSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Date
-        fields = '__all__'
+# class DateSerializer(serializers.ModelSerializer):
+#     class Meta:
+#         model = Date
+#         fields = '__all__'
 
 class DurationIntervalDaySerializer(serializers.ModelSerializer):
     class Meta:
