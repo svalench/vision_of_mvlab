@@ -6,7 +6,32 @@ from django.utils.translation import ugettext_lazy as _
 
 
 class ValueSensor(models.Model):
-    """класс предназначен для связи модели структуры Джанго и модуля сбора данных"""
+    """класс предназначен для связи модели структуры Джанго и модуля сбора данных
+
+     Attributes
+    ============
+
+    - sensor - FK - внешний ключ к сущности Sensors
+    - name - str - название переменной
+    - name_connection - str - название соединения
+    - table_name - str - название иаблицы с данными
+    - up_level_alarm - float - верхний уроыень аварии
+    - down_level_alarm - float - нижний уровень аварии
+    - up_level - float - верхний придел
+    - down_level - float - нижниц придел
+    ===================
+
+      Methods
+    ============
+
+    - get_last_shift - возвращает list  с данными за текущую смену (без усреднения)
+    - get_last_day - возвращает list  с данными за текущий день (без усреднения)
+    - get_last_hour - возвращает list  с данными за текущий час (без усреднения)
+    - _time_conversion - метод преобразования формата времени (protected)
+    - get_period - метод получения данных в промежутке start=<start_time> до end=<end_period>
+    ===============
+
+    """
     sensor = models.ForeignKey(Sensors, on_delete=models.CASCADE)
     name = models.CharField(max_length=255, default='no name')
     name_connection = models.CharField(max_length=255, default='no name connection')
