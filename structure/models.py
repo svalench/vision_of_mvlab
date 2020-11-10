@@ -279,6 +279,21 @@ class Lunch(models.Model):
 
 
 class Agreagat(models.Model):
+    """
+    Сущность для определения оборудования в цеху
+
+     Attributes
+    ===========
+
+    - name - str - название для записи
+    - dep - FK - внешний ключ для связи с сущностью  Department
+
+     Methods
+    =============
+
+    - None
+
+    """
     dep = models.ForeignKey(Department, on_delete=models.CASCADE)
     name = models.CharField(max_length=255, default='no name')
 
@@ -287,6 +302,22 @@ class Agreagat(models.Model):
 
 
 class Sensors(models.Model):
+    """
+    Сущность для определения датчика на оборудовании
+
+     Attributes
+    ===========
+
+    - name - str - название для записи
+    - agregat - FK - внешний ключ для связи с сущностью  Agreagat
+    - designation - str - обозначение на схеме
+
+     Methods
+    =============
+
+    - get_parent - возвращает объект Agregat родителя датчика
+
+    """
     agregat = models.ForeignKey(Agreagat, on_delete=models.CASCADE)
     name = models.CharField(max_length=255, default='no name')
     designation = models.CharField(max_length=255, default='no designation')
@@ -294,5 +325,6 @@ class Sensors(models.Model):
     def __str__(self):
         return self.name
 
-    def get_parent(self):
+    def get_parent(self) -> object:
+        """возвращает родителя для данного датчика"""
         return self.agregat
