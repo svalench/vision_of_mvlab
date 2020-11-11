@@ -40,9 +40,9 @@ INSTALLED_APPS = [
     'corsheaders',
     'rest_framework',
     'rest_framework.authtoken',
+    'structure',
     'users',
     'recorder',
-    'structure',
     'dashboard',
 ]
 
@@ -84,7 +84,7 @@ WSGI_APPLICATION = 'project_v_0_0_1.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': str(BASE_DIR / 'db123.sqlite3'),
+        'NAME': str(BASE_DIR / 'dbs123.sqlite3'),
     }
 }
 
@@ -113,7 +113,8 @@ REST_FRAMEWORK = {
     ],
     'DEFAULT_AUTHENTICATION_CLASSES': [
         'rest_framework.authentication.TokenAuthentication',
-    ]
+    ],
+
 }
 
 CORS_ALLOWED_ORIGINS = [
@@ -135,6 +136,8 @@ USE_L10N = True
 
 USE_TZ = True
 
+BASE_STRUCTURE = (
+        'Reserv_1', 'Reserv_2', 'Corparation', 'Company', 'Factory', 'Department', 'Agreagat', 'Sensors')
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.1/howto/static-files/
