@@ -1,5 +1,6 @@
 import json
 
+from django.http import HttpRequest
 from django.shortcuts import render
 
 # Create your views here.
@@ -9,25 +10,54 @@ from rest_framework.renderers import TemplateHTMLRenderer, JSONRenderer
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
+from project_v_0_0_1.settings import BASE_STRUCTURE
 from structure.models import FirstObject, Shift, Department, Lunch
 from .models import *
 from .serializer import *
 
-# @permission_classes([IsAuthenticated])
+
+@permission_classes([IsAuthenticated])
 @renderer_classes((TemplateHTMLRenderer, JSONRenderer))
 class Parametrs(APIView):
+    """
+    Класс для создание первичного объекта из выбра пользователя
+
+     Methods
+    ===========
+
+    - step1 - POST - метод создает первичную структура организации из выбора пользователя
+    - get_structure - GET - получаем первый созданный объект структуры
+    - create_shift - POST - создает смены
+    """
     @api_view(('POST',))
     def step1(self):
-        data = self.request.POST
+        """метод для создания первичной структуры"""
+        data = self.data
         ob = FirstObject(name=data['name'],
                          customer=data['customer'],
                          contract=data['contract'],
-                         structure=json.loads(data['structure'])
+                         structure=json.dumps(data['structure'])
                          )
+        last_id = 0
+        start_id = 0
+        for s in BASE_STRUCTURE:
+            if s == data['structure']['levlel_0']:
+                break
+            a = globals()[s]()
+            print(a)
+            if last_id!=0:
+                a.parent_id = last_id
+            a.save()
+            if last_id==0:
+                start_id = a.id
+            last_id = a.id
+        ob.start_object = start_id
         ob.save()
+        return Response({'data': 'success'})
 
     @api_view(('GET',))
     def get_structure(self):
+        """получение структуры"""
         ob = FirstObject.objects.all().first()
         if ob:
             structure = {
@@ -42,7 +72,8 @@ class Parametrs(APIView):
 
     @api_view(('POST',))
     def create_shift(self):
-        data = self.request.POST
+        """метод созданиия цеха совместно со сменами и перерывами """
+        data = self.data
         dep = Department(
             name=data['name'],
             factory_id=data['factory_id']
@@ -67,6 +98,7 @@ class Parametrs(APIView):
             k += 1
         return Response({'result': 'success'})
 
+
 @permission_classes([IsAuthenticated])
 class Reserv2_Search(APIView):
     def get(self, request, pk):
@@ -74,6 +106,7 @@ class Reserv2_Search(APIView):
         # the many param informs the serializer that it will be serializing more than a single article.
         serializer = Reserv_2Serializer(art, many=True)
         return Response(serializer.data)
+
 
 @permission_classes([IsAuthenticated])
 class Corparation_Search(APIView):
@@ -83,6 +116,7 @@ class Corparation_Search(APIView):
         serializer = CorparationSerializer(art, many=True)
         return Response(serializer.data)
 
+
 @permission_classes([IsAuthenticated])
 class Company_Search(APIView):
     def get(self, request, pk):
@@ -90,6 +124,7 @@ class Company_Search(APIView):
         # the many param informs the serializer that it will be serializing more than a single article.
         serializer = CompanySerializer(art, many=True)
         return Response(serializer.data)
+
 
 @permission_classes([IsAuthenticated])
 class Factory_Search(APIView):
@@ -99,6 +134,7 @@ class Factory_Search(APIView):
         serializer = FactorySerializer(art, many=True)
         return Response(serializer.data)
 
+
 @permission_classes([IsAuthenticated])
 class Department_Search(APIView):
     def get(self, request, pk):
@@ -106,6 +142,7 @@ class Department_Search(APIView):
         # the many param informs the serializer that it will be serializing more than a single article.
         serializer = DepartmentSerializer(art, many=True)
         return Response(serializer.data)
+
 
 @permission_classes([IsAuthenticated])
 class Agreagat_Search(APIView):
