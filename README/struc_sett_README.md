@@ -28,7 +28,7 @@ POST запрос.
 ```
 {
     "name":str,
-    "res1":int(id)
+    "parent":int(id)
 }
 ```
 Строка "name" соответствует полю "название резерв2".  
@@ -57,7 +57,7 @@ GET запрос.
     {
         "id":int,
         "name":str,
-        "res1":int(id)
+        "parent":int(id)
     },
     ...
 }
@@ -68,7 +68,7 @@ POST запрос.
 ```
 {
     "name":str,
-    "res2":int(id)
+    "parent":int(id)
 }
 ```
 Строка "name" соответствует полю "название организации".  
@@ -96,7 +96,7 @@ GET запрос.
     {
         "id":int,
         "name":str,
-        "res1":int(id)
+        "parent":int(id)
     },
     ...
 }
@@ -110,7 +110,7 @@ GET запрос.
     {
         "id":int,
         "name":str,
-        "res2":int(id)
+        "parent":int(id)
     },
     ...
 }
@@ -120,7 +120,7 @@ POST запрос.
 ```
 {
     "name":str,
-    "corp":int(id)
+    "parent":int(id)
 }
 ```
 Строка "name" соответствует полю "название предприятия".   
@@ -148,7 +148,7 @@ GET запрос.
     {
         "id":int,
         "name":str,
-        "res1":int(id)
+        "parent":int(id)
     },
     ...
 }
@@ -162,7 +162,7 @@ GET запрос.
     {
         "id":int,
         "name":str,
-        "res2":int(id)
+        "parent":int(id)
     },
     ...
 }
@@ -176,7 +176,7 @@ GET запрос.
     {
         "id":int,
         "name":str,
-        "corp":int(id)
+        "parent":int(id)
     },
     ...
 }
@@ -185,7 +185,7 @@ POST запрос.
 Путь: /structure/Factory/
 ```
 {
-    "comp":int(id),
+    "parent":int(id),
     "name":str,
     "address":str
 }
@@ -217,7 +217,7 @@ GET запрос.
     {
         "id":int,
         "name":str,
-        "res1":int(id)
+        "parent":int(id)
     },
     ...
 }
@@ -231,7 +231,7 @@ GET запрос.
     {
         "id":int,
         "name":str,
-        "res2":int(id)
+        "parent":int(id)
     },
     ...
 }
@@ -245,7 +245,7 @@ GET запрос.
     {
         "id":int,
         "name":str,
-        "corp":int(id)
+        "parent":int(id)
     },
     ...
 }
@@ -259,7 +259,7 @@ GET запрос.
     {
         "id":int,
         "name":str,
-        "comp":int(id),
+        "parent":int(id),
         "address":str
     },
     ...
@@ -270,7 +270,7 @@ POST запрос.
 ```
 {
     "name":str,
-    "factory":int(id),
+    "parent":int(id),
     "shifts":[
         {
             "start":str(HH:MM:SS)
@@ -318,7 +318,7 @@ GET запрос.
     {
         "id":int,
         "name":str,
-        "res1":int(id)
+        "parent":int(id)
     },
     ...
 }
@@ -332,7 +332,7 @@ GET запрос.
     {
         "id":int,
         "name":str,
-        "res2":int(id)
+        "parent":int(id)
     },
     ...
 }
@@ -346,7 +346,7 @@ GET запрос.
     {
         "id":int,
         "name":str,
-        "corp":int(id)
+        "parent":int(id)
     },
     ...
 }
@@ -360,7 +360,7 @@ GET запрос.
     {
         "id":int,
         "name":str,
-        "comp":int(id),
+        "parent":int(id),
         "address":str
     },
     ...
@@ -376,7 +376,7 @@ GET запрос.
     {
         "id":int,
         "name":str,
-        "factory":int(id)
+        "parent":int(id)
     },
     ...
 }
@@ -386,7 +386,7 @@ POST запрос.
 ```
 {
     "name":str,
-    "dep":int(id)
+    "parent":int(id)
 }
 ```
 Строка "name" соответствует полю "название узла".   
@@ -415,7 +415,7 @@ GET запрос.
     {
         "id":int,
         "name":str,
-        "res1":int(id)
+        "parent":int(id)
     },
     ...
 }
@@ -429,7 +429,7 @@ GET запрос.
     {
         "id":int,
         "name":str,
-        "res2":int(id)
+        "parent":int(id)
     },
     ...
 }
@@ -443,7 +443,7 @@ GET запрос.
     {
         "id":int,
         "name":str,
-        "corp":int(id)
+        "parent":int(id)
     },
     ...
 }
@@ -457,7 +457,7 @@ GET запрос.
     {
         "id":int,
         "name":str,
-        "comp":int(id),
+        "parent":int(id),
         "address":str
     },
     ...
@@ -473,7 +473,7 @@ GET запрос.
     {
         "id":int,
         "name":str,
-        "factory":int(id)
+        "parent":int(id)
     },
     ...
 }
@@ -488,7 +488,7 @@ GET запрос.
     {
         "id":int,
         "name":str,
-        "dep":int(id)
+        "parent":int(id)
     },
     ...
 }
@@ -497,7 +497,7 @@ POST запрос.
 Путь: /structure/Sensors/
 ```
 {
-    "agregat":int(id),
+    "parent":int(id),
     "name":str,
     "designation":str
 }
