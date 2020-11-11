@@ -33,7 +33,7 @@ class Parametrs(APIView):
     def step1(self):
         """метод для создания первичной структуры"""
         data = self.data
-        model_list = ('Reserv_1','Reserv_2','Corparation','Company','Factory','Department','Agreagat','Sensors')
+        model_list = []
         ob = FirstObject(name=data['name'],
                          customer=data['customer'],
                          contract=data['contract'],
@@ -41,12 +41,9 @@ class Parametrs(APIView):
                          )
         last_id = 0
         start_id = 0
-        structure_list = []
-        counter = 0
         for s in BASE_STRUCTURE:
             if s in BASE_STRUCTURE[data['structure']['levlel_0']]:
                 break
-            counter+=1
             a = globals()[s]()
             print(a)
             if last_id!=0:
