@@ -68,6 +68,7 @@ class FirstObject(models.Model):
     date_add = models.DateTimeField(auto_now_add=True)
     date_update = models.DateTimeField(auto_now=True)
     structure = JSONField(null=True, blank=True)
+    start_object = models.IntegerField(default=0)
     def __str__(self):
         return self.name
 
