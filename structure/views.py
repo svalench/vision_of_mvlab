@@ -34,10 +34,13 @@ class Parametrs(APIView):
         """метод для создания первичной структуры"""
         data = self.data
         model_list = []
+        for i in data['structure']:
+            model_list.append(BASE_STRUCTURE[data['structure'][i]])
         ob = FirstObject(name=data['name'],
                          customer=data['customer'],
                          contract=data['contract'],
-                         structure=json.dumps(data['structure'])
+                         structure=json.dumps(data['structure']),
+                         listModels=json.dumps(model_list)
                          )
         last_id = 0
         start_id = 0
