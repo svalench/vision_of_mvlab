@@ -21,9 +21,9 @@ class Recorder(APIView):
                 deps = [{
                     "id": agr.pk,
                     "name": agr.name,
-                    "department_name":agr.dep.name,
-                    "factory_name": agr.dep.factory.name,
-                    "corparation_name": agr.dep.factory.corp.name,
+                    "department_name":agr.parent.name,
+                    "factory_name": agr.parent.parent.name,
+                    "corparation_name": agr.parent.parent.parent.name,
                     'list_point':[{'sensor_id':p.pk,
                                    'sensor_name':p.name,
                                    "designation":p.designation,
@@ -41,8 +41,8 @@ class Recorder(APIView):
             deps = [{
                 "id": agr.pk,
                 "name": agr.name,
-                "department_name": agr.dep.name,
-                "factory_name": agr.factory.name,
-                "corparation_name":agr.factory.corp.name
+                "department_name": agr.parent.name,
+                "factory_name": agr.parent.name,
+                "corparation_name":agr.parent.parent.name
                     } for agr in Agreagat.objects.all()]
         return Response(deps)
