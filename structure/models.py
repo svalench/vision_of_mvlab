@@ -5,6 +5,7 @@ from django.db import models
 from datetime import datetime
 
 from django.db.models import CharField
+from rest_framework.exceptions import ValidationError
 
 
 class JSONField(models.TextField):
@@ -90,6 +91,19 @@ class Reserv_1(models.Model):
     name = models.CharField(max_length=255, default='no name')
     def __str__(self):
         return self.name
+
+    def save(self):
+        ob = FirstObject.objects.all().first()
+
+        if (ob):
+            ob.start_object = self.pk
+            ob.save()
+            super(Reserv_1, self).save()
+        else:
+            raise ValidationError('No structure in ferststructure',
+                                  code='invalid'
+                                  )
+
 
 
 class Reserv_2(models.Model):
