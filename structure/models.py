@@ -108,7 +108,7 @@ class Reserv_2(models.Model):
 
     """
     name = models.CharField(max_length=255, default='no name')
-    res1 = models.ForeignKey(Reserv_1, on_delete=models.CASCADE)
+    parent = models.ForeignKey(Reserv_1, on_delete=models.CASCADE)
     def __str__(self):
         return self.name
 
@@ -130,7 +130,7 @@ class Corparation(models.Model):
 
     """
     name = models.CharField(max_length=255, default='no name')
-    res2 = models.ForeignKey(Reserv_2, on_delete=models.CASCADE)
+    parent = models.ForeignKey(Reserv_2, on_delete=models.CASCADE)
 
     def __str__(self):
         return self.name
@@ -153,7 +153,7 @@ class Company(models.Model):
 
     """
     name = models.CharField(max_length=255, default='no name')
-    corp = models.ForeignKey(Corparation, on_delete=models.CASCADE)
+    parent = models.ForeignKey(Corparation, on_delete=models.CASCADE)
 
     def __str__(self):
         return self.name
@@ -178,7 +178,7 @@ class Factory(models.Model):
     - none
 
     """
-    comp = models.ForeignKey(Company, on_delete=models.CASCADE)
+    parent = models.ForeignKey(Company, on_delete=models.CASCADE)
     name = models.CharField(max_length=255, default='no name')
     address = models.CharField(max_length=255, default='no address')
 
@@ -203,7 +203,7 @@ class Department(models.Model):
     - now_shift - возвращает текущую смену департамента
 
     """
-    factory = models.ForeignKey(Factory, on_delete=models.CASCADE)
+    parent = models.ForeignKey(Factory, on_delete=models.CASCADE)
     name = models.CharField(max_length=255, default='no name')
 
     def __str__(self):
@@ -234,7 +234,7 @@ class Shift(models.Model):
     - all_shift_now - возвращает текущие смены всех департаментов
 
     """
-    dep = models.ForeignKey(Department, on_delete=models.CASCADE)
+    parent = models.ForeignKey(Department, on_delete=models.CASCADE)
     name = models.CharField(max_length=255, default='no name')
     start = models.TimeField('start shift')
     end = models.TimeField('end shift')
@@ -269,7 +269,7 @@ class Lunch(models.Model):
     - None
 
     """
-    shift = models.ForeignKey(Shift, on_delete=models.CASCADE)
+    parent = models.ForeignKey(Shift, on_delete=models.CASCADE)
     name = models.CharField(max_length=255, default='no name')
     start = models.TimeField('start shift')
     end = models.TimeField('end shift')
@@ -294,7 +294,7 @@ class Agreagat(models.Model):
     - None
 
     """
-    dep = models.ForeignKey(Department, on_delete=models.CASCADE)
+    parent = models.ForeignKey(Department, on_delete=models.CASCADE)
     name = models.CharField(max_length=255, default='no name')
 
     def __str__(self):
@@ -318,7 +318,7 @@ class Sensors(models.Model):
     - get_parent - возвращает объект Agregat родителя датчика
 
     """
-    agregat = models.ForeignKey(Agreagat, on_delete=models.CASCADE)
+    parent = models.ForeignKey(Agreagat, on_delete=models.CASCADE)
     name = models.CharField(max_length=255, default='no name')
     designation = models.CharField(max_length=255, default='no designation')
 
@@ -327,4 +327,4 @@ class Sensors(models.Model):
 
     def get_parent(self) -> object:
         """возвращает родителя для данного датчика"""
-        return self.agregat
+        return self.parent

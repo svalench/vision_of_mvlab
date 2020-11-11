@@ -58,7 +58,7 @@ class ValueSensor(models.Model):
         """метод возвращает данные за текущую смену"""
         now = datetime.now().time().strftime('%H:%M:%S')
         now_t = datetime.now().time()
-        shifts = self.sensor.agregat.dep.shift_set.filter(start__lte=now, end__gt=now)
+        shifts = self.sensor.agregat.parent.shift_set.filter(start__lte=now, end__gt=now)
         start = datetime(now_t.year, now_t.month, now_t.day, shifts[0].start.hour, shifts[0].start.minute, 0)
         end = datetime(now_t.year, now_t.month, now_t.day, shifts[0].end.hour, shifts[0].end.minute, 0)
         return self._time_conversion(start=start, end=end)
