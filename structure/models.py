@@ -88,7 +88,7 @@ class Reserv_1(models.Model):
     - none
 
     """
-    name = models.CharField(max_length=255, default='no name')
+    name = models.CharField(max_length=255, default='Базавая структуру')
     def __str__(self):
         return self.name
 
@@ -144,7 +144,7 @@ class Corparation(models.Model):
     - none
 
     """
-    name = models.CharField(max_length=255, default='no name')
+    name = models.CharField(max_length=255, default='Базавая структуру')
     parent = models.ForeignKey(Reserv_2, on_delete=models.CASCADE)
 
     def __str__(self):
@@ -167,7 +167,7 @@ class Company(models.Model):
     - none
 
     """
-    name = models.CharField(max_length=255, default='no name')
+    name = models.CharField(max_length=255, default='Базавая структуру')
     parent = models.ForeignKey(Corparation, on_delete=models.CASCADE)
 
     def __str__(self):
@@ -194,7 +194,7 @@ class Factory(models.Model):
 
     """
     parent = models.ForeignKey(Company, on_delete=models.CASCADE)
-    name = models.CharField(max_length=255, default='no name')
+    name = models.CharField(max_length=255, default='Базавая структуру')
     address = models.CharField(max_length=255, default='no address')
 
     def __str__(self):
@@ -219,7 +219,7 @@ class Department(models.Model):
 
     """
     parent = models.ForeignKey(Factory, on_delete=models.CASCADE)
-    name = models.CharField(max_length=255, default='no name')
+    name = models.CharField(max_length=255, default='Базавая структуру')
 
     def __str__(self):
         return self.name
@@ -250,7 +250,7 @@ class Shift(models.Model):
 
     """
     parent = models.ForeignKey(Department, on_delete=models.CASCADE)
-    name = models.CharField(max_length=255, default='no name')
+    name = models.CharField(max_length=255, default='Базавая структуру')
     start = models.TimeField('start shift')
     end = models.TimeField('end shift')
 
@@ -285,7 +285,7 @@ class Lunch(models.Model):
 
     """
     parent = models.ForeignKey(Shift, on_delete=models.CASCADE)
-    name = models.CharField(max_length=255, default='no name')
+    name = models.CharField(max_length=255, default='Базавая структуру')
     start = models.TimeField('start shift')
     end = models.TimeField('end shift')
 
@@ -310,7 +310,7 @@ class Agreagat(models.Model):
 
     """
     parent = models.ForeignKey(Department, on_delete=models.CASCADE)
-    name = models.CharField(max_length=255, default='no name')
+    name = models.CharField(max_length=255, default='Базавая структуру')
 
     def __str__(self):
         return self.name
@@ -334,7 +334,7 @@ class Sensors(models.Model):
 
     """
     parent = models.ForeignKey(Agreagat, on_delete=models.CASCADE)
-    name = models.CharField(max_length=255, default='no name')
+    name = models.CharField(max_length=255, default='Базавая структуру')
     designation = models.CharField(max_length=255, default='no designation')
 
     def __str__(self):
