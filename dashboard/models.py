@@ -146,12 +146,12 @@ class EditionDay(models.Model):
 
           Attributes
         ===========
-        - suitable - float -
-        - substandard - float -
-        - defect - float -
-        - flooded - float -
-        - sum - float -
-        - date - Date -
+        - suitable - float - количество годного
+        - substandard - float - количество некондиции
+        - defect - float - количество брака
+        - flooded - float - количество залитого
+        - sum - float - сумма годного, некондиции, брака
+        - date - Date - дата
 
          Methods
         =============
@@ -172,13 +172,13 @@ class SumexpenseDay(models.Model):
 
           Attributes
         ===========
-        - iso - float -
-        - pol - float -
-        - pen - float -
-        - kat1 - float -
-        - kat2 - float -
-        - kat3 - float -
-        - date - Date -
+        - iso - float - количество расхода изоцианата
+        - pol - float - количество расхода полиола
+        - pen - float - количество расхода пентана
+        - kat1 - float - количество расхода катализатора 1
+        - kat2 - float - количество расхода катализатора 2
+        - kat3 - float - количество расхода катализатора 3
+        - date - Date - дата
 
          Methods
         =============
@@ -198,14 +198,14 @@ class SumexpenseDay(models.Model):
 # для виджета Расход энергоресурсов
 class EnergyConsumptionDay(models.Model):
     '''
-        Сущность для определения сумарного расхода
+        Сущность для определения сумарного расхода энергоресурсов
 
           Attributes
         ===========
-        - input1 - float -
-        - input2 - float -
-        - gas - float -
-        - date - Date -
+        - input1 - float - расход эл.энергии ввода 1
+        - input2 - float - расход эл.энергии ввода 2
+        - gas - float - расход газа
+        - date - Date - дата
 
          Methods
         =============
@@ -227,13 +227,13 @@ class SpecificConsumptionDay(models.Model):
 
           Attributes
         ===========
-        - iso - float -
-        - pol - float -
-        - pen - float -
-        - kat1 - float -
-        - kat2 - float -
-        - kat3 - float -
-        - date - Date -
+        - iso - float - количество удельного расхода изоцианата
+        - pol - float - количество удельного расхода полиола
+        - pen - float - количество удельного расхода пентана
+        - kat1 - float - количество удельного расхода катализатора 1
+        - kat2 - float - количество удельного расхода катализатора 2
+        - kat3 - float - количество удельного расхода катализатора 3
+        - date - Date - дата
 
          Methods
         =============
