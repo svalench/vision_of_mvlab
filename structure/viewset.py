@@ -41,6 +41,17 @@ class CorparationView(viewsets.ModelViewSet):
             self.permission_classes = [IsAdminUser]
         return super(CorparationView, self).get_permissions()
 
+class CompanyView(viewsets.ModelViewSet):
+    queryset = Company.objects.all()
+    serializer_class = CompanySerializer
+
+    def get_permissions(self):
+        if self.request.method == 'GET':
+            self.permission_classes = [IsAuthenticated]
+        else:
+            self.permission_classes = [IsAdminUser]
+        return super(CompanyView, self).get_permissions()
+
 
 
 class FactoryView(viewsets.ModelViewSet):
