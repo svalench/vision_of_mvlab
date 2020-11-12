@@ -69,6 +69,7 @@ class FirstObject(models.Model):
     date_add = models.DateTimeField(auto_now_add=True)
     date_update = models.DateTimeField(auto_now=True)
     structure = JSONField(null=True, blank=True)
+    listModels = JSONField(null=True, blank=True)
     start_object = models.IntegerField(default=0)
     def __str__(self):
         return self.name
@@ -92,17 +93,19 @@ class Reserv_1(models.Model):
     def __str__(self):
         return self.name
 
-    def save(self):
+    def save(self, merker=False):
         ob = FirstObject.objects.all().first()
-
-        if (ob):
-            ob.start_object = self.pk
-            ob.save()
+        if merker:
             super(Reserv_1, self).save()
         else:
-            raise ValidationError('No structure in ferststructure',
-                                  code='invalid'
-                                  )
+            if (ob):
+                ob.start_object = self.pk
+                ob.save()
+                super(Reserv_1, self).save()
+            else:
+                raise ValidationError('No structure in ferststructure',
+                                      code='invalid'
+                                      )
 
 
 
@@ -127,6 +130,15 @@ class Reserv_2(models.Model):
     def __str__(self):
         return self.name
 
+    def save(self,*args, **kwargs):
+        ob = FirstObject.objects.all().first()
+        structure = ob.listModels
+        super(Reserv_2, self).save(*args, **kwargs)
+        if('Corparation' not in structure and not self.parent.reserv_2_set.all().first().corparation_set.all().first()):
+            a = Corparation(parent_id=self.id)
+            a.save()
+
+
 
 class Corparation(models.Model):
     """
@@ -150,6 +162,15 @@ class Corparation(models.Model):
     def __str__(self):
         return self.name
 
+    def save(self,*args, **kwargs):
+        ob = FirstObject.objects.all().first()
+        structure = ob.listModels
+        super(Corparation, self).save(*args, **kwargs)
+        if('Company' not in structure and not self.parent.corparation_set.all().first().company_set.all().first()):
+            a = Company(parent_id=self.id)
+            a.save()
+
+
 class Company(models.Model):
     """
     Сущность для определения огранизации в структуре предпрития (если выбрано в FirstObject)
@@ -172,6 +193,15 @@ class Company(models.Model):
 
     def __str__(self):
         return self.name
+
+    def save(self, *args, **kwargs):
+        ob = FirstObject.objects.all().first()
+        structure = ob.listModels
+        super(Company, self).save(*args, **kwargs)
+        print(structure)
+        if('Factory' not in structure and not self.parent.company_set.all().first().factory_set.all().first()):
+            a = Factory(parent_id=self.id)
+            a.save()
 
 
 class Factory(models.Model):
@@ -200,6 +230,13 @@ class Factory(models.Model):
     def __str__(self):
         return self.name
 
+    def save(self, *args, **kwargs):
+        ob = FirstObject.objects.all().first()
+        structure = ob.listModels
+        super(Factory, self).save(*args, **kwargs)
+        if('Department' not in structure and not self.parent.factory_set.all().first().department_set.all().first()):
+            a = Department(parent_id=self.id)
+            a.save()
 
 class Department(models.Model):
     """
@@ -314,6 +351,14 @@ class Agreagat(models.Model):
 
     def __str__(self):
         return self.name
+
+    def save(self,*args, **kwargs):
+        ob = FirstObject.objects.all().first()
+        structure = ob.listModels
+        super(Agreagat, self).save(*args, **kwargs)
+        if('Sensors' not in structure):
+            a = Sensors(parent_id=self.id)
+            a.save()
 
 
 class Sensors(models.Model):
