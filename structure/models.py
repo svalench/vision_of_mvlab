@@ -74,6 +74,7 @@ class FirstObject(models.Model):
     def __str__(self):
         return self.name
 
+
 class Reserv_1(models.Model):
     """
     Резервный класс для структуры предприятия
@@ -92,6 +93,10 @@ class Reserv_1(models.Model):
     name = models.CharField(max_length=255, default='Базавая структуру')
     def __str__(self):
         return self.name
+
+    def child_model(self):
+        """возвращает все занные на уровень ниже"""
+        return self.reserv_2_set.all()
 
     def save(self, merker=False):
         ob = FirstObject.objects.all().first()
@@ -130,6 +135,10 @@ class Reserv_2(models.Model):
     def __str__(self):
         return self.name
 
+    def child_model(self):
+        """возвращает все занные на уровень ниже"""
+        return self.corparation_set.all()
+
     def save(self,*args, **kwargs):
         ob = FirstObject.objects.all().first()
         structure = ob.listModels
@@ -162,6 +171,10 @@ class Corparation(models.Model):
     def __str__(self):
         return self.name
 
+    def child_model(self):
+        """возвращает все занные на уровень ниже"""
+        return self.company_set.all()
+
     def save(self,*args, **kwargs):
         ob = FirstObject.objects.all().first()
         structure = ob.listModels
@@ -193,6 +206,10 @@ class Company(models.Model):
 
     def __str__(self):
         return self.name
+
+    def child_model(self):
+        """возвращает все занные на уровень ниже"""
+        return self.factory_set.all()
 
     def save(self, *args, **kwargs):
         ob = FirstObject.objects.all().first()
@@ -230,6 +247,10 @@ class Factory(models.Model):
     def __str__(self):
         return self.name
 
+    def child_model(self):
+        """возвращает все занные на уровень ниже"""
+        return self.department_set.all()
+
     def save(self, *args, **kwargs):
         ob = FirstObject.objects.all().first()
         structure = ob.listModels
@@ -260,6 +281,10 @@ class Department(models.Model):
 
     def __str__(self):
         return self.name
+
+    def child_model(self):
+        """возвращает все занные на уровень ниже"""
+        return self.agreagat_set.all()
 
     def now_shift(self) -> list:
         """возвращает текущую смену департамента как list с вложенным словарем"""
@@ -351,6 +376,10 @@ class Agreagat(models.Model):
 
     def __str__(self):
         return self.name
+
+    def child_model(self):
+        """возвращает все занные на уровень ниже"""
+        return self.sensors_set.all()
 
     def save(self,*args, **kwargs):
         ob = FirstObject.objects.all().first()
