@@ -2,10 +2,47 @@ from rest_framework import viewsets, status
 from rest_framework.permissions import IsAdminUser
 from rest_framework.response import Response
 
+from project_v_0_0_1.settings import BASE_STRUCTURE
 from .models import *
 from rest_framework.permissions import IsAuthenticated
 
 from .serializer import *
+
+
+class MetaView:
+
+    def create(self, request, *args, **kwargs):
+        """ переопределенный метод для проверки приходящих данных. Если parent указан не для предыдущей связванной модели то переопределяем его"""
+        ob = FirstObject.objects.all().first()
+        structure = ob.listModels
+        ind = BASE_STRUCTURE.index(self.serializer_class.Meta.model.__name__)
+        new_base = list(BASE_STRUCTURE[:ind])
+        new_base.reverse()
+        for b in new_base:
+            if new_base.index(b) == 0:
+                continue
+            if b in structure:
+                try:
+                    a = globals()[b].objects.get(pk=request.data['parent'])
+                    i = new_base.index(b)
+                    str_query = new_base[:i]
+                    str_query.reverse()
+                    for q in str_query:
+                        if str_query.index(q) == 0:
+                            c = a.child_model().first()
+                            continue
+                        c = c.child_model().first()
+                    request.data['parent'] = c.id
+                except:
+                    raise ValidationError('Not found '+b+' with pk %s' % request.data['parent'])
+            break
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        self.perform_create(serializer)
+        headers = self.get_success_headers(serializer.data)
+        return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
+
+
 
 class Reserv_1View(viewsets.ModelViewSet):
     queryset = Reserv_1.objects.all()
@@ -19,7 +56,7 @@ class Reserv_1View(viewsets.ModelViewSet):
         return super(Reserv_1View, self).get_permissions()
 
 
-class Reserv_2View(viewsets.ModelViewSet):
+class Reserv_2View(MetaView, viewsets.ModelViewSet):
     queryset = Reserv_2.objects.all()
     serializer_class = Reserv_2Serializer
 
@@ -31,8 +68,7 @@ class Reserv_2View(viewsets.ModelViewSet):
         return super(Reserv_2View, self).get_permissions()
 
 
-
-class CorparationView(viewsets.ModelViewSet):
+class CorparationView(MetaView, viewsets.ModelViewSet):
     queryset = Corparation.objects.all()
     serializer_class = CorparationSerializer
 
@@ -43,7 +79,8 @@ class CorparationView(viewsets.ModelViewSet):
             self.permission_classes = [IsAdminUser]
         return super(CorparationView, self).get_permissions()
 
-class CompanyView(viewsets.ModelViewSet):
+
+class CompanyView(MetaView, viewsets.ModelViewSet):
     queryset = Company.objects.all()
     serializer_class = CompanySerializer
 
@@ -55,8 +92,7 @@ class CompanyView(viewsets.ModelViewSet):
         return super(CompanyView, self).get_permissions()
 
 
-
-class FactoryView(viewsets.ModelViewSet):
+class FactoryView(MetaView, viewsets.ModelViewSet):
     queryset = Factory.objects.all()
     serializer_class = FactorySerializer
 
@@ -68,7 +104,7 @@ class FactoryView(viewsets.ModelViewSet):
         return super(FactoryView, self).get_permissions()
 
 
-class DepartmentView(viewsets.ModelViewSet):
+class DepartmentView(MetaView, viewsets.ModelViewSet):
     queryset = Department.objects.all()
     serializer_class = DepartmentSerializer
 
@@ -92,7 +128,6 @@ class ShiftView(viewsets.ModelViewSet):
         return super(ShiftView, self).get_permissions()
 
 
-
 class LunchView(viewsets.ModelViewSet):
     queryset = Lunch.objects.all()
     serializer_class = LunchSerializer
@@ -105,8 +140,7 @@ class LunchView(viewsets.ModelViewSet):
         return super(LunchView, self).get_permissions()
 
 
-
-class AgreagatView(viewsets.ModelViewSet):
+class AgreagatView(MetaView, viewsets.ModelViewSet):
     queryset = Agreagat.objects.all()
     serializer_class = AgreagatSerializer
 
@@ -117,62 +151,10 @@ class AgreagatView(viewsets.ModelViewSet):
             self.permission_classes = [IsAdminUser]
         return super(AgreagatView, self).get_permissions()
 
-    def create(self, request, *args, **kwargs):
-        """ переопределенный метод для проверки приходящих данных. Если parent указан не для предыдущей связванной модели то переопределяем его"""
-        ob = FirstObject.objects.all().first()
-        structure = ob.listModels
-        print(request.data)
-        if 'Department' in structure:
-            pass
-        else:
-            if 'Factory' in structure:
-                try:
-                    a = Factory.objects.get(pk=request.data['parent'])
-                    request.data['parent'] = a.department_set.all().first().id
-                except:
-                    raise ValidationError('Not found Factory with pk %s'%request.data['parent'])
-            else:
-                if 'Company' in structure:
-                    try:
-                        a = Company.objects.get(pk=request.data['parent'])
-                        request.data['parent'] = a.factory_set.all().first().department_set.all().first().id
-                    except:
-                        raise ValidationError('Not found Company with pk %s' % request.data['parent'])
-                    else:
-                        if 'Corparation' in structure:
-                            try:
-                                a = Corparation.objects.get(pk=request.data['parent'])
-                                request.data['parent'] = a.company_set.all().first().factory_set.all().first().department_set.all().first().id
-                            except:
-                                raise ValidationError('Not found Corparation with pk %s' % request.data['parent'])
-                        else:
-                            if 'Reserv_2' in structure:
-                                try:
-                                    a = Reserv_2.objects.get(pk=request.data['parent'])
-                                    request.data[
-                                        'parent'] = a.corparation_set.all().first().company_set.all().first().factory_set.all().first().department_set.all().first().id
-                                except:
-                                    raise ValidationError('Not found Reserv_2 with pk %s' % request.data['parent'])
-                            else:
-                                if 'Reserv_1' in structure:
-                                    try:
-                                        a = Reserv_1.objects.get(pk=request.data['parent'])
-                                        request.data[
-                                            'parent'] = a.reserv_2_set.all().first().corparation_set.all().first().company_set.all().first().factory_set.all().first().department_set.all().first().id
-                                    except:
-                                        raise ValidationError('Not found Reserv_1 with pk %s' % request.data['parent'])
-                                else:
-                                    request.data['parent'] = Reserv_1.objects.all().firest()
-        serializer = self.get_serializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
-        self.perform_create(serializer)
-        headers = self.get_success_headers(serializer.data)
-        return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
 
 
 
-
-class SensorsView(viewsets.ModelViewSet):
+class SensorsView(MetaView, viewsets.ModelViewSet):
     queryset = Sensors.objects.all()
     serializer_class = SensorsSerializer
 
