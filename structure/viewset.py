@@ -10,7 +10,14 @@ from .serializer import *
 
 
 class MetaView:
-
+    """
+    Класс для переопределения базовых методов ModelViewSet
+    
+     Methods
+    =========
+    
+    - create - проверяем есть ли в созданной структуре родитель если нет то id передан от уровня выше и мы переопределям id
+    """
     def create(self, request, *args, **kwargs):
         """ переопределенный метод для проверки приходящих данных. Если parent указан не для предыдущей связванной модели то переопределяем его"""
         ob = FirstObject.objects.all().first()
@@ -28,6 +35,9 @@ class MetaView:
                     str_query = new_base[:i]
                     str_query.reverse()
                     for q in str_query:
+                        if q == "Reserv_1":
+                            c = Reserv_1.all().first()
+                            break
                         if str_query.index(q) == 0:
                             c = a.child_model().first()
                             continue
