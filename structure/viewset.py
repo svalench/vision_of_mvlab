@@ -118,6 +118,7 @@ class AgreagatView(viewsets.ModelViewSet):
         return super(AgreagatView, self).get_permissions()
 
     def create(self, request, *args, **kwargs):
+        """ переопределенный метод для проверки приходящих данных. Если parent указан не для предыдущей связванной модели то переопределяем его"""
         ob = FirstObject.objects.all().first()
         structure = ob.listModels
         print(request.data)
