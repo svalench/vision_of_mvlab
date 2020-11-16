@@ -6,6 +6,7 @@ from users.models import *
 
 
 
+
 class Dashboard(models.Model):
     '''
     Сущность для определения виджетов
@@ -22,6 +23,10 @@ class Dashboard(models.Model):
 
     def __str__(self):
         return self.name
+
+class TableName(models.Model):
+    name = models.CharField(max_length=255, default='no name')
+    dash = models.ForeignKey(Dashboard, models.SET_NULL, blank=True, null=True)
 
 class Role(models.Model):
     '''
