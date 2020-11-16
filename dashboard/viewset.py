@@ -166,7 +166,12 @@ class EditionMonthViews(APIView):
             flooded_pr = 0
             sum_pr = 0
             while sh != 0:
-                art = globals()[dash].objects.get(date=data_pred)
+                try:
+                    art = globals()[dash].objects.get(date=data_pred)
+                except EditionDay.DoesNotExist:
+                    a = Dashboard.objects.get(pk=2).tablename_set.all()
+                    #
+                    art = globals()[dash].objects.get(date=data_pred)
                 suitable_pr = suitable_pr + art.suitable
                 substandard_pr = substandard_pr + art.substandard
                 defect_pr = defect_pr + art.defect
