@@ -45,9 +45,9 @@ class ValueSensor(models.Model):
     def __str__(self):
         return self.name
 
-    def save(self):
-        if (self._check_table_name(self.table_name)):
-            super(ValueSensor, self).save()
+    def save(self, *args, **kwargs):
+        if self._check_table_name(str(self.table_name)):
+            super(ValueSensor, self).save(*args, **kwargs)
         else:
             raise ValidationError(_('Table with this name = "%s" does not exist'),
                                   params=(self.table_name,),
