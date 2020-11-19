@@ -6,6 +6,7 @@ from users.models import UserP
 from datetime import datetime, timedelta
 from rest_framework.decorators import permission_classes
 from rest_framework.permissions import IsAuthenticated
+# from django.db import connection
 
 
 
@@ -53,39 +54,36 @@ class RemainderViews(APIView):
         role = UserP.objects.get(id=request.user.pk).role_set.all()
         for r in role:
             for d in r.dashboard.all():
-                if d.name == 'RemainderStorehouse':
+                if d.name == 'Storehouse':
                     dash = d.name
         try:
-            art = globals()[dash].objects.filter(date=date)
+            art = globals()[dash].objects.all()
             storehouse = []
-            isosum = 0
+            isosum =0
             polsum = 0
             pensum = 0
-            for i in art:
-                diso = RemainderIso.objects.filter(storehouse=i.id)
-                dpol = RemainderPol.objects.filter(storehouse=i.id)
-                dpen = RemainderPen.objects.filter(storehouse=i.id)
-                dataiso = []
-                datapol = []
-                datapen = []
-                for j in diso:
-                    dataiso.append(j.quantity)
-                    isosum = isosum + j.quantity
-                for j in dpol:
-                    datapol.append(j.quantity)
-                    polsum = polsum + j.quantity
-                for j in dpen:
-                    datapen.append(j.quantity)
-                    pensum = pensum + j.quantity
-                stor = {
-                    "name": i.name,
-                    "iso": dataiso,
-                    "pol": datapol,
-                    "pen": datapen
+            for a in art:
+                iso = []
+                pen = []
+                pol = []
+                for i in a.substance_set.filter(short_name='ISO'):
+                    iso.append(i.value_date(date))
+                    isosum =isosum + i.value_date(date)
+                for i in a.substance_set.filter(short_name='PEN'):
+                    pen.append(i.value_date(date))
+                    pensum = pensum + i.value_date(date)
+                for i in a.substance_set.filter(short_name='POL'):
+                    pol.append(i.value_date(date))
+                    polsum = polsum + i.value_date(date)
+                data = {
+                    "name": a.name,
+                    "iso": iso,
+                    "pol": pol,
+                    "pen": pen,
                 }
-                storehouse.append(stor)
+                storehouse.append(data)
             data = {
-                "storehouse":storehouse,
+                "storehouse": storehouse,
                 "in_total": {
                     "iso": isosum,
                     "pol": polsum,
