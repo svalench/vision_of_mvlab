@@ -90,7 +90,7 @@ class Parametrs(APIView):
         for s in data['shifts']:
             shift[k] = Shift(
                 name=str(k),
-                parent_id=s['department_id'],
+                parent_id=dep.id,
                 start=s['start'],
                 end=s['end']
             )
