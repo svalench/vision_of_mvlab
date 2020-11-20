@@ -82,7 +82,7 @@ class Parametrs(APIView):
         data = self.data
         dep = Department(
             name=data['name'],
-            factory_id=data['factory_id']
+            parent=data['factory_id']
         )
         dep.save()
         k = 1
@@ -90,13 +90,14 @@ class Parametrs(APIView):
         for s in data['shifts']:
             shift[k] = Shift(
                 name=str(k),
-                dep_id=s['department_id'],
+                parent=s['department_id'],
                 start=s['start'],
                 end=s['end']
             )
             shift[k].save()
             for l in s['lanch']:
                 lunch = Lunch(
+                    parent=shift[k].id,
                     start=l['start'],
                     end=l['end']
                 )
