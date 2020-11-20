@@ -1,10 +1,10 @@
 from django.db import models
 from users.models import *
+from django.db import connection
+import datetime
+
+
 # Create your models here.
-
-
-
-
 
 
 class Dashboard(models.Model):
@@ -24,9 +24,11 @@ class Dashboard(models.Model):
     def __str__(self):
         return self.name
 
-class TableName(models.Model):
-    name = models.CharField(max_length=255, default='no name')
-    dash = models.ForeignKey(Dashboard, models.SET_NULL, blank=True, null=True)
+
+# class TableName(models.Model):
+#     name = models.CharField(max_length=255, default='no name')
+#     dash = models.ForeignKey(Dashboard, models.SET_NULL, blank=True, null=True)
+
 
 class Role(models.Model):
     '''
@@ -52,8 +54,6 @@ class Role(models.Model):
 #     dashboard = models.ForeignKey(Dashboard, on_delete=models.CASCADE)
 
 
-
-
 # для виджета продолжительность работы
 class DurationIntervalDay(models.Model):
     '''
@@ -74,9 +74,6 @@ class DurationIntervalDay(models.Model):
     date = models.DateField(auto_now=False, auto_now_add=False)
 
 
-
-
-
 # для виджета остатки на складах
 class RemainderStorehouse(models.Model):
     '''
@@ -94,6 +91,95 @@ class RemainderStorehouse(models.Model):
     name = models.CharField(max_length=255, default='no name')
     date = models.DateField(auto_now=False, auto_now_add=False)
 
+
+class Storehouse(models.Model):
+    '''
+    Сущность для названия склада
+
+          Attributes
+        ===========
+        - name - str - название склада
+
+         Methods
+        =============
+        - None
+    '''
+    name = models.CharField(max_length=255, default='no name')
+
+
+    def __str__(self):
+        return self.name
+
+
+class Substance(models.Model):
+    '''
+    Сущность для названия хранящегося вещества
+
+          Attributes
+        ===========
+        - name - str - название вещества
+        - short_name - str - короткая название вещества
+        - parent - FK - внешний ключь с Storehouse
+
+         Methods
+        =============
+        - None
+    '''
+    name = models.CharField(max_length=255, default='no name')
+    short_name = models.CharField(max_length=255, default='no name')
+    table_name = models.CharField(max_length=255, default='no name')
+    parent = models.ForeignKey(Storehouse, on_delete=models.CASCADE)
+
+    def __str__(self):
+        data = self.name + '(' + self.parent.name + ')'
+        return data
+
+    def calculate(self, date):
+        with connection.cursor() as cursor:
+            sql1 = '''SELECT value, now_time FROM '''
+            sql2 = ''' WHERE now_time>=%s and now_time<%s ORDER BY now_time DESC LIMIT 1'''
+            sql = sql1 + self.table_name + sql2
+            date_now = date + datetime.timedelta(days=1)
+            cursor.execute(sql, [date, date_now])
+            a = cursor.fetchone()
+            k = DateValue(date=a[1], value=a[0], parent=self)
+            k.save()
+        return a
+
+
+    def value_date(self, date):
+        if self.datevalue_set.filter(date=date).exists():
+            k = self.datevalue_set.get(date=date).value
+        else:
+            self.calculate(date)
+            k = self.datevalue_set.get(date=date).value
+        return k
+
+
+
+class DateValue(models.Model):
+    '''
+    Сущность для количество вещества по времени
+
+          Attributes
+        ===========
+        - date - date - дата
+        - value - float - количество вещества
+        - parent - FK - внешний ключь с Substance
+
+         Methods
+        =============
+        - None
+    '''
+    date = models.DateField(auto_now=False, auto_now_add=False)
+    value = models.FloatField()
+    parent = models.ForeignKey(Substance, on_delete=models.CASCADE)
+
+    def __str__(self):
+        data = str(self.date) + ':  ' + self.parent.name + '-' + str(self.value)
+        return data
+
+
 class RemainderIso(models.Model):
     '''
         Сущность для определения остатков изоционата
@@ -109,6 +195,7 @@ class RemainderIso(models.Model):
     '''
     quantity = models.FloatField()
     storehouse = models.ForeignKey(RemainderStorehouse, on_delete=models.CASCADE)
+
 
 class RemainderPol(models.Model):
     '''
@@ -126,6 +213,7 @@ class RemainderPol(models.Model):
     quantity = models.FloatField()
     storehouse = models.ForeignKey(RemainderStorehouse, on_delete=models.CASCADE)
 
+
 class RemainderPen(models.Model):
     '''
         Сущность для определения остатков пентана
@@ -141,7 +229,6 @@ class RemainderPen(models.Model):
     '''
     quantity = models.FloatField()
     storehouse = models.ForeignKey(RemainderStorehouse, on_delete=models.CASCADE)
-
 
 
 # для виджета Выпуск панелей
@@ -161,6 +248,7 @@ class EditionDay(models.Model):
          Methods
         =============
         - None
+
     '''
     suitable = models.FloatField()
     substandard = models.FloatField()
@@ -198,8 +286,6 @@ class SumexpenseDay(models.Model):
     date = models.DateField(auto_now=False, auto_now_add=False, unique=True)
 
 
-
-
 # для виджета Расход энергоресурсов
 class EnergyConsumptionDay(models.Model):
     '''
@@ -215,14 +301,12 @@ class EnergyConsumptionDay(models.Model):
          Methods
         =============
         - None
+
     '''
     input1 = models.FloatField()
     input2 = models.FloatField()
     gas = models.FloatField()
     date = models.DateField(auto_now=False, auto_now_add=False, unique=True)
-
-
-
 
 
 # для виджета Удельный расход на км
