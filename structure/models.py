@@ -140,7 +140,7 @@ class Reserv_2(models.Model):
         return self.corparation_set.all()
 
     def save(self,*args, **kwargs):
-        if args[0]:
+        if  len(args)>1 and args[0]:
             super(Reserv_2, self).save()
         else:
             ob = FirstObject.objects.all().first()
@@ -179,7 +179,7 @@ class Corparation(models.Model):
         return self.company_set.all()
 
     def save(self,*args, **kwargs):
-        if args[0]:
+        if len(args)>1 and  args[0]:
             super(Corparation, self).save()
         else:
             ob = FirstObject.objects.all().first()
@@ -218,7 +218,7 @@ class Company(models.Model):
         return self.factory_set.all()
 
     def save(self, *args, **kwargs):
-        if args[0]:
+        if len(args)>1 and  args[0]:
             super(Company, self).save()
         else:
             ob = FirstObject.objects.all().first()
@@ -261,7 +261,7 @@ class Factory(models.Model):
         return self.department_set.all()
 
     def save(self, *args, **kwargs):
-        if args[0]:
+        if len(args)>1 and  args[0]:
             super(Factory, self).save()
         else:
             ob = FirstObject.objects.all().first()
@@ -394,7 +394,7 @@ class Agreagat(models.Model):
         return self.sensors_set.all()
 
     def save(self,*args, **kwargs):
-        if args[0]:
+        if len(args)>1 and  args[0]:
             super(Agreagat, self).save()
         else:
             ob = FirstObject.objects.all().first()
