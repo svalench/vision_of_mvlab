@@ -53,7 +53,7 @@ class Parametrs(APIView):
             if s == 'Reserv_1':
                 a.save(True)
             else:
-                a.save()
+                a.save(True)
             if last_id==0:
                 start_id = a.id
             last_id = a.id
