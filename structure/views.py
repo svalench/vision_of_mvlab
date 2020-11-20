@@ -68,9 +68,9 @@ class Parametrs(APIView):
         if ob:
             structure = {
                 'name': ob.name,
-                'customer': ob['customer'],
-                'contract': ob['contract'],
-                'structure': ob['structure']
+                'customer': ob.customer,
+                'contract': ob.contract,
+                'structure': ob.structure
             }
         else:
             structure = {'result': 'empty'}
