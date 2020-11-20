@@ -7,7 +7,7 @@ from .views import *
 urlpatterns = [
     path('wizard/step1', Parametrs.step1, name='wizard_sep1'),
     path('get_structure', Parametrs.get_structure,name='get_structure'),
-    path('create/department', Parametrs.get_structure,name='create_dep'),
+    path('create/department', Parametrs.create_shift,name='create_dep'),
 
     path( 'Reserv2/search/<int:pk>/', Reserv2_Search.as_view()),
     path( 'Corparation/search/<int:pk>/', Corparation_Search.as_view()),
