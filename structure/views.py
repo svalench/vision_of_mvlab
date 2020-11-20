@@ -85,16 +85,16 @@ class Parametrs(APIView):
             parent_id=data['factory_id']
         )
         dep.save()
-        k = 1
+        k = 0
         shift = []
         for s in data['shifts']:
             print(s['end'])
-            shift[k] = Shift(
+            shift.append(Shift(
                 name=str(k),
                 parent_id=dep.id,
                 start=s['start'],
                 end=s['end']
-            )
+            ))
             shift[k].save()
             for l in s['lanch']:
                 lunch = Lunch(
