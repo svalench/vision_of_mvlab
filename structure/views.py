@@ -88,6 +88,7 @@ class Parametrs(APIView):
         k = 1
         shift = []
         for s in data['shifts']:
+            print(s)
             shift[k] = Shift(
                 name=str(k),
                 parent_id=dep.id,
