@@ -48,7 +48,6 @@ class Parametrs(APIView):
             if s in BASE_STRUCTURE[data['structure']['levlel_0']]:
                 break
             a = globals()[s]()
-            print(a)
             if last_id!=0:
                 a.parent_id = last_id
             if s == 'Reserv_1':
