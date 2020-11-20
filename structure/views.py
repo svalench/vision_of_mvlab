@@ -67,7 +67,7 @@ class Parametrs(APIView):
         ob = FirstObject.objects.all().first()
         if ob:
             structure = {
-                'name': ob['name'],
+                'name': ob.name,
                 'customer': ob['customer'],
                 'contract': ob['contract'],
                 'structure': ob['structure']
