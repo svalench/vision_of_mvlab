@@ -13,6 +13,22 @@ factory = APIRequestFactory()
 
 
 class CreateStructTest(APITestCase):
+    """
+    Тестируем создание структуры предприятия
+
+     Methods
+
+     test_save_structure - тест на сохранение структуры
+     test_create_3 - тес на создание компании
+     test_create_4 - тест на создание завода
+     test_create_5 - тест на создания агрегата
+     test_create_dep_autamticly - тест на автоматическое создание департамента (при отсутсвии в структуре)
+     __create_struct - метод для сохранения структуры
+     __create_factory - метод сохраненич завода
+     __create_company -  метод сохранеия компании
+
+
+    """
     def setUp(self) -> None:
         self.superuser, self.token = createSuperuser()
         self.data = {
@@ -132,6 +148,9 @@ class CreateStructTest(APITestCase):
 
 
 def createSuperuser():
+    """
+    авторизация суперпользовтеля для тестов
+    """
     superuser = UserP.objects.create_superuser('john', 'john@snow.com', 'johnpassword')
     token, created = Token.objects.get_or_create(user=superuser)
     token.save()
