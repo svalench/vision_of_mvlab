@@ -4,6 +4,16 @@ from structure.models import Sensors
 from datetime import datetime
 from django.utils.translation import ugettext_lazy as _
 
+from users.models import UserP
+
+
+class Workspace(models.Model):
+    """
+    Сущность для сохранения рабочих пространств для пользователя в рекордере
+    """
+    name = models.CharField(max_length=255, default='workspace')
+    parent = models.ForeignKey(UserP, on_delete=models.CASCADE)
+
 
 class ValueSensor(models.Model):
     """класс предназначен для связи модели структуры Джанго и модуля сбора данных
@@ -202,3 +212,33 @@ class ValueSensor(models.Model):
             return False
         result = curs.fetchall()
         return result
+
+
+class Workarea(models.Model):
+    """
+    Сущность для определения рабочего пространства
+
+     Attributes
+    ============
+
+    - name - название рабочего пространнства
+    - parent - FK для рабочей области
+    - data - FK для связи точки с данными
+
+     Methods
+    ========
+
+    none
+
+    """
+    name = models.CharField(max_length=255, default='workarea')
+    parent = models.ForeignKey(Workspace, on_delete=models.CASCADE)
+    data = models.ManyToManyField(ValueSensor, through='WorkareaData')
+
+class WorkareaData(models.Model):
+    """
+    сущнсть для связи многие ко многим сущности рабочего пространнства и сущнсть данных сенсора
+    """
+    workarea = models.ForeignKey(Workarea, on_delete=models.CASCADE)
+    value = models.ForeignKey(ValueSensor, on_delete=models.CASCADE)
+    color = models.CharField(max_length=50, default='#000000')
