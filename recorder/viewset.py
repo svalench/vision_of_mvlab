@@ -36,3 +36,14 @@ class WorkareaView(viewsets.ModelViewSet):
         else:
             self.permission_classes = [IsAuthenticated]
         return super(WorkareaView, self).get_permissions()
+
+class ValueSensorView(viewsets.ModelViewSet):
+    queryset = ValueSensor.objects.all()
+    serializer_class = ValueSensorSerializer
+
+    def get_permissions(self):
+        if self.request.method == 'GET':
+            self.permission_classes = [IsAuthenticated]
+        else:
+            self.permission_classes = [IsAuthenticated]
+        return super(ValueSensorView, self).get_permissions()
