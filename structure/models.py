@@ -140,13 +140,23 @@ class Reserv_2(models.Model):
         return self.corparation_set.all()
 
     def save(self,*args, **kwargs):
-        if  len(args)>1 and args[0]:
-            super(Reserv_2, self).save()
-        else:
+        try:
+            a = args[0]
+            if not len(args)>1 and args[0]:
+                super(Reserv_2, self).save()
+            else:
+                ob = FirstObject.objects.all().first()
+                structure = ob.listModels
+                super(Reserv_2, self).save(*args, **kwargs)
+                if('Corparation' not in structure and not self.parent.reserv_2_set.all().first().corparation_set.all().first()):
+                    a = Corparation(parent_id=self.id)
+                    a.save()
+        except IndexError as e :
             ob = FirstObject.objects.all().first()
             structure = ob.listModels
             super(Reserv_2, self).save(*args, **kwargs)
-            if('Corparation' not in structure and not self.parent.reserv_2_set.all().first().corparation_set.all().first()):
+            if (
+                    'Corparation' not in structure and not self.parent.reserv_2_set.all().first().corparation_set.all().first()):
                 a = Corparation(parent_id=self.id)
                 a.save()
 
@@ -179,13 +189,22 @@ class Corparation(models.Model):
         return self.company_set.all()
 
     def save(self,*args, **kwargs):
-        if len(args)>1 and  args[0]:
-            super(Corparation, self).save()
-        else:
+        try:
+            a = args[0]
+            if not len(args)>1 and  args[0]:
+                super(Corparation, self).save()
+            else:
+                ob = FirstObject.objects.all().first()
+                structure = ob.listModels
+                super(Corparation, self).save(*args, **kwargs)
+                if('Company' not in structure and not self.parent.corparation_set.all().first().company_set.all().first()):
+                    a = Company(parent_id=self.id)
+                    a.save()
+        except IndexError as e:
             ob = FirstObject.objects.all().first()
             structure = ob.listModels
             super(Corparation, self).save(*args, **kwargs)
-            if('Company' not in structure and not self.parent.corparation_set.all().first().company_set.all().first()):
+            if ('Company' not in structure and not self.parent.corparation_set.all().first().company_set.all().first()):
                 a = Company(parent_id=self.id)
                 a.save()
 
@@ -218,14 +237,14 @@ class Company(models.Model):
         return self.factory_set.all()
 
     def save(self, *args, **kwargs):
-        if len(args)>1 and  args[0]:
+        try:
+            c = args[0]
             super(Company, self).save()
-        else:
+        except IndexError as e:
             ob = FirstObject.objects.all().first()
             structure = ob.listModels
             super(Company, self).save(*args, **kwargs)
-            print(structure)
-            if('Factory' not in structure and not self.parent.company_set.all().first().factory_set.all().first()):
+            if ('Factory' not in structure and not self.parent.company_set.all().first().factory_set.all().first()):
                 a = Factory(parent_id=self.id)
                 a.save()
 
@@ -261,13 +280,23 @@ class Factory(models.Model):
         return self.department_set.all()
 
     def save(self, *args, **kwargs):
-        if len(args)>1 and  args[0]:
-            super(Factory, self).save()
-        else:
+        try:
+            a = args[0]
+            if not len(args)>1 and  args[0]:
+                super(Factory, self).save()
+            else:
+                ob = FirstObject.objects.all().first()
+                structure = ob.listModels
+                super(Factory, self).save(*args, **kwargs)
+                if('Department' not in structure and not self.parent.factory_set.all().first().department_set.all().first()):
+                    a = Department(parent_id=self.id)
+                    a.save()
+        except IndexError as e:
             ob = FirstObject.objects.all().first()
             structure = ob.listModels
             super(Factory, self).save(*args, **kwargs)
-            if('Department' not in structure and not self.parent.factory_set.all().first().department_set.all().first()):
+            if (
+                    'Department' not in structure and not self.parent.factory_set.all().first().department_set.all().first()):
                 a = Department(parent_id=self.id)
                 a.save()
 
@@ -394,15 +423,25 @@ class Agreagat(models.Model):
         return self.sensors_set.all()
 
     def save(self,*args, **kwargs):
-        if len(args)>1 and  args[0]:
-            super(Agreagat, self).save()
-        else:
+        try:
+            a = args[0]
+            if not len(args)>1 and  args[0]:
+                super(Agreagat, self).save()
+            else:
+                ob = FirstObject.objects.all().first()
+                structure = ob.listModels
+                super(Agreagat, self).save(*args, **kwargs)
+                if('Sensors' not in structure):
+                    a = Sensors(parent_id=self.id)
+                    a.save()
+        except IndexError as E:
             ob = FirstObject.objects.all().first()
             structure = ob.listModels
             super(Agreagat, self).save(*args, **kwargs)
-            if('Sensors' not in structure):
+            if ('Sensors' not in structure):
                 a = Sensors(parent_id=self.id)
                 a.save()
+
 
 
 class Sensors(models.Model):

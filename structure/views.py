@@ -59,7 +59,7 @@ class Parametrs(APIView):
             last_id = a.id
         ob.start_object = start_id
         ob.save()
-        return Response({'data': 'success'})
+        return Response({'data': 'success'},status=201)
 
     @api_view(('GET',))
     def get_structure(self):
@@ -88,7 +88,6 @@ class Parametrs(APIView):
         k = 0
         shift = []
         for s in data['shifts']:
-            print(s['end'])
             shift.append(Shift(
                 name=str(k),
                 parent_id=dep.id,
@@ -104,7 +103,7 @@ class Parametrs(APIView):
                 )
                 lunch.save()
             k += 1
-        return Response({'result': 'success'})
+        return Response({'result': 'success'}, status=201)
 
 
 @permission_classes([IsAuthenticated])
