@@ -243,7 +243,11 @@ class SumexpenseDayViews(APIView):
                 if d.name == 'SumexpenseDay':
                     dash = d.name
         try:
-            art = globals()[dash].objects.get(date=date)
+            if globals()[dash].objects.filter(date=date).exists():
+                art = globals()[dash].objects.get(date=date)
+            else:
+                calculate_sumexpense(date)
+                art = globals()[dash].objects.get(date=date)
             data = {
                 "iso": art.iso,
                 "pol": art.pol,

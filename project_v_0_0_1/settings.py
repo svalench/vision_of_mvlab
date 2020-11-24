@@ -140,7 +140,15 @@ BASE_STRUCTURE = (
         'Reserv_1', 'Reserv_2', 'Corparation', 'Company', 'Factory', 'Department', 'Agreagat', 'Sensors')
 
 dist_table = {
-    "EditionDay":"Edition"
+    "EditionDay":"Edition",
+    "SumexpenseDay": {
+        "iso": ['iso0', 'iso2'],
+        "pol": ['pol1', 'pol2'],
+        "pen": ['pen1', 'pen2'],
+        "kat1": ['kat1'],
+        "kat2": ['kat2'],
+        "kat3": ['kat3']
+    }
 }
 
 # Static files (CSS, JavaScript, Images)

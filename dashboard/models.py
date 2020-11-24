@@ -251,6 +251,72 @@ class EditionDay(models.Model):
 
 
 
+def calculate_sumexpense(date):
+    iso = 0
+    pen = 0
+    pol =0
+    kat1 = 0
+    kat2 = 0
+    kat3 = 0
+    for i in dist_table['SumexpenseDay']['iso']:
+        with connection.cursor() as cursor:
+            sql1 = '''SELECT value, now_time FROM '''
+            sql2 = ''' WHERE now_time>=%s and now_time<%s ORDER BY now_time DESC LIMIT 1'''
+            sql = sql1 + i + sql2
+            date_now = date + datetime.timedelta(days=1)
+            cursor.execute(sql, [date, date_now])
+            data = cursor.fetchone()
+            iso = iso + data[0]
+    for i in dist_table['SumexpenseDay']['pol']:
+        with connection.cursor() as cursor:
+            sql1 = '''SELECT value, now_time FROM '''
+            sql2 = ''' WHERE now_time>=%s and now_time<%s ORDER BY now_time DESC LIMIT 1'''
+            sql = sql1 + i + sql2
+            date_now = date + datetime.timedelta(days=1)
+            cursor.execute(sql, [date, date_now])
+            data = cursor.fetchone()
+            pol = pol + data[0]
+    for i in dist_table['SumexpenseDay']['pen']:
+        with connection.cursor() as cursor:
+            sql1 = '''SELECT value, now_time FROM '''
+            sql2 = ''' WHERE now_time>=%s and now_time<%s ORDER BY now_time DESC LIMIT 1'''
+            sql = sql1 + i + sql2
+            date_now = date + datetime.timedelta(days=1)
+            cursor.execute(sql, [date, date_now])
+            data = cursor.fetchone()
+            pen = pen + data[0]
+    for i in dist_table['SumexpenseDay']['kat1']:
+        with connection.cursor() as cursor:
+            sql1 = '''SELECT value, now_time FROM '''
+            sql2 = ''' WHERE now_time>=%s and now_time<%s ORDER BY now_time DESC LIMIT 1'''
+            sql = sql1 + i + sql2
+            date_now = date + datetime.timedelta(days=1)
+            cursor.execute(sql, [date, date_now])
+            data = cursor.fetchone()
+            kat1 = kat1 + data[0]
+    for i in dist_table['SumexpenseDay']['kat2']:
+        with connection.cursor() as cursor:
+            sql1 = '''SELECT value, now_time FROM '''
+            sql2 = ''' WHERE now_time>=%s and now_time<%s ORDER BY now_time DESC LIMIT 1'''
+            sql = sql1 + i + sql2
+            date_now = date + datetime.timedelta(days=1)
+            cursor.execute(sql, [date, date_now])
+            data = cursor.fetchone()
+            kat2 = kat2 + data[0]
+    for i in dist_table['SumexpenseDay']['kat3']:
+        with connection.cursor() as cursor:
+            sql1 = '''SELECT value, now_time FROM '''
+            sql2 = ''' WHERE now_time>=%s and now_time<%s ORDER BY now_time DESC LIMIT 1'''
+            sql = sql1 + i + sql2
+            date_now = date + datetime.timedelta(days=1)
+            cursor.execute(sql, [date, date_now])
+            data = cursor.fetchone()
+            kat3 = kat3 + data[0]
+    data = SumexpenseDay(date=date, iso=iso, pol=pol, pen=pen, kat1=kat1, kat2=kat2, kat3=kat3)
+    data.save()
+    return data
+
+
 
 
 
