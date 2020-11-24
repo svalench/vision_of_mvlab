@@ -191,6 +191,8 @@ def calculate_edition(date):
         date_now = date + datetime.timedelta(days=1)
         cursor.execute(sql, [date, date_now])
         ne_kond = cursor.fetchone()
+
+
         sql1 = '''SELECT value, now_time FROM '''
         sql2 = ''' WHERE now_time>=%s and now_time<%s and status=1 ORDER BY now_time DESC LIMIT 1'''
         sql = sql1 + dist_table['EditionDay'] + sql2
@@ -205,8 +207,18 @@ def calculate_edition(date):
         cursor.execute(sql, [date, date_now])
         zalito = cursor.fetchone()
 
+        if brak == None:
+            brak = [0]
+        if ne_kond == None:
+            ne_kond = [0]
+        if godno == None:
+            godno = [0]
+        if zalito == None:
+            zalito = [0]
+        print("asdasd:",brak[0])
         k = EditionDay(date=date, suitable=godno[0], substandard=ne_kond[0], defect=brak[0], flooded=zalito[0], sum=brak[0]+ne_kond[0]+godno[0])
         k.save()
+
     return k
 
 
