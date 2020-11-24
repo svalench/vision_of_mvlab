@@ -233,7 +233,9 @@ class Workarea(models.Model):
     """
     name = models.CharField(max_length=255, default='workarea')
     parent = models.ForeignKey(Workspace, on_delete=models.CASCADE)
-    data = models.ManyToManyField(ValueSensor, through='WorkareaData')
+    data = models.ManyToManyField(ValueSensor, through='WorkareaData',through_fields=('workarea', 'value'),)
+
+
 
 class WorkareaData(models.Model):
     """
