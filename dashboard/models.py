@@ -2,9 +2,10 @@ from django.db import models
 from users.models import *
 from django.db import connection
 import datetime
+from project_v_0_0_1.settings import dist_table
 
 
-# Create your models here.
+
 
 
 class Dashboard(models.Model):
@@ -25,9 +26,6 @@ class Dashboard(models.Model):
         return self.name
 
 
-# class TableName(models.Model):
-#     name = models.CharField(max_length=255, default='no name')
-#     dash = models.ForeignKey(Dashboard, models.SET_NULL, blank=True, null=True)
 
 
 class Role(models.Model):
@@ -49,9 +47,6 @@ class Role(models.Model):
     dashboard = models.ManyToManyField(Dashboard)
 
 
-# class Date(models.Model):
-#     date = models.DateField(auto_now=False, auto_now_add=False)
-#     dashboard = models.ForeignKey(Dashboard, on_delete=models.CASCADE)
 
 
 # для виджета продолжительность работы
@@ -74,22 +69,6 @@ class DurationIntervalDay(models.Model):
     date = models.DateField(auto_now=False, auto_now_add=False)
 
 
-# для виджета остатки на складах
-class RemainderStorehouse(models.Model):
-    '''
-        Сущность для определения остатков на складе
-
-          Attributes
-        ===========
-        - name - str - название цеха
-        - date - Date -  дата
-
-         Methods
-        =============
-        - None
-    '''
-    name = models.CharField(max_length=255, default='no name')
-    date = models.DateField(auto_now=False, auto_now_add=False)
 
 
 class Storehouse(models.Model):
@@ -135,24 +114,40 @@ class Substance(models.Model):
         return data
 
     def calculate(self, date):
-        with connection.cursor() as cursor:
-            sql1 = '''SELECT value, now_time FROM '''
-            sql2 = ''' WHERE now_time>=%s and now_time<%s ORDER BY now_time DESC LIMIT 1'''
-            sql = sql1 + self.table_name + sql2
-            date_now = date + datetime.timedelta(days=1)
-            cursor.execute(sql, [date, date_now])
-            a = cursor.fetchone()
-            k = DateValue(date=a[1], value=a[0], parent=self)
-            k.save()
+        '''Забись данных в таблицу Django остатка по дате'''
+        if date.date() != datetime.datetime.now().date():
+            with connection.cursor() as cursor:
+                sql1 = '''SELECT value, now_time FROM '''
+                sql2 = ''' WHERE now_time>=%s and now_time<%s ORDER BY now_time DESC LIMIT 1'''
+                sql = sql1 + self.table_name + sql2
+                date_now = date + datetime.timedelta(days=1)
+                cursor.execute(sql, [date, date_now])
+                a = cursor.fetchone()
+                k = DateValue(date=a[1], value=a[0], parent=self)
+                k.save()
+        else:
+            with connection.cursor() as cursor:
+                sql1 = '''SELECT value, now_time FROM '''
+                sql2 = ''' WHERE now_time>=%s and now_time<%s ORDER BY now_time DESC LIMIT 1'''
+                sql = sql1 + self.table_name + sql2
+                date_new = date + datetime.timedelta(days=1)
+                cursor.execute(sql, [date, date_new])
+                a = cursor.fetchone()
         return a
 
 
     def value_date(self, date):
-        if self.datevalue_set.filter(date=date).exists():
-            k = self.datevalue_set.get(date=date).value
+        if date.date() == datetime.datetime.now().date():
+            try:
+                k = self.calculate(date)[0]
+            except TypeError:
+                k = 0
         else:
-            self.calculate(date)
-            k = self.datevalue_set.get(date=date).value
+            if self.datevalue_set.filter(date=date).exists():
+                k = self.datevalue_set.get(date=date).value
+            else:
+                self.calculate(date)
+                k = self.datevalue_set.get(date=date).value
         return k
 
 
@@ -180,55 +175,39 @@ class DateValue(models.Model):
         return data
 
 
-class RemainderIso(models.Model):
-    '''
-        Сущность для определения остатков изоционата
+def calculate_edition(date):
+    '''Забись данных в таблицу Django остатка по дате'''
+    with connection.cursor() as cursor:
+        sql1 = '''SELECT value, now_time FROM '''
+        sql2 = ''' WHERE now_time>=%s and now_time<%s and status=0 ORDER BY now_time DESC LIMIT 1'''
+        sql = sql1 + dist_table['EditionDay'] + sql2
+        date_now = date + datetime.timedelta(days=1)
+        cursor.execute(sql, [date, date_now])
+        brak = cursor.fetchone()
 
-          Attributes
-        ===========
-        - quantity - float - количество изоционата
-        - storehouse - FK - внешний ключ для связи с сущностью  RemainderStorehouse
+        sql1 = '''SELECT value, now_time FROM '''
+        sql2 = ''' WHERE now_time>=%s and now_time<%s and status=2 ORDER BY now_time DESC LIMIT 1'''
+        sql = sql1 + dist_table['EditionDay'] + sql2
+        date_now = date + datetime.timedelta(days=1)
+        cursor.execute(sql, [date, date_now])
+        ne_kond = cursor.fetchone()
+        sql1 = '''SELECT value, now_time FROM '''
+        sql2 = ''' WHERE now_time>=%s and now_time<%s and status=1 ORDER BY now_time DESC LIMIT 1'''
+        sql = sql1 + dist_table['EditionDay'] + sql2
+        date_now = date + datetime.timedelta(days=1)
+        cursor.execute(sql, [date, date_now])
+        godno = cursor.fetchone()
 
-         Methods
-        =============
-        - None
-    '''
-    quantity = models.FloatField()
-    storehouse = models.ForeignKey(RemainderStorehouse, on_delete=models.CASCADE)
+        sql1 = '''SELECT value, now_time, status FROM '''
+        sql2 = ''' WHERE now_time>=%s and now_time<%s and status=3 ORDER BY now_time DESC LIMIT 1'''
+        sql = sql1 + dist_table['EditionDay'] + sql2
+        date_now = date + datetime.timedelta(days=1)
+        cursor.execute(sql, [date, date_now])
+        zalito = cursor.fetchone()
 
-
-class RemainderPol(models.Model):
-    '''
-        Сущность для определения остатков полиола
-
-          Attributes
-        ===========
-        - quantity - float - количество полиола
-        - storehouse - FK - внешний ключ для связи с сущностью  RemainderStorehouse
-
-         Methods
-        =============
-        - None
-    '''
-    quantity = models.FloatField()
-    storehouse = models.ForeignKey(RemainderStorehouse, on_delete=models.CASCADE)
-
-
-class RemainderPen(models.Model):
-    '''
-        Сущность для определения остатков пентана
-
-          Attributes
-        ===========
-        - quantity - float - количество пентана
-        - storehouse - FK - внешний ключ для связи с сущностью  RemainderStorehouse
-
-         Methods
-        =============
-        - None
-    '''
-    quantity = models.FloatField()
-    storehouse = models.ForeignKey(RemainderStorehouse, on_delete=models.CASCADE)
+        k = EditionDay(date=date, suitable=godno[0], substandard=ne_kond[0], defect=brak[0], flooded=zalito[0], sum=brak[0]+ne_kond[0]+godno[0])
+        k.save()
+    return k
 
 
 # для виджета Выпуск панелей
@@ -256,6 +235,11 @@ class EditionDay(models.Model):
     flooded = models.FloatField()
     sum = models.FloatField()
     date = models.DateField(auto_now=False, auto_now_add=False, unique=True)
+
+
+
+
+
 
 
 # для виджета Суммарный расход

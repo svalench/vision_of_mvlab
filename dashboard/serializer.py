@@ -16,25 +16,25 @@ class DurationIntervalDaySerializer(serializers.ModelSerializer):
         model = DurationIntervalDay
         fields = '__all__'
 
-class RemainderStorehouseSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = RemainderStorehouse
-        fields = '__all__'
+# class RemainderStorehouseSerializer(serializers.ModelSerializer):
+#     class Meta:
+#         model = RemainderStorehouse
+#         fields = '__all__'
+#
+# class RemainderIsoSerializer(serializers.ModelSerializer):
+#     class Meta:
+#         model = RemainderIso
+#         fields = '__all__'
+#
+# class RemainderPolSerializer(serializers.ModelSerializer):
+#     class Meta:
+#         model = RemainderPol
+#         fields = '__all__'
 
-class RemainderIsoSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = RemainderIso
-        fields = '__all__'
-
-class RemainderPolSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = RemainderPol
-        fields = '__all__'
-
-class RemainderPenSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = RemainderPen
-        fields = '__all__'
+# class RemainderPenSerializer(serializers.ModelSerializer):
+#     class Meta:
+#         model = RemainderPen
+#         fields = '__all__'
 
 class EditionDaySerializer(serializers.ModelSerializer):
     class Meta:

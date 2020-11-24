@@ -139,6 +139,10 @@ USE_TZ = True
 BASE_STRUCTURE = (
         'Reserv_1', 'Reserv_2', 'Corparation', 'Company', 'Factory', 'Department', 'Agreagat', 'Sensors')
 
+dist_table = {
+    "EditionDay":"Edition"
+}
+
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.1/howto/static-files/
 

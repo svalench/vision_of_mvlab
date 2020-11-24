@@ -104,11 +104,18 @@ class EditionDayViews(APIView):
                 if d.name == 'EditionDay':
                     dash = d.name
         try:
-            art = globals()[dash].objects.get(date=date)
+            if globals()[dash].objects.filter(date=date).exists():
+                art = globals()[dash].objects.get(date=date)
+            else:
+                calculate_edition(date)
+                art = globals()[dash].objects.get(date=date)
             delt = timedelta(days=1)
             date_del = date-delt
-            art_del = globals()[dash].objects.get(date=date_del)
-            print(EditionDay.objects.get(date=date))
+            if globals()[dash].objects.filter(date=date_del).exists():
+                art_del = globals()[dash].objects.get(date=date_del)
+            else:
+                calculate_edition(date_del)
+                art_del = globals()[dash].objects.get(date=date_del)
             data = {
                 "suitable": art.suitable,
                 "change_suitable": (((art.suitable/art_del.suitable)-1)*100),
@@ -124,6 +131,7 @@ class EditionDayViews(APIView):
         except UnboundLocalError:
             data = 'not Role'
         return Response(data)
+
 
 #виджет «Выпуск панелей» для вкладки «месяц»
 @permission_classes([IsAuthenticated])
@@ -193,10 +201,16 @@ class EditionMonthViews(APIView):
             data = 'not Role'
         return Response(data)
 
+
+
+
 #виджет «Выпуск панелей» для вкладки «смена»
 @permission_classes([IsAuthenticated])
 class EditionShiftViews(APIView):
     pass
+
+
+
 
 
 #виджет «Суммарный расход» для вкладки «день»
@@ -221,6 +235,9 @@ class SumexpenseDayViews(APIView):
         except UnboundLocalError:
             data = 'not Role'
         return Response(data)
+
+
+
 
 
 #виджет «Суммарный расход» для вкладки «месяц»
@@ -264,10 +281,17 @@ class SumexpenseMonthViews(APIView):
             data = 'not Role'
         return Response(data)
 
+
+
+
 #виджет «Суммарный расход» для вкладки «смена»
 @permission_classes([IsAuthenticated])
 class SumexpenseShiftViews(APIView):
     pass
+
+
+
+
 
 #виджет «Расход энергоресурсов» для вкладки «день»
 @permission_classes([IsAuthenticated])
@@ -288,6 +312,10 @@ class EnergyConsumptionDayViews(APIView):
         except UnboundLocalError:
             data = 'not Role'
         return Response(data)
+
+
+
+
 
 #виджет «Расход энергоресурсов» для вкладки «месяц»
 @permission_classes([IsAuthenticated])
@@ -323,10 +351,14 @@ class EnergyConsumptionMonthViews(APIView):
 
 
 
+
+
 #виджет «Расход энергоресурсов» для вкладки «смена»
 @permission_classes([IsAuthenticated])
 class EnergyConsumptionShiftViews(APIView):
     pass
+
+
 
 
 #виджет «Удельный расход на км» для вкладки «день»
