@@ -266,6 +266,8 @@ def calculate_sumexpense(date):
             date_now = date + datetime.timedelta(days=1)
             cursor.execute(sql, [date, date_now])
             data = cursor.fetchone()
+            if data == None:
+                data = [0]
             iso = iso + data[0]
     for i in dist_table['SumexpenseDay']['pol']:
         with connection.cursor() as cursor:
@@ -275,6 +277,8 @@ def calculate_sumexpense(date):
             date_now = date + datetime.timedelta(days=1)
             cursor.execute(sql, [date, date_now])
             data = cursor.fetchone()
+            if data == None:
+                data = [0]
             pol = pol + data[0]
     for i in dist_table['SumexpenseDay']['pen']:
         with connection.cursor() as cursor:
@@ -284,6 +288,8 @@ def calculate_sumexpense(date):
             date_now = date + datetime.timedelta(days=1)
             cursor.execute(sql, [date, date_now])
             data = cursor.fetchone()
+            if data == None:
+                data = [0]
             pen = pen + data[0]
     for i in dist_table['SumexpenseDay']['kat1']:
         with connection.cursor() as cursor:
@@ -293,6 +299,8 @@ def calculate_sumexpense(date):
             date_now = date + datetime.timedelta(days=1)
             cursor.execute(sql, [date, date_now])
             data = cursor.fetchone()
+            if data == None:
+                data = [0]
             kat1 = kat1 + data[0]
     for i in dist_table['SumexpenseDay']['kat2']:
         with connection.cursor() as cursor:
@@ -302,6 +310,8 @@ def calculate_sumexpense(date):
             date_now = date + datetime.timedelta(days=1)
             cursor.execute(sql, [date, date_now])
             data = cursor.fetchone()
+            if data == None:
+                data = [0]
             kat2 = kat2 + data[0]
     for i in dist_table['SumexpenseDay']['kat3']:
         with connection.cursor() as cursor:
@@ -311,6 +321,8 @@ def calculate_sumexpense(date):
             date_now = date + datetime.timedelta(days=1)
             cursor.execute(sql, [date, date_now])
             data = cursor.fetchone()
+            if data == None:
+                data = [0]
             kat3 = kat3 + data[0]
     data = SumexpenseDay(date=date, iso=iso, pol=pol, pen=pen, kat1=kat1, kat2=kat2, kat3=kat3)
     data.save()
@@ -346,6 +358,66 @@ class SumexpenseDay(models.Model):
     kat2 = models.FloatField()
     kat3 = models.FloatField()
     date = models.DateField(auto_now=False, auto_now_add=False, unique=True)
+
+
+def calculate_energy_consumption(date):
+    with connection.cursor() as cursor:
+        sql1 = '''SELECT value, now_time FROM '''
+        sql2 = ''' WHERE now_time>=%s and now_time<%s ORDER BY now_time DESC LIMIT 1'''
+        sql = sql1 + dist_table['EnergyConsumptionDay']['input1'] + sql2
+        date_now = date + datetime.timedelta(days=1)
+        cursor.execute(sql, [date, date_now])
+        data1 = cursor.fetchone()
+        if data1 == None:
+            data1 = [0]
+        sql2 = ''' WHERE now_time>=%s and now_time<%s ORDER BY now_time ASC LIMIT 1'''
+        sql = sql1 + dist_table['EnergyConsumptionDay']['input1'] + sql2
+        cursor.execute(sql, [date, date_now])
+        data2 = cursor.fetchone()
+        if data2 == None:
+            data2 = [0]
+        data_in_1 = data1[0]-data2[0]
+        sql1 = '''SELECT value, now_time FROM '''
+        sql2 = ''' WHERE now_time>=%s and now_time<%s ORDER BY now_time DESC LIMIT 1'''
+        sql = sql1 + dist_table['EnergyConsumptionDay']['input2'] + sql2
+        date_now = date + datetime.timedelta(days=1)
+        cursor.execute(sql, [date, date_now])
+        data1 = cursor.fetchone()
+        if data1 == None:
+            data1 = [0]
+        sql2 = ''' WHERE now_time>=%s and now_time<%s ORDER BY now_time ASC LIMIT 1'''
+        sql = sql1 + dist_table['EnergyConsumptionDay']['input2'] + sql2
+        cursor.execute(sql, [date, date_now])
+        data2 = cursor.fetchone()
+        if data2 == None:
+            data2 = [0]
+        data_in_2 = data1[0]-data2[0]
+        sql1 = '''SELECT value, now_time FROM '''
+        sql2 = ''' WHERE now_time>=%s and now_time<%s ORDER BY now_time DESC LIMIT 1'''
+        sql = sql1 + dist_table['EnergyConsumptionDay']['gas'] + sql2
+        date_now = date + datetime.timedelta(days=1)
+        cursor.execute(sql, [date, date_now])
+        data1 = cursor.fetchone()
+        if data1 == None:
+            data1 = [0]
+        sql2 = ''' WHERE now_time>=%s and now_time<%s ORDER BY now_time ASC LIMIT 1'''
+        sql = sql1 + dist_table['EnergyConsumptionDay']['gas'] + sql2
+        cursor.execute(sql, [date, date_now])
+        data2 = cursor.fetchone()
+        if data2 == None:
+            data2 = [0]
+        data_gas = data1[0] - data2[0]
+
+        k = EnergyConsumptionDay(input1=data_in_1, input2=data_in_2, gas=data_gas, date=date)
+        k.save()
+        return k
+
+
+
+
+
+
+
 
 
 # для виджета Расход энергоресурсов

@@ -327,7 +327,11 @@ class EnergyConsumptionDayViews(APIView):
                 if d.name == 'EnergyConsumptionDay':
                     dash = d.name
         try:
-            art = globals()[dash].objects.get(date=date)
+            if globals()[dash].objects.filter(date=date).exists():
+                art = globals()[dash].objects.get(date=date)
+            else:
+                calculate_energy_consumption(date)
+                art = globals()[dash].objects.get(date=date)
             data = {
                 "input1": art.input1,
                 "input2": art.input2,
