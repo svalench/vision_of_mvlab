@@ -67,7 +67,7 @@ class ValueSensor(models.Model):
     def get_last_shift(self) -> object:
         """метод возвращает данные за текущую смену"""
         now = datetime.now().time().strftime('%H:%M:%S')
-        now_t = datetime.now().time()
+        now_t = datetime.now()
         shifts = self.sensor.agregat.parent.shift_set.filter(start__lte=now, end__gt=now)
         start = datetime(now_t.year, now_t.month, now_t.day, shifts[0].start.hour, shifts[0].start.minute, 0)
         end = datetime(now_t.year, now_t.month, now_t.day, shifts[0].end.hour, shifts[0].end.minute, 0)
@@ -76,14 +76,28 @@ class ValueSensor(models.Model):
     def get_last_day(self) -> object:
         """метод возвращает данные за последний день"""
         now = datetime.now()
-        start = datetime(now.year-1, now.month, now.day, now.hour, now.minute, 0)
+        start = datetime(now.year, now.month, now.day-1, now.hour, now.minute, 0)
+        end = datetime(now.year, now.month, now.day, now.hour, now.minute, 0)
+        return self._time_conversion(start=start, end=end)
+
+    def get_last_week(self) -> object:
+        """метод возвращает данные за последнию неделю"""
+        now = datetime.now()
+        start = datetime(now.year, now.month, now.day-7, now.hour, now.minute, 0)
+        end = datetime(now.year, now.month, now.day, now.hour, now.minute, 0)
+        return self._time_conversion(start=start, end=end)
+
+    def get_last_month(self) -> object:
+        """метод возвращает данные за последний месяц"""
+        now = datetime.now()
+        start = datetime(now.year, now.month-1, now.day, now.hour, now.minute, 0)
         end = datetime(now.year, now.month, now.day, now.hour, now.minute, 0)
         return self._time_conversion(start=start, end=end)
 
     def get_last_hour(self) -> object:
         """возвращает значения за последний час"""
-        now = datetime.now().time()
-        start = datetime(now.year, now.month, now.day, now.hour, now.minute - 60, 0)
+        now = datetime.now()
+        start = datetime(now.year, now.month, now.day, now.hour-1, now.minute, 0)
         end = datetime(now.year, now.month, now.day, now.hour, now.minute, 0)
         return self._time_conversion(start=start, end=end)
 
