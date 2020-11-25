@@ -105,7 +105,7 @@ class ValueSensor(models.Model):
         :param float end: конец периода
         :return: list
         """
-        if (((end - start) / 60) != 100000):
+        if (((end - start) / 60) < 3000):
             curs = connection.cursor()
             curs.execute(
                 "SELECT * FROM `" + str(self.table_name) + "` WHERE now_time >= " +
