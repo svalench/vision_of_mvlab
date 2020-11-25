@@ -13,7 +13,6 @@ class WorkspaceSerializer(serializers.ModelSerializer):
         model = Workspace
         fields = '__all__'
 
-
 class WorkareaDataSerializer(serializers.ModelSerializer):
     """класс сериализации для модели WorkareaData"""
     class Meta:
@@ -37,7 +36,6 @@ class ValueSensorSerializer(serializers.ModelSerializer):
     class Meta:
         model = ValueSensor
         fields = '__all__'
-
 
 class WorkareaSerializer(serializers.ModelSerializer):
     """модель сериализации данных для рабочей области
