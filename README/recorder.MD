@@ -25,13 +25,6 @@ http(s)://<servername>/recorder/structure/Workspace/
 http(s)://<servername>/recorder/structure/Workspace/
 ```
 
-- <a name="href_to_workarea">Для получения одного рабочего пространства со списком вложенны рабочих областей
-необходимо отправить ***GET*** запрос вида:</a>
-```
-http(s)://<servername>/recorder/structure/Workspace/<int:id>/
-```
-> id - идентификатор рабочего пространства
-
 После чего будет получен ответ вида:
 ```
 [
@@ -49,6 +42,25 @@ http(s)://<servername>/recorder/structure/Workspace/<int:id>/
         "parent": <int:userid>
     }
 ]
+```
+
+- <a name="href_to_workarea">Для получения одного рабочего пространства со списком вложенны рабочих областей
+необходимо отправить ***GET*** запрос вида:</a>
+```
+http(s)://<servername>/recorder/structure/Workspace/<int:id>/
+```
+> id - идентификатор рабочего пространства
+
+После чего будет получен ответ вида:
+```
+
+    {
+        "id": <int:id>,
+        "child": [{"id":<int:id_workarea>},... ,{"id":<int:id_workarea>}],
+        "name": <string:name>,
+        "parent": <int:userid>
+    }
+
 ```
 
 - Для обновления имени рабочего простраснства необходимо отправить ***PUT*** запрос на адрес:
@@ -163,3 +175,70 @@ http(s)://<servername>/recorder/structure/ValueSensor/
 http(s)://<servername>/recorder/chart/workarea/?id=<int:id>  
 ```
 > id - идентификатор рабочей области список получаем [тут](#href_to_workarea)
+
+Полсе чего будет получен ответ вида:
+
+```
+{
+    "id": <int:id>,
+    "name": <string>,
+    "parent": <int:id_workspace>,
+    "child": [
+        {
+            "id": <int>,
+            "workarea": <int>,
+            "value": <int>,
+            "color": <string>,
+            "sensor_data": {
+                "id": <int>,
+                "sensor": <int>,
+                "name": <string>,
+                "name_connection": <string>,
+                "table_name": <string>,
+                "up_level_alarm": <real>,
+                "down_level_alarm": <real>,
+                "up_level": <real>,
+                "down_level": <real>,
+                "rate_change": <real>
+            },
+            "values": [{
+                    "pk": <int>,
+                    "now_time": <string:datetime>,
+                    "value": <real>
+                },
+                ....
+                {
+                    "pk": <int>,
+                    "now_time": <string:datetime>,
+                    "value": <real>
+                }]
+        },
+        ....
+        {
+            "id": <int>,
+            "workarea": <int>,
+            "value": <int>,
+            "color": <string:color>,
+            "sensor_data": {
+                "id": <int>,
+                "sensor": <int>,
+                "name": <string:name>,
+                "name_connection": <string:name_connection>,
+                "table_name": <string:tablename>,
+                "up_level_alarm": <real>,
+                "down_level_alarm": <real>,
+                "up_level": <real>,
+                "down_level": <real>,
+                "rate_change": <real>
+            },
+            "values": []
+        }
+    ]
+}
+```
+
+По умолчанию выводит данные за смену, для получения других данных смотри таблицу ниже:
+
+| запрос                                        | период        | описание                          |
+|-----------------------------------------------|---------------|-----------------------------------|
+|```/recorder/chart/workarea/?id=<int:id>&key=hour```  |   час  |Вернет данные за последний час     |
