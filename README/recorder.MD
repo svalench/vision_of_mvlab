@@ -244,7 +244,7 @@ http(s)://<servername>/recorder/chart/workarea/?id=<int:id>
 |-------------------------------------------------------|---------------|-----------------------------------|
 |```/recorder/chart/workarea/?id=<int:id>&key=hour```   |   час         |Вернет данные за последний час     |
 |```/recorder/chart/workarea/?id=<int:id>```            |   смена       |Вернет данные за последнию смену   |
-|```/recorder/chart/workarea/?id=<int:id>&key=shift```            |
+|```/recorder/chart/workarea/?id=<int:id>&key=shift```  |
 |```/recorder/chart/workarea/?id=<int:id>&key=day```    |   день        |Вернет данные за последний день    |
 |```/recorder/chart/workarea/?id=<int:id>&key=week```   |   неделя      |Вернет данные за последнию неделю  |
 |```/recorder/chart/workarea/?id=<int:id>&key=month```  |   месяц       |Вернет данные за последний месяц   |
