@@ -75,8 +75,8 @@ class ValueSensor(models.Model):
 
     def get_last_day(self) -> object:
         """метод возвращает данные за последний день"""
-        now = datetime.now().time()
-        start = datetime(now.year, now.month, now.day, now.hour - 24, now.minute, 0)
+        now = datetime.now()
+        start = datetime(now.year, now.month, now.day-1, now.hour, now.minute, 0)
         end = datetime(now.year, now.month, now.day, now.hour, now.minute, 0)
         return self._time_conversion(start=start, end=end)
 
@@ -114,7 +114,7 @@ class ValueSensor(models.Model):
             return result
         else:
             a = self._generate_period_min(start, end)
-            return self._get_mode_by_periods(var=a['var'], periods=a['period'])
+            return self._get_mode_by_periods(var=a['var'], periods=a['periods'])
 
     def _generate_period_min(self, start, end) -> dict:
         """
