@@ -76,7 +76,7 @@ class ValueSensor(models.Model):
     def get_last_day(self) -> object:
         """метод возвращает данные за последний день"""
         now = datetime.now()
-        start = datetime(now.year, now.month, now.day-1, now.hour, now.minute, 0)
+        start = datetime(now.year-1, now.month, now.day, now.hour, now.minute, 0)
         end = datetime(now.year, now.month, now.day, now.hour, now.minute, 0)
         return self._time_conversion(start=start, end=end)
 
@@ -105,12 +105,19 @@ class ValueSensor(models.Model):
         :param float end: конец периода
         :return: list
         """
-        if (((end - start) / 60) < 100):
+        if (((end - start) / 60) != 100000):
             curs = connection.cursor()
             curs.execute(
                 "SELECT * FROM `" + str(self.table_name) + "` WHERE now_time >= " +
                 str(start) + " AND now_time<" + str(end) + ";")
-            result = curs.fetchall()
+            query = curs.fetchall()
+            fieldnames = [name[0] for name in curs.description]
+            result = []
+            for row in query:
+                rowset = []
+                for field in zip(fieldnames, row):
+                    rowset.append(field)
+                result.append(dict(rowset))
             return result
         else:
             a = self._generate_period_min(start, end)
@@ -179,7 +186,14 @@ class ValueSensor(models.Model):
             curs.execute(sql)
         except:
             return False
-        result = curs.fetchall()
+        query = curs.fetchall()
+        fieldnames = [name[0] for name in curs.description]
+        result = []
+        for row in query:
+            rowset = []
+            for field in zip(fieldnames, row):
+                rowset.append(field)
+            result.append(dict(rowset))
         return result
 
     def _get_mode_by_periods(self, var=5, periods=100) -> list or bool:
@@ -210,7 +224,14 @@ class ValueSensor(models.Model):
             curs.execute(sql)
         except:
             return False
-        result = curs.fetchall()
+        query = curs.fetchall()
+        fieldnames = [name[0] for name in curs.description]
+        result = []
+        for row in query:
+            rowset = []
+            for field in zip(fieldnames, row):
+                rowset.append(field)
+            result.append(dict(rowset))
         return result
 
 
