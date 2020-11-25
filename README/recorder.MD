@@ -24,6 +24,33 @@ http(s)://<servername>/recorder/structure/Workspace/
 ```
 http(s)://<servername>/recorder/structure/Workspace/
 ```
+
+- <a name="href_to_workarea">Для получения одного рабочего пространства со списком вложенны рабочих областей
+необходимо отправить ***GET*** запрос вида:</a>
+```
+http(s)://<servername>/recorder/structure/Workspace/<int:id>/
+```
+> id - идентификатор рабочего пространства
+
+После чего будет получен ответ вида:
+```
+[
+    {
+        "id": <int:id>,
+        "child": [{"id":<int:id_workarea>},... ,{"id":<int:id_workarea>}],
+        "name": <string:name>,
+        "parent": <int:userid>
+    },
+    .....
+    {
+        "id": <int:id>,
+        "child": [],
+        "name": <string:name>,
+        "parent": <int:userid>
+    }
+]
+```
+
 - Для обновления имени рабочего простраснства необходимо отправить ***PUT*** запрос на адрес:
 ```
 http(s)://<servername>/recorder/structure/Workspace/<id>/
@@ -66,6 +93,8 @@ http(s)://<servername>/recorder/structure/Workarea/
 ```
 > data - обязательное поле может быть пустой массив   
 > parent -  обязательное поле не может быть пустым  
+> data->value - обязательное поле
+> date->color - необязательное поле значение по умолчанию - #000000
 
 - Для получения списка **ВСЕХ** рабочих областей **ВСЕХ ПОЛЬЗОВАТЕЛЕЙ** необходимо отправить ***GET*** запрос на адрес:
 ```
@@ -106,6 +135,8 @@ http(s)://<servername>/recorder/structure/Workarea/<int:id>/
 ```
 > data - обязательное поле может быть пустой массив   
 > parent -  обязательное поле не может быть пустым  
+> data->value - обязательное поле
+> date->color - необязательное поле значение по умолчанию - #000000
 
 - Для удаления рабочей области необходимо отправить запрос ***DELETE***  на адрес:  
 ```
@@ -114,7 +145,7 @@ http(s)://<servername>/recorder/structure/Workarea/<int:id>/
 
 > где id  - идентификтор рабочей области  
 
-## Получение списка графиов 
+## Получение списка графиков 
 ##### для выподающего списка в окне Работа с графиками: "Рабочая область N"
 
 
@@ -123,3 +154,12 @@ http(s)://<servername>/recorder/structure/Workarea/<int:id>/
 http(s)://<servername>/recorder/structure/ValueSensor/
 ```
 > поле id этого запроса используется в создании рабочей области как id_valuesensor  
+
+## Получение данных по рабочего пространства (с данными для графиков)
+
+Для получения данных рабочей области необходимо отправить ***GET***  
+ запрос по адресу:
+ ```
+http(s)://<servername>/recorder/chart/workarea/?id=<int:id>  
+```
+> id - идентификатор рабочей области список получаем [тут](#href_to_workarea)

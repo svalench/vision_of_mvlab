@@ -7,11 +7,7 @@ from recorder.models import Workspace, Workarea, ValueSensor, WorkareaData
 from structure.serializer import SensorsSerializer
 
 
-class WorkspaceSerializer(serializers.ModelSerializer):
-    """класс сериализации для модели Workspace"""
-    class Meta:
-        model = Workspace
-        fields = '__all__'
+
 
 class WorkareaDataSerializer(serializers.ModelSerializer):
     """класс сериализации для модели WorkareaData"""
@@ -78,3 +74,10 @@ class WorkareaSerializer(serializers.ModelSerializer):
         # обновляем запись
         instance = super(WorkareaSerializer, self).update(instance, validated_data)
         return instance
+
+class WorkspaceSerializer(serializers.ModelSerializer):
+    child = WorkareaDataSerializer(source='workarea_set.all', read_only=True, many=True)
+    """класс сериализации для модели Workspace"""
+    class Meta:
+        model = Workspace
+        fields = '__all__'
