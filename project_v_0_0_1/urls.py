@@ -17,6 +17,7 @@ from django.contrib import admin
 from django.urls import path, include
 from api.router import router
 from structure.router import router1
+from recorder.router import router_recorder
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -26,5 +27,6 @@ urlpatterns = [
     path('settings/',include('structure.urls')),
     path('user/', include('users.urls')),
     path('recorder/', include('recorder.urls')),
+    path('recorder/structure/', include(router_recorder.urls)),
     path('dashboard/', include('api.urls')),
 ]
