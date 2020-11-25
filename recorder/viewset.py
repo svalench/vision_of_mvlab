@@ -1,3 +1,4 @@
+from rest_framework.decorators import permission_classes
 from rest_framework.exceptions import ValidationError
 
 from .serializer import *
@@ -6,13 +7,13 @@ from rest_framework import viewsets, status
 from rest_framework.permissions import IsAdminUser
 from rest_framework.response import Response
 
-
-
+@permission_classes([IsAuthenticated])
 class WorkspaceView(viewsets.ModelViewSet):
     queryset = Workspace.objects.all()
     serializer_class = WorkspaceSerializer
 
     def get_queryset(self):
+        """ переопределяем запрос к модели с условием"""
         return Workspace.objects.filter(parent_id=self.request.user.id)
 
     def create(self, request, *args, **kwargs):
@@ -31,33 +32,18 @@ class WorkspaceView(viewsets.ModelViewSet):
         serializer.is_valid(raise_exception=True)
         self.perform_update(serializer)
         if getattr(instance, '_prefetched_objects_cache', None):
-            # If 'prefetch_related' has been applied to a queryset, we need to
-            # forcibly invalidate the prefetch cache on the instance.
             instance._prefetched_objects_cache = {}
 
         return Response(serializer.data)
 
 
-    def get_permissions(self):
-        if self.request.method == 'GET':
-            self.permission_classes = [IsAuthenticated]
-        else:
-            self.permission_classes = [IsAuthenticated]
-        return super(WorkspaceView, self).get_permissions()
-
-
+@permission_classes([IsAuthenticated])
 class ValueSensorView(viewsets.ModelViewSet):
     queryset = ValueSensor.objects.all()
     serializer_class = ValueSensorSerializer
 
-    def get_permissions(self):
-        if self.request.method == 'GET':
-            self.permission_classes = [IsAuthenticated]
-        else:
-            self.permission_classes = [IsAuthenticated]
-        return super(ValueSensorView, self).get_permissions()
 
-
+@permission_classes([IsAuthenticated])
 class WorkareaView(viewsets.ModelViewSet):
     queryset = Workarea.objects.all()
     serializer_class = WorkareaSerializer
@@ -69,23 +55,9 @@ class WorkareaView(viewsets.ModelViewSet):
             queryset = queryset.filter(parent_id=parent)
         return queryset
 
-
-    def get_permissions(self):
-        if self.request.method == 'GET':
-            self.permission_classes = [IsAuthenticated]
-        else:
-            self.permission_classes = [IsAuthenticated]
-        return super(WorkareaView, self).get_permissions()
-
+@permission_classes([IsAuthenticated])
 class WorkareaDataView(viewsets.ModelViewSet):
     queryset = WorkareaData.objects.all()
     serializer_class = WorkareaDataSerializer
 
-
-    def get_permissions(self):
-        if self.request.method == 'GET':
-            self.permission_classes = [IsAuthenticated]
-        else:
-            self.permission_classes = [IsAuthenticated]
-        return super(WorkareaDataView, self).get_permissions()
 
