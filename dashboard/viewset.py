@@ -104,26 +104,54 @@ class EditionDayViews(APIView):
                 if d.name == 'EditionDay':
                     dash = d.name
         try:
-            art = globals()[dash].objects.get(date=date)
+            if globals()[dash].objects.filter(date=date).exists():
+                art = globals()[dash].objects.get(date=date)
+            else:
+                calculate_edition(date)
+                art = globals()[dash].objects.get(date=date)
             delt = timedelta(days=1)
             date_del = date-delt
-            art_del = globals()[dash].objects.get(date=date_del)
-            print(EditionDay.objects.get(date=date))
+            if globals()[dash].objects.filter(date=date_del).exists():
+                art_del = globals()[dash].objects.get(date=date_del)
+            else:
+                calculate_edition(date_del)
+                art_del = globals()[dash].objects.get(date=date_del)
+            if art_del.suitable != 0:
+                change_suitable = (((art.suitable/art_del.suitable)-1)*100)
+            else:
+                change_suitable = 0
+            if art_del.substandard != 0:
+                change_substandard = (((art.substandard/art_del.substandard)-1)*100)
+            else:
+                change_substandard = 0
+            if art_del.defect != 0:
+                change_defect = (((art.defect/art_del.defect)-1)*100)
+            else:
+                change_defect = 0
+            if art_del.flooded != 0:
+                change_flooded = (((art.flooded/art_del.flooded)-1)*100)
+            else:
+                change_flooded = 0
+            if art_del.sum != 0:
+                change_sum = (((art.sum/art_del.sum)-1)*100)
+            else:
+                change_sum = 0
             data = {
                 "suitable": art.suitable,
-                "change_suitable": (((art.suitable/art_del.suitable)-1)*100),
+                "change_suitable": change_suitable,
                 "substandard": art.substandard,
-                "change_substandard": (((art.substandard/art_del.substandard)-1)*100),
+                "change_substandard": change_substandard,
                 "defect": art.defect,
-                "change_defect": (((art.defect/art_del.defect)-1)*100),
+                "change_defect": change_defect,
                 "flooded": art.flooded,
-                "change_flooded": (((art.flooded/art_del.flooded)-1)*100),
+                "change_flooded": change_flooded,
                 "sum": art.sum,
-                "change_sum": (((art.sum/art_del.sum)-1)*100)
+                "change_sum": change_sum
             }
         except UnboundLocalError:
             data = 'not Role'
         return Response(data)
+
 
 #виджет «Выпуск панелей» для вкладки «месяц»
 @permission_classes([IsAuthenticated])
@@ -193,10 +221,16 @@ class EditionMonthViews(APIView):
             data = 'not Role'
         return Response(data)
 
+
+
+
 #виджет «Выпуск панелей» для вкладки «смена»
 @permission_classes([IsAuthenticated])
 class EditionShiftViews(APIView):
     pass
+
+
+
 
 
 #виджет «Суммарный расход» для вкладки «день»
@@ -209,7 +243,11 @@ class SumexpenseDayViews(APIView):
                 if d.name == 'SumexpenseDay':
                     dash = d.name
         try:
-            art = globals()[dash].objects.get(date=date)
+            if globals()[dash].objects.filter(date=date).exists():
+                art = globals()[dash].objects.get(date=date)
+            else:
+                calculate_sumexpense(date)
+                art = globals()[dash].objects.get(date=date)
             data = {
                 "iso": art.iso,
                 "pol": art.pol,
@@ -221,6 +259,9 @@ class SumexpenseDayViews(APIView):
         except UnboundLocalError:
             data = 'not Role'
         return Response(data)
+
+
+
 
 
 #виджет «Суммарный расход» для вкладки «месяц»
@@ -264,10 +305,17 @@ class SumexpenseMonthViews(APIView):
             data = 'not Role'
         return Response(data)
 
+
+
+
 #виджет «Суммарный расход» для вкладки «смена»
 @permission_classes([IsAuthenticated])
 class SumexpenseShiftViews(APIView):
     pass
+
+
+
+
 
 #виджет «Расход энергоресурсов» для вкладки «день»
 @permission_classes([IsAuthenticated])
@@ -279,7 +327,11 @@ class EnergyConsumptionDayViews(APIView):
                 if d.name == 'EnergyConsumptionDay':
                     dash = d.name
         try:
-            art = globals()[dash].objects.get(date=date)
+            if globals()[dash].objects.filter(date=date).exists():
+                art = globals()[dash].objects.get(date=date)
+            else:
+                calculate_energy_consumption(date)
+                art = globals()[dash].objects.get(date=date)
             data = {
                 "input1": art.input1,
                 "input2": art.input2,
@@ -288,6 +340,10 @@ class EnergyConsumptionDayViews(APIView):
         except UnboundLocalError:
             data = 'not Role'
         return Response(data)
+
+
+
+
 
 #виджет «Расход энергоресурсов» для вкладки «месяц»
 @permission_classes([IsAuthenticated])
@@ -323,10 +379,14 @@ class EnergyConsumptionMonthViews(APIView):
 
 
 
+
+
 #виджет «Расход энергоресурсов» для вкладки «смена»
 @permission_classes([IsAuthenticated])
 class EnergyConsumptionShiftViews(APIView):
     pass
+
+
 
 
 #виджет «Удельный расход на км» для вкладки «день»
