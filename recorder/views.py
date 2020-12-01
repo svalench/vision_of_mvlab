@@ -1,12 +1,11 @@
+from django.forms import model_to_dict
 from django.http import Http404
-from django.shortcuts import render
-
-# Create your views here.
 from rest_framework.decorators import permission_classes
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
+from recorder.models import Workarea, ValueSensor
 from structure.models import Department, Agreagat
 
 
@@ -46,3 +45,40 @@ class Recorder(APIView):
                 "corparation_name":agr.parent.parent.name
                     } for agr in Agreagat.objects.all()]
         return Response(deps)
+
+
+class ChartData(APIView):
+    """класс для вывода графиков по рабочим областям"""
+    def get(self, format=None):
+        id = self.request.query_params.get('id')
+        keys = self.request.query_params.get('key', None)
+        if(id):
+            area = Workarea.objects.get(pk=id)
+            result = {key: value for key,value in model_to_dict(area).items() if key!='data'}
+            a = self.__choice_method(area=area, keys=keys)
+            result['child'] = a
+            return Response(result)
+        else:
+            raise Http404
+
+    def __choice_method(self, area, keys=None):
+        """метод для выбора вывода данных за период по фильтру"""
+        a = []
+        for l in area.workareadata_set.all():
+            res = {key: value for key, value in model_to_dict(l).items()}
+            res['sensor_data'] = model_to_dict(ValueSensor.objects.get(pk=l.value.id))
+            if keys != None:
+                if (keys == "hour"):
+                    res['values'] = ValueSensor.objects.get(pk=l.value.id).get_last_hour()
+                elif (keys == "day"):
+                    res['values'] = ValueSensor.objects.get(pk=l.value.id).get_last_day()
+                elif (keys == "week"):
+                    res['values'] = ValueSensor.objects.get(pk=l.value.id).get_last_week()
+                elif (keys == "month"):
+                    res['values'] = ValueSensor.objects.get(pk=l.value.id).get_last_month()
+                else:
+                    res['values'] = ValueSensor.objects.get(pk=l.value.id).get_last_shift()
+            else:
+                res['values'] = ValueSensor.objects.get(pk=l.value.id).get_last_shift()
+            a.append(res)
+        return a

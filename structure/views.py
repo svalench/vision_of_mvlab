@@ -48,19 +48,18 @@ class Parametrs(APIView):
             if s in BASE_STRUCTURE[data['structure']['levlel_0']]:
                 break
             a = globals()[s]()
-            print(a)
             if last_id!=0:
                 a.parent_id = last_id
             if s == 'Reserv_1':
                 a.save(True)
             else:
-                a.save()
+                a.save(True)
             if last_id==0:
                 start_id = a.id
             last_id = a.id
         ob.start_object = start_id
         ob.save()
-        return Response({'data': 'success'})
+        return Response({'data': 'success'},status=201)
 
     @api_view(('GET',))
     def get_structure(self):
@@ -68,10 +67,10 @@ class Parametrs(APIView):
         ob = FirstObject.objects.all().first()
         if ob:
             structure = {
-                'name': ob['name'],
-                'customer': ob['customer'],
-                'contract': ob['contract'],
-                'structure': ob['structure']
+                'name': ob.name,
+                'customer': ob.customer,
+                'contract': ob.contract,
+                'structure': ob.structure
             }
         else:
             structure = {'result': 'empty'}
@@ -83,27 +82,28 @@ class Parametrs(APIView):
         data = self.data
         dep = Department(
             name=data['name'],
-            factory_id=data['factory_id']
+            parent_id=data['factory_id']
         )
         dep.save()
-        k = 1
+        k = 0
         shift = []
         for s in data['shifts']:
-            shift[k] = Shift(
+            shift.append(Shift(
                 name=str(k),
-                dep_id=s['department_id'],
+                parent_id=dep.id,
                 start=s['start'],
                 end=s['end']
-            )
+            ))
             shift[k].save()
             for l in s['lanch']:
                 lunch = Lunch(
+                    parent_id=shift[k].id,
                     start=l['start'],
                     end=l['end']
                 )
                 lunch.save()
             k += 1
-        return Response({'result': 'success'})
+        return Response({'result': 'success'}, status=201)
 
 
 @permission_classes([IsAuthenticated])

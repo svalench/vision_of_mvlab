@@ -4,6 +4,16 @@ from structure.models import Sensors
 from datetime import datetime
 from django.utils.translation import ugettext_lazy as _
 
+from users.models import UserP
+
+
+class Workspace(models.Model):
+    """
+    Сущность для сохранения рабочих пространств для пользователя в рекордере
+    """
+    name = models.CharField(max_length=255, default='workspace')
+    parent = models.ForeignKey(UserP, on_delete=models.CASCADE)
+
 
 class ValueSensor(models.Model):
     """класс предназначен для связи модели структуры Джанго и модуля сбора данных
@@ -57,23 +67,39 @@ class ValueSensor(models.Model):
     def get_last_shift(self) -> object:
         """метод возвращает данные за текущую смену"""
         now = datetime.now().time().strftime('%H:%M:%S')
-        now_t = datetime.now().time()
-        shifts = self.sensor.agregat.parent.shift_set.filter(start__lte=now, end__gt=now)
+        now_t = datetime.now()
+        shifts = self.sensor.parent.parent.shift_set.filter(start__lte=now, end__gt=now)
+        if not shifts:
+            return self.get_last_day()
         start = datetime(now_t.year, now_t.month, now_t.day, shifts[0].start.hour, shifts[0].start.minute, 0)
         end = datetime(now_t.year, now_t.month, now_t.day, shifts[0].end.hour, shifts[0].end.minute, 0)
         return self._time_conversion(start=start, end=end)
 
     def get_last_day(self) -> object:
         """метод возвращает данные за последний день"""
-        now = datetime.now().time()
-        start = datetime(now.year, now.month, now.day, now.hour - 24, now.minute, 0)
+        now = datetime.now()
+        start = datetime(now.year, now.month, now.day-1, now.hour, now.minute, 0)
+        end = datetime(now.year, now.month, now.day, now.hour, now.minute, 0)
+        return self._time_conversion(start=start, end=end)
+
+    def get_last_week(self) -> object:
+        """метод возвращает данные за последнию неделю"""
+        now = datetime.now()
+        start = datetime(now.year, now.month, now.day-7, now.hour, now.minute, 0)
+        end = datetime(now.year, now.month, now.day, now.hour, now.minute, 0)
+        return self._time_conversion(start=start, end=end)
+
+    def get_last_month(self) -> object:
+        """метод возвращает данные за последний месяц"""
+        now = datetime.now()
+        start = datetime(now.year, now.month-1, now.day, now.hour, now.minute, 0)
         end = datetime(now.year, now.month, now.day, now.hour, now.minute, 0)
         return self._time_conversion(start=start, end=end)
 
     def get_last_hour(self) -> object:
         """возвращает значения за последний час"""
-        now = datetime.now().time()
-        start = datetime(now.year, now.month, now.day, now.hour, now.minute - 60, 0)
+        now = datetime.now()
+        start = datetime(now.year, now.month, now.day, now.hour-1, now.minute, 0)
         end = datetime(now.year, now.month, now.day, now.hour, now.minute, 0)
         return self._time_conversion(start=start, end=end)
 
@@ -95,16 +121,23 @@ class ValueSensor(models.Model):
         :param float end: конец периода
         :return: list
         """
-        if (((end - start) / 60) < 100):
+        if (((end - start) / 60) < 3000):
             curs = connection.cursor()
             curs.execute(
                 "SELECT * FROM `" + str(self.table_name) + "` WHERE now_time >= " +
                 str(start) + " AND now_time<" + str(end) + ";")
-            result = curs.fetchall()
+            query = curs.fetchall()
+            fieldnames = [name[0] for name in curs.description]
+            result = []
+            for row in query:
+                rowset = []
+                for field in zip(fieldnames, row):
+                    rowset.append(field)
+                result.append(dict(rowset))
             return result
         else:
             a = self._generate_period_min(start, end)
-            return self._get_mode_by_periods(var=a['var'], periods=a['period'])
+            return self._get_mode_by_periods(var=a['var'], periods=a['periods'])
 
     def _generate_period_min(self, start, end) -> dict:
         """
@@ -169,7 +202,14 @@ class ValueSensor(models.Model):
             curs.execute(sql)
         except:
             return False
-        result = curs.fetchall()
+        query = curs.fetchall()
+        fieldnames = [name[0] for name in curs.description]
+        result = []
+        for row in query:
+            rowset = []
+            for field in zip(fieldnames, row):
+                rowset.append(field)
+            result.append(dict(rowset))
         return result
 
     def _get_mode_by_periods(self, var=5, periods=100) -> list or bool:
@@ -200,5 +240,44 @@ class ValueSensor(models.Model):
             curs.execute(sql)
         except:
             return False
-        result = curs.fetchall()
+        query = curs.fetchall()
+        fieldnames = [name[0] for name in curs.description]
+        result = []
+        for row in query:
+            rowset = []
+            for field in zip(fieldnames, row):
+                rowset.append(field)
+            result.append(dict(rowset))
         return result
+
+
+class Workarea(models.Model):
+    """
+    Сущность для определения рабочего пространства
+
+     Attributes
+    ============
+
+    - name - название рабочего пространнства
+    - parent - FK для рабочей области
+    - data - FK для связи точки с данными
+
+     Methods
+    ========
+
+    none
+
+    """
+    name = models.CharField(max_length=255, default='workarea')
+    parent = models.ForeignKey(Workspace, on_delete=models.CASCADE)
+    data = models.ManyToManyField(ValueSensor, through='WorkareaData',through_fields=('workarea', 'value'),)
+
+
+
+class WorkareaData(models.Model):
+    """
+    сущнсть для связи многие ко многим сущности рабочего пространнства и сущнсть данных сенсора
+    """
+    workarea = models.ForeignKey(Workarea, on_delete=models.CASCADE)
+    value = models.ForeignKey(ValueSensor, on_delete=models.CASCADE)
+    color = models.CharField(max_length=50, default='#000000')
