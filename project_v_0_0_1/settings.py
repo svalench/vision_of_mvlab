@@ -153,6 +153,14 @@ dist_table = {
         "input1": "in1",
         "input2": "in2",
         "gas": "gas1"
+    },
+    "SpecificConsumptionDay": {
+        "iso": ['iso0', 'iso2'],
+        "pol": ['pol1', 'pol2'],
+        "pen": ['pen1', 'pen2'],
+        "kat1": ['kat1'],
+        "kat2": ['kat2'],
+        "kat3": ['kat3']
     }
 }
 
