@@ -1,7 +1,7 @@
 from django.core.exceptions import ValidationError
 from django.db import models, connection
 from structure.models import Sensors
-from datetime import datetime
+import datetime
 from django.utils.translation import ugettext_lazy as _
 
 from users.models import UserP
@@ -66,41 +66,43 @@ class ValueSensor(models.Model):
 
     def get_last_shift(self) -> object:
         """метод возвращает данные за текущую смену"""
-        now = datetime.now().time().strftime('%H:%M:%S')
-        now_t = datetime.now()
+        now = datetime.datetime.now().time().strftime('%H:%M:%S')
+        now_t = datetime.datetime.now()
         shifts = self.sensor.parent.parent.shift_set.filter(start__lte=now, end__gt=now)
         if not shifts:
             return self.get_last_day()
-        start = datetime(now_t.year, now_t.month, now_t.day, shifts[0].start.hour, shifts[0].start.minute, 0)
-        end = datetime(now_t.year, now_t.month, now_t.day, shifts[0].end.hour, shifts[0].end.minute, 0)
+        start = datetime.datetime(now_t.year, now_t.month, now_t.day, shifts[0].start.hour, shifts[0].start.minute, 0)
+        end = datetime.datetime(now_t.year, now_t.month, now_t.day, shifts[0].end.hour, shifts[0].end.minute, 0)
         return self._time_conversion(start=start, end=end)
 
     def get_last_day(self) -> object:
         """метод возвращает данные за последний день"""
-        now = datetime.now()
-        start = datetime(now.year, now.month, now.day-1, now.hour, now.minute, 0)
-        end = datetime(now.year, now.month, now.day, now.hour, now.minute, 0)
+        now = datetime.datetime.now()
+        end = datetime.datetime(now.year, now.month, now.day, now.hour, now.minute, 0)
+        start = end - datetime.timedelta(days=1)
         return self._time_conversion(start=start, end=end)
 
     def get_last_week(self) -> object:
         """метод возвращает данные за последнию неделю"""
-        now = datetime.now()
-        start = datetime(now.year, now.month, now.day-7, now.hour, now.minute, 0)
-        end = datetime(now.year, now.month, now.day, now.hour, now.minute, 0)
+        now = datetime.datetime.now()
+        end = datetime.datetime(now.year, now.month, now.day, now.hour, now.minute, 0)
+        start = end - datetime.timedelta(days=7)
         return self._time_conversion(start=start, end=end)
 
     def get_last_month(self) -> object:
         """метод возвращает данные за последний месяц"""
-        now = datetime.now()
-        start = datetime(now.year, now.month-1, now.day, now.hour, now.minute, 0)
-        end = datetime(now.year, now.month, now.day, now.hour, now.minute, 0)
+        now = datetime.datetime.now()
+        end = datetime.datetime(now.year, now.month, now.day, now.hour, now.minute, 0)
+        start = end - datetime.timedelta(days=30)
         return self._time_conversion(start=start, end=end)
 
     def get_last_hour(self) -> object:
         """возвращает значения за последний час"""
-        now = datetime.now()
-        start = datetime(now.year, now.month, now.day, now.hour-1, now.minute, 0)
-        end = datetime(now.year, now.month, now.day, now.hour, now.minute, 0)
+        now = datetime.datetime.now()
+        now = now - datetime.timedelta(hours=4)
+        end = datetime.datetime(now.year, now.month, now.day, now.hour, now.minute, 0)
+        start = end - datetime.timedelta(hours=1)
+
         return self._time_conversion(start=start, end=end)
 
     def _time_conversion(self, start, end) -> object:
@@ -110,22 +112,24 @@ class ValueSensor(models.Model):
         :param datetime end: конец периода
 
         """
-        start = (start - datetime(1970, 1, 1)).total_seconds()
-        end = (end - datetime(1970, 1, 1)).total_seconds()
+        f = '%Y-%m-%d %H:%M:%S'
+        start = start.strftime(f)
+        end = end.strftime(f)
         return self.get_period(start=start, end=end)
 
     def get_period(self, start, end) -> list:
         """метод возвращает данные за период start - end
 
-        :param float start: начало периода
-        :param float end: конец периода
+        :param datetime start: начало периода
+        :param datetime end: конец периода
         :return: list
         """
-        if (((end - start) / 60) < 3000):
+        f = '%Y-%m-%d %H:%M:%S'
+        if (((datetime.datetime.strptime(end,f) - datetime.datetime.strptime(start,f))) < datetime.timedelta(hours=2)):
             curs = connection.cursor()
             curs.execute(
-                "SELECT * FROM `" + str(self.table_name) + "` WHERE now_time >= " +
-                str(start) + " AND now_time<" + str(end) + ";")
+                f"""SELECT * FROM {str(self.table_name)} WHERE now_time >= '{
+                str(start)}' AND now_time<'{str(end)}';""")
             query = curs.fetchall()
             fieldnames = [name[0] for name in curs.description]
             result = []
@@ -147,8 +151,9 @@ class ValueSensor(models.Model):
         :param real end: конец периода
         :return: dict {'var':real,'periods':real}
         """
+        f = '%Y-%m-%d %H:%M:%S'
         points = 100  # количество точек
-        minutes = (end - start) / 60
+        minutes = (datetime.datetime.strptime(end,f)- datetime.datetime.strptime(start,f)).total_seconds() / 60
         interval = minutes / points
         return {'var': interval, 'periods': minutes}
 
@@ -230,15 +235,16 @@ class ValueSensor(models.Model):
             self.table_name) + ")+(n || 'minutes')::interval end_time " \
                                "from generate_series(0,-" + str(periods) + ",-" + str(var) + ") n" \
                                                                                              ")" \
-                                                                                             "SELECT a.start_time, a.end_time, (SELECT mode() WITH GROUP (ORDER BY value) as modevar" \
-                                                                                             " FROM " + str(
-            self.table_name) + " r WHERE  r.now_time>=f.start_time and r.now_time<f.end_time) as value from " + str(
-            self.table_name) + " b right join" \
+            "SELECT a.start_time, a.end_time, (SELECT mode() WITHIN GROUP (ORDER BY value) as modevar" \
+            " FROM " + str(self.table_name) + \
+            " r WHERE  r.now_time>=a.start_time and r.now_time<a.end_time) as value from " + str(
+            self.table_name) + " b right join " \
                                "period_t a ON b.now_time>=a.start_time AND b.now_time<a.end_time GROUP BY a.start_time, a.end_time" \
-                               "ORDER BY a.start_time desc"
+                               " ORDER BY a.start_time desc"
         try:
             curs.execute(sql)
-        except:
+        except Exception as a:
+            print(a)
             return False
         query = curs.fetchall()
         fieldnames = [name[0] for name in curs.description]
