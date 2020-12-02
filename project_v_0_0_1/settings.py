@@ -87,9 +87,12 @@ DATABASES = {
     #     'NAME': str(BASE_DIR / 'dbs1213.sqlite3'),
     # }
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': str(BASE_DIR / 'dbs123.sqlite3'),
-
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': 'db1',
+        'USER': 'lex',
+        'PASSWORD': '123',
+        'HOST': '127.0.0.1',
+        'PORT': '5432',
     }
 }
 
