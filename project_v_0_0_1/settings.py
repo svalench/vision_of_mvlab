@@ -84,7 +84,7 @@ WSGI_APPLICATION = 'project_v_0_0_1.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': str(BASE_DIR / 'dbs1213.sqlite3'),
+        'NAME': str(BASE_DIR / 'dbs123.sqlite3'),
     }
 }
 
@@ -139,6 +139,31 @@ USE_TZ = True
 BASE_STRUCTURE = (
         'Reserv_1', 'Reserv_2', 'Corparation', 'Company', 'Factory', 'Department', 'Agreagat', 'Sensors')
 
+
+
+
+'''
+dist_table:
+    "EditionDay" - хранится имя таблицы, вне django, с данными для виджета "Выпуск панелей"
+    "SumexpenseDay" - словарь хронящий перечень расходуемых веществ для виджета "Суммарный расход":
+        "iso" - хранятся имена таблиц с данными по Изоцианату
+        "pol" - хранятся имена таблиц с данными по Полиолу
+        "pen" - хранятся имена таблиц с данными по Пентану
+        "kat1" - хранятся имена таблиц с данными по Катализатору 1
+        "kat2" - хранятся имена таблиц с данными по Катализатору 1
+        "kat3" - хранятся имена таблиц с данными по Катализатору 1
+    "EnergyConsumptionDay" - словарь с перечнем энерго ресурсов для виджета "Расход энергоресурсов":
+        "input1" - хранит имя таблицы с данными по Вводу 1
+        "input2" - хранит имя таблицы с данными по Вводу 2
+        "gas" - хранит имя таблицы с данными по Газу
+    "SpecificConsumptionDay" - словарь хронящий перечень расходуемых веществ для виджета "Удельный расход на км":
+        "iso" - хранятся имена таблиц с данными по Изоцианату
+        "pol" - хранятся имена таблиц с данными по Полиолу
+        "pen" - хранятся имена таблиц с данными по Пентану
+        "kat1" - хранятся имена таблиц с данными по Катализатору 1
+        "kat2" - хранятся имена таблиц с данными по Катализатору 1
+        "kat3" - хранятся имена таблиц с данными по Катализатору 1
+'''
 dist_table = {
     "EditionDay": "Edition",
     "SumexpenseDay": {
@@ -149,7 +174,7 @@ dist_table = {
         "kat2": ['kat2'],
         "kat3": ['kat3']
     },
-    "EnergyConsumptionDay":{
+    "EnergyConsumptionDay": {
         "input1": "in1",
         "input2": "in2",
         "gas": "gas1"
@@ -161,6 +186,53 @@ dist_table = {
         "kat1": ['kat1'],
         "kat2": ['kat2'],
         "kat3": ['kat3']
+    },
+    "Taldefax": {
+        "TransitionReadings": {
+            "methane": "oiugb",
+            "сarbon dioxide": "",
+            "oxygen": "",
+            "pressure in": "",
+            "pressure out": "",
+            "consumption": "",
+            "temperature": ""
+        },
+        "GenerationOfElectricity": {
+            "machine 1": "",
+            "machine 2": "",
+            "machine 3": "",
+            "machine 4": ""
+        },
+        "Mode": "",
+        "Damper": {
+            "Dam1": "",
+            "Dam2": ""
+        },
+        "Pump": {
+            "Status": "",
+            "Alarm": ""
+        },
+        "Compress": {
+            "compress1": {
+                "Status": "",
+                "Alarm": ""
+            },
+            "compress2": {
+                "Status": "",
+                "Alarm": ""
+            },
+            "compress3": {
+                "Status": "",
+                "Alarm": ""
+            }
+        },
+        "Machine": {
+            "generator1": "",
+            "generator2": "",
+            "generator3": "",
+            "generator4": "",
+            "torch": ""
+        }
     }
 }
 

@@ -6,7 +6,7 @@ from users.models import UserP
 from datetime import datetime, timedelta
 from rest_framework.decorators import permission_classes
 from rest_framework.permissions import IsAuthenticated
-# from django.db import connection
+
 
 
 
@@ -118,9 +118,7 @@ class EditionDayViews(APIView):
                 art_del = globals()[dash].objects.get(date=date_del)
             if art_del.suitable != 0:
                 change_suitable = (((art.suitable/art_del.suitable)-1)*100)
-                print('11')
             else:
-                print('222')
                 change_suitable = 0
             if art_del.substandard != 0:
                 change_substandard = (((art.substandard/art_del.substandard)-1)*100)
@@ -347,6 +345,7 @@ class SumexpenseShiftViews(APIView):
 @permission_classes([IsAuthenticated])
 class EnergyConsumptionDayViews(APIView):
     def get(self, request, date):
+
         role = UserP.objects.get(id=request.user.pk).role_set.all()
         for r in role:
             for d in r.dashboard.all():
