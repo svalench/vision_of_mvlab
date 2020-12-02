@@ -257,6 +257,33 @@ class ValueSensor(models.Model):
         return result
 
 
+    def get_mode_by_periods_interval(self, start, end, interval=20) -> list or bool:
+
+        curs = connection.cursor()
+        sql = "with period_t as (SELECT n as ti from generate_series('" + str(start) + "'::timestamp,'" + str(
+                end) + "'::timestamp,'" + str(interval) + " minute'::interval) n)" \
+            "SELECT ti as now_time, (SELECT mode() WITHIN GROUP (ORDER BY value) as modevar" \
+            " FROM " + str(self.table_name) + \
+            " r WHERE  r.now_time>=ti and r.now_time<(ti+('"+str(interval)+" minutes'::interval))) as value from " + str(
+            self.table_name) + " b right join " \
+                               "period_t a ON b.now_time>=ti AND b.now_time<(ti+('"+str(interval)+" minutes'::interval)) GROUP BY ti" \
+                               " ORDER BY ti desc"
+        try:
+            curs.execute(sql)
+        except Exception as a:
+            print(a)
+            return False
+        query = curs.fetchall()
+        fieldnames = [name[0] for name in curs.description]
+        result = []
+        for row in query:
+            rowset = []
+            for field in zip(fieldnames, row):
+                rowset.append(field)
+            result.append(dict(rowset))
+        return result
+
+
 class Workarea(models.Model):
     """
     Сущность для определения рабочего пространства
