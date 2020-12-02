@@ -248,3 +248,9 @@ http(s)://<servername>/recorder/chart/workarea/?id=<int:id>
 |```/recorder/chart/workarea/?id=<int:id>&key=day```    |   день        |Вернет данные за последний день    |
 |```/recorder/chart/workarea/?id=<int:id>&key=week```   |   неделя      |Вернет данные за последнию неделю  |
 |```/recorder/chart/workarea/?id=<int:id>&key=month```  |   месяц       |Вернет данные за последний месяц   |
+
+Get data from to
+```
+http(s)://<servername>/recorder/chart/workarea/?start=<str:YYYY:MM:DD HH:mm:SS>?end=<str:YYYY:MM:DD HH:mm:SS>> 
+```
+returned period from start to end time. If value in period is None. Script will be return value by null
