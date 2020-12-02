@@ -116,7 +116,7 @@ class Substance(models.Model):
 
     def calculate(self, date):
         '''
-        Забись данных в таблицу Django остатка по дате
+        Запись данных в таблицу Django остатка по дате
 
         :param date date: дата за которую извлекаются данные
         '''
@@ -549,3 +549,5 @@ class SpecificConsumptionDay(models.Model):
     kat2 = models.FloatField()
     kat3 = models.FloatField()
     date = models.DateField(auto_now=False, auto_now_add=False, unique=True)
+
+
