@@ -1,6 +1,7 @@
 from django.forms import model_to_dict
 from django.http import Http404
 from rest_framework.decorators import permission_classes
+from rest_framework.exceptions import ValidationError
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -53,7 +54,10 @@ class ChartData(APIView):
         id = self.request.query_params.get('id')
         keys = self.request.query_params.get('key', None)
         if(id):
-            area = Workarea.objects.get(pk=id)
+            try:
+                area = Workarea.objects.get(pk=id)
+            except Workarea.DoesNotExist:
+                raise ValidationError("Not Found Workarea with pk %s"%id)
             result = {key: value for key,value in model_to_dict(area).items() if key!='data'}
             a = self.__choice_method(area=area, keys=keys)
             result['child'] = a
