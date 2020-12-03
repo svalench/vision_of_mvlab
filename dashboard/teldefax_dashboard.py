@@ -59,7 +59,10 @@ class TransitionReadings(object):
         a = self.__selectfrom(dist_table['Taldefax']['TransitionReadings']['methane'])
         if a is None:
             a = [0]
-        return a[0]
+        if type(a[0]) == str:
+            return a
+        else:
+            return a[0]
 
     def carbondioxide(self):
         '''
@@ -68,7 +71,10 @@ class TransitionReadings(object):
         a = self.__selectfrom(dist_table['Taldefax']['TransitionReadings']['сarbon dioxide'])
         if a is None:
             a = [0]
-        return a[0]
+        if type(a[0]) == str:
+            return a
+        else:
+            return a[0]
 
     def oxygen(self):
         '''
@@ -77,7 +83,10 @@ class TransitionReadings(object):
         a = self.__selectfrom(dist_table['Taldefax']['TransitionReadings']['oxygen'])
         if a is None:
             a = [0]
-        return a[0]
+        if type(a[0]) == str:
+            return a
+        else:
+            return a[0]
 
     def pressure_in(self):
         '''
@@ -86,7 +95,10 @@ class TransitionReadings(object):
         a = self.__selectfrom(dist_table['Taldefax']['TransitionReadings']['pressure in'])
         if a is None:
             a = [0]
-        return a[0]
+        if type(a[0]) == str:
+            return a
+        else:
+            return a[0]
 
     def pressure_out(self):
         '''
@@ -95,7 +107,10 @@ class TransitionReadings(object):
         a = self.__selectfrom(dist_table['Taldefax']['TransitionReadings']['pressure out'])
         if a is None:
             a = [0]
-        return a[0]
+        if type(a[0]) == str:
+            return a
+        else:
+            return a[0]
 
     def consumption(self):
         '''
@@ -104,7 +119,10 @@ class TransitionReadings(object):
         a = self.__selectfrom(dist_table['Taldefax']['TransitionReadings']['consumption'])
         if a is None:
             a = [0]
-        return a[0]
+        if type(a[0]) == str:
+            return a
+        else:
+            return a[0]
 
     def temperature(self):
         '''
@@ -113,7 +131,10 @@ class TransitionReadings(object):
         a = self.__selectfrom(dist_table['Taldefax']['TransitionReadings']['temperature'])
         if a is None:
             a = [0]
-        return a[0]
+        if type(a[0]) == str:
+            return a
+        else:
+            return a[0]
 
 
 
@@ -154,7 +175,10 @@ class GenerationOfElectricity(object):
         a = self.__selectfrom(dist_table['Taldefax']['GenerationOfElectricity']['machine 1'])
         if a is None:
             a = [0]
-        return a[0]
+        if type(a[0]) == str:
+            return a
+        else:
+            return a[0]
 
     def machine2(self):
         '''
@@ -163,7 +187,10 @@ class GenerationOfElectricity(object):
         a = self.__selectfrom(dist_table['Taldefax']['GenerationOfElectricity']['machine 2'])
         if a is None:
             a = [0]
-        return a[0]
+        if type(a[0]) == str:
+            return a
+        else:
+            return a[0]
 
     def machine3(self):
         '''
@@ -172,7 +199,10 @@ class GenerationOfElectricity(object):
         a = self.__selectfrom(dist_table['Taldefax']['GenerationOfElectricity']['machine 3'])
         if a is None:
             a = [0]
-        return a[0]
+        if type(a[0]) == str:
+            return a
+        else:
+            return a[0]
 
     def machine4(self):
         '''
@@ -181,13 +211,32 @@ class GenerationOfElectricity(object):
         a = self.__selectfrom(dist_table['Taldefax']['GenerationOfElectricity']['machine 4'])
         if a is None:
             a = [0]
-        return a[0]
+        if type(a[0]) == str:
+            return a
+        else:
+            return a[0]
 
     def sum(self):
         '''
         Возвращает сумму мощностей 4-х машин
         '''
-        a = self.machine1() + self.machine2() + self.machine3() + self.machine4()
+        if type(self.machine1()) == str:
+            m1 = 0
+        else:
+            m1 = self.machine1()
+        if type(self.machine2()) == str:
+            m2 = 0
+        else:
+            m2 = self.machine2()
+        if type(self.machine3()) == str:
+            m3 = 0
+        else:
+            m3 = self.machine3()
+        if type(self.machine4()) == str:
+            m4 = 0
+        else:
+            m4 = self.machine4()
+        a = m1 + m2 + m3 + m4
         return a
 
 class Status(object):
@@ -232,61 +281,82 @@ class Status(object):
         Возвращает информацию о режиме работы
         '''
         a = self.__selectfrom(dist_table['Taldefax']['Mode'])
-        if a[0] == 1:
-            k = "Автоматический режим"
+        if a == "Таблица не найдена":
+            return a
         else:
-            k = "Ручной режим"
-        a = {
-            "status": a[0],
-            "text": k
-        }
-        return a
+            if a[0] == 1:
+                k = "Автоматический режим"
+            else:
+                k = "Ручной режим"
+            a = {
+                "status": a[0],
+                "text": k
+            }
+            return a
 
     def damper1(self):
         '''
         Возвращает информацию о состаянии задвижки 1
         '''
         a = self.__selectfrom(dist_table['Taldefax']['Damper']['Dam1'])
-        if a[0] == 1:
-            k = "Открыта"
+        if a == "Таблица не найдена":
+            return a
         else:
-            k = "Закрыта"
-        a = {
-            "status": a[0],
-            "text": k
-        }
-        return a
+            if a[0] == 1:
+                k = "Открыта"
+            else:
+                k = "Закрыта"
+            a = {
+                "status": a[0],
+                "text": k
+            }
+            return a
 
     def damper2(self):
         '''
         Возвращает информацию о состаянии задвижки 2
         '''
         a = self.__selectfrom(dist_table['Taldefax']['Damper']['Dam2'])
-        if a[0] == 1:
-            k = "Открыта"
+        if a == "Таблица не найдена":
+            return a
         else:
-            k = "Закрыта"
-        a = {
-            "status": a[0],
-            "text": k
-        }
-        return a
+            if a[0] == 1:
+                k = "Открыта"
+            else:
+                k = "Закрыта"
+            a = {
+                "status": a[0],
+                "text": k
+            }
+            return a
 
     def pump(self):
         '''
         Возвращает информацию о состаянии насоса
         '''
         b = self.__selectfrom(dist_table['Taldefax']['Pump']['Status'])
-        if b[0] == 1:
-            k = "Работа"
+        k = "Таблица не найдена"
+        if b != "Таблица не найдена":
+            if b[0] == 1:
+                k = "Работа"
+                work = b[0]
+            else:
+                k = "Остановлен"
+                work = b[0]
         else:
-            k = "Остановлен"
+            work = "Таблица не найдена"
         a = self.__selectfrom(dist_table['Taldefax']['Pump']['Alarm'])
-        if a[0] == 1:
-            k = "Авария"
+        if a != "Таблица не найдена":
+            if a[0] == 1:
+                k = "Авария"
+                alarm = a[0]
+            else:
+                alarm = a[0]
+        else:
+            alarm = "Таблица не найдена"
         a = {
-            "alarm": a[0],
-            "work": b[0],
+            "alarm": alarm,
+            "work": work,
             "text": k
         }
         return a
@@ -296,16 +366,28 @@ class Status(object):
         Возвращает информацию о состаянии компрессора 1
         '''
         b = self.__selectfrom(dist_table['Taldefax']['Compress']['compress1']['Status'])
-        if b[0] == 1:
-            k = "Работа"
+        k = "Таблица не найдена"
+        if b != "Таблица не найдена":
+            if b[0] == 1:
+                k = "Работа"
+                work = b[0]
+            else:
+                k = "Остановлен"
+                work = b[0]
         else:
-            k = "Остановлен"
+            work = "Таблица не найдена"
         a = self.__selectfrom(dist_table['Taldefax']['Compress']['compress1']['Alarm'])
-        if a[0] == 1:
-            k = "Авария"
+        if a != "Таблица не найдена":
+            if a[0] == 1:
+                k = "Авария"
+                alarm = a[0]
+            else:
+                alarm = a[0]
+        else:
+            alarm = "Таблица не найдена"
         a = {
-            "alarm": a[0],
-            "work": b[0],
+            "alarm": alarm,
+            "work": work,
             "text": k
         }
         return a
@@ -315,16 +397,28 @@ class Status(object):
         Возвращает информацию о состаянии компрессора 2
         '''
         b = self.__selectfrom(dist_table['Taldefax']['Compress']['compress2']['Status'])
-        if b[0] == 1:
-            k = "Работа"
+        k = "Таблица не найдена"
+        if b != "Таблица не найдена":
+            if b[0] == 1:
+                k = "Работа"
+                work = b[0]
+            else:
+                k = "Остановлен"
+                work = b[0]
         else:
-            k = "Остановлен"
+            work = "Таблица не найдена"
         a = self.__selectfrom(dist_table['Taldefax']['Compress']['compress2']['Alarm'])
-        if a[0] == 1:
-            k = "Авария"
+        if a != "Таблица не найдена":
+            if a[0] == 1:
+                k = "Авария"
+                alarm = a[0]
+            else:
+                alarm = a[0]
+        else:
+            alarm = "Таблица не найдена"
         a = {
-            "alarm": a[0],
-            "work": b[0],
+            "alarm": alarm,
+            "work": work,
             "text": k
         }
         return a
@@ -334,16 +428,28 @@ class Status(object):
         Возвращает информацию о состаянии компрессора 3
         '''
         b = self.__selectfrom(dist_table['Taldefax']['Compress']['compress3']['Status'])
-        if b[0] == 1:
-            k = "Работа"
+        k = "Таблица не найдена"
+        if b != "Таблица не найдена":
+            if b[0] == 1:
+                k = "Работа"
+                work = b[0]
+            else:
+                k = "Остановлен"
+                work = b[0]
         else:
-            k = "Остановлен"
+            work = "Таблица не найдена"
         a = self.__selectfrom(dist_table['Taldefax']['Compress']['compress3']['Alarm'])
-        if a[0] == 1:
-            k = "Авария"
+        if a != "Таблица не найдена":
+            if a[0] == 1:
+                k = "Авария"
+                alarm = a[0]
+            else:
+                alarm = a[0]
+        else:
+            alarm = "Таблица не найдена"
         a = {
-            "alarm": a[0],
-            "work": b[0],
+            "alarm": alarm,
+            "work": work,
             "text": k
         }
         return a
@@ -353,72 +459,87 @@ class Status(object):
         Возвращает информацию о состаянии генератора 1
         '''
         a = self.__selectfrom(dist_table['Taldefax']['Machine']['generator1'])
-        if a[0] == 1:
-            k = "Авария Остановлен"
+        if a == "Таблица не найдена":
+            return a
         else:
-            k = "Работа Генерация"
-        a = {
-            "status": a[0],
-            "text": k
-        }
-        return a
+            if a[0] == 1:
+                k = "Авария Остановлен"
+            else:
+                k = "Работа Генерация"
+            a = {
+                "status": a[0],
+                "text": k
+            }
+            return a
 
     def generator2(self):
         '''
         Возвращает информацию о состаянии генератора 2
         '''
         a = self.__selectfrom(dist_table['Taldefax']['Machine']['generator2'])
-        if a[0] == 1:
-            k = "Авария Остановлен"
+        if a == "Таблица не найдена":
+            return a
         else:
-            k = "Работа Генерация"
-        a = {
-            "status": a[0],
-            "text": k
-        }
-        return a
+            if a[0] == 1:
+                k = "Авария Остановлен"
+            else:
+                k = "Работа Генерация"
+            a = {
+                "status": a[0],
+                "text": k
+            }
+            return a
 
     def generator3(self):
         '''
         Возвращает информацию о состаянии генератора 3
         '''
         a = self.__selectfrom(dist_table['Taldefax']['Machine']['generator3'])
-        if a[0] == 1:
-            k = "Авария Остановлен"
+        if a == "Таблица не найдена":
+            return a
         else:
-            k = "Работа Генерация"
-        a = {
-            "status": a[0],
-            "text": k
-        }
-        return a
+            if a[0] == 1:
+                k = "Авария Остановлен"
+            else:
+                k = "Работа Генерация"
+            a = {
+                "status": a[0],
+                "text": k
+            }
+            return a
 
     def generator4(self):
         '''
         Возвращает информацию о состаянии генератора 4
         '''
         a = self.__selectfrom(dist_table['Taldefax']['Machine']['generator4'])
-        if a[0] == 1:
-            k = "Авария Остановлен"
+        if a == "Таблица не найдена":
+            return a
         else:
-            k = "Работа Генерация"
-        a = {
-            "status": a[0],
-            "text": k
-        }
-        return a
+            if a[0] == 1:
+                k = "Авария Остановлен"
+            else:
+                k = "Работа Генерация"
+            a = {
+                "status": a[0],
+                "text": k
+            }
+            return a
 
     def torch(self):
         '''
         Возвращает информацию о состаянии факела
         '''
         a = self.__selectfrom(dist_table['Taldefax']['Machine']['torch'])
-        if a[0] == 1:
-            k = "Авария Остановлен"
+        if a == "Таблица не найдена":
+            return a
         else:
-            k = "Работа Генерация"
-        a = {
-            "status": a[0],
-            "text": k
-        }
-        return a
+            if a[0] == 1:
+                k = "Авария Остановлен"
+            else:
+                k = "Работа Генерация"
+            a = {
+                "status": a[0],
+                "text": k
+            }
+            return a
