@@ -227,48 +227,48 @@ dist_table = {
     "Taldefax": {
         "TransitionReadings": {
             "methane": "oiugb",
-            "сarbon dioxide": "",
-            "oxygen": "",
-            "pressure in": "",
-            "pressure out": "",
-            "consumption": "",
-            "temperature": ""
+            "сarbon dioxide": "oiugb",
+            "oxygen": "oiugb",
+            "pressure in": "oiugb",
+            "pressure out": "oiugb",
+            "consumption": "oiugb",
+            "temperature": "oiugb"
         },
         "GenerationOfElectricity": {
-            "machine 1": "",
-            "machine 2": "",
-            "machine 3": "",
-            "machine 4": ""
+            "machine 1": "oiugb",
+            "machine 2": "oiugb",
+            "machine 3": "oiugb",
+            "machine 4": "oiugb"
         },
-        "Mode": "",
+        "Mode": "m_true",
         "Damper": {
-            "Dam1": "",
-            "Dam2": ""
+            "Dam1": "m_true",
+            "Dam2": "m_true"
         },
         "Pump": {
-            "Status": "",
-            "Alarm": ""
+            "Status": "m_true",
+            "Alarm": "m_fo"
         },
         "Compress": {
             "compress1": {
-                "Status": "",
-                "Alarm": ""
+                "Status": "m_true",
+                "Alarm": "m_fo"
             },
             "compress2": {
-                "Status": "",
-                "Alarm": ""
+                "Status": "m_true",
+                "Alarm": "m_fo"
             },
             "compress3": {
-                "Status": "",
-                "Alarm": ""
+                "Status": "m_true",
+                "Alarm": "m_fo"
             }
         },
         "Machine": {
-            "generator1": "",
+            "generator1": "m_true",
             "generator2": "",
-            "generator3": "",
-            "generator4": "",
-            "torch": ""
+            "generator3": "m_fo",
+            "generator4": "m_true",
+            "torch": "m_fo"
         }
     }
 }
