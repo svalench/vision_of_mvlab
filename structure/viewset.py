@@ -23,28 +23,28 @@ class MetaView:
         ob = FirstObject.objects.all().first()
         structure = ob.listModels
         ind = BASE_STRUCTURE.index(self.serializer_class.Meta.model.__name__)
+        print(self.serializer_class.Meta.model.__name__)
         new_base = list(BASE_STRUCTURE[:ind])
         new_base.reverse()
         for b in new_base:
-            if new_base.index(b) == 0:
-                continue
             if b in structure:
                 try:
                     a = globals()[b].objects.get(pk=request.data['parent'])
                     i = new_base.index(b)
                     str_query = new_base[:i]
                     str_query.reverse()
-                    for q in str_query:
-                        if q == "Reserv_1":
-                            c = Reserv_1.all().first()
-                            break
-                        if str_query.index(q) == 0:
+                    if(str_query):
+                        for q in str_query:
+                            if q == "Reserv_1":
+                                c = Reserv_1.all().first()
+                                break
+                            if str_query.index(q) == 0:
+                                c = a.child_model().first()
+                                continue
                             c = a.child_model().first()
-                            continue
-                        c = c.child_model().first()
-                    request.data['parent'] = c.id
+                        request.data['parent'] = c.id
                 except:
-                    raise ValidationError('Not found '+b+' with pk %s' % request.data['parent'])
+                    raise ValidationError('Create '+str(BASE_STRUCTURE[ind])+' . Not found '+b+' with pk %s' % request.data['parent'])
             break
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)

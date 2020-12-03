@@ -28,7 +28,7 @@ class ValueSensorSerializer(serializers.ModelSerializer):
     - sensor - связи к связанной модели SensorsSerializer
 
     """
-    sensor = SensorsSerializer(read_only=True)
+    sensor_data = SensorsSerializer(read_only=True)
     class Meta:
         model = ValueSensor
         fields = '__all__'

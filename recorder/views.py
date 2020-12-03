@@ -1,6 +1,7 @@
 from django.forms import model_to_dict
 from django.http import Http404
 from rest_framework.decorators import permission_classes
+from rest_framework.exceptions import ValidationError
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -52,16 +53,21 @@ class ChartData(APIView):
     def get(self, format=None):
         id = self.request.query_params.get('id')
         keys = self.request.query_params.get('key', None)
+        start = self.request.query_params.get('start', None)
+        end = self.request.query_params.get('end', None)
         if(id):
-            area = Workarea.objects.get(pk=id)
+            try:
+                area = Workarea.objects.get(pk=id)
+            except Workarea.DoesNotExist:
+                raise ValidationError("Not Found Workarea with pk %s"%id)
             result = {key: value for key,value in model_to_dict(area).items() if key!='data'}
-            a = self.__choice_method(area=area, keys=keys)
+            a = self.__choice_method(area=area, keys=keys, start=start, end=end)
             result['child'] = a
             return Response(result)
         else:
             raise Http404
 
-    def __choice_method(self, area, keys=None):
+    def __choice_method(self, area, keys=None, start=None, end=None):
         """метод для выбора вывода данных за период по фильтру"""
         a = []
         for l in area.workareadata_set.all():
@@ -79,6 +85,9 @@ class ChartData(APIView):
                 else:
                     res['values'] = ValueSensor.objects.get(pk=l.value.id).get_last_shift()
             else:
-                res['values'] = ValueSensor.objects.get(pk=l.value.id).get_last_shift()
+                if start is not None and end is not None:
+                    res['values'] = ValueSensor.objects.get(pk=l.value.id).get_mode_by_periods_interval(start=start, end=end)
+                else:
+                    res['values'] = ValueSensor.objects.get(pk=l.value.id).get_period(start=start, end=end)
             a.append(res)
         return a
