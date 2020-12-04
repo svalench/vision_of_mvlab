@@ -262,11 +262,14 @@ class Status(object):
         text2 = "Закрыта"
         return self.__check_result_single(a, text1, text2)
 
-    def pump(self):
-        '''
-        Возвращает информацию о состаянии насоса
-        '''
-        b = self.__selectfrom(dist_table['Taldefax']['Pump']['Status'])
+    def __check_result_many(self, t_status, t_alarm) -> dict:
+        """проверка статусов работы компрессоров и насоса
+
+        :param str t_status: таблица с сотоянием статуса
+        :param str t_alarm: таблица с сотоянием аварии
+
+        """
+        b = self.__selectfrom(t_status)
         k = "Таблица не найдена"
         if b != "Таблица не найдена":
             if b[0] == 1:
@@ -277,7 +280,7 @@ class Status(object):
                 work = b[0]
         else:
             work = "Таблица не найдена"
-        a = self.__selectfrom(dist_table['Taldefax']['Pump']['Alarm'])
+        a = self.__selectfrom(t_alarm)
         if a != "Таблица не найдена":
             if a[0] == 1:
                 k = "Авария"
@@ -292,99 +295,37 @@ class Status(object):
             "text": k
         }
         return a
+
+    def pump(self):
+        '''
+        Возвращает информацию о состаянии насоса
+        '''
+        return self.__check_result_many(dist_table['Taldefax']['Pump']['Status'],dist_table['Taldefax']['Pump']['Alarm'])
+
 
     def compress1(self):
         '''
         Возвращает информацию о состаянии компрессора 1
         '''
-        b = self.__selectfrom(dist_table['Taldefax']['Compress']['compress1']['Status'])
-        k = "Таблица не найдена"
-        if b != "Таблица не найдена":
-            if b[0] == 1:
-                k = "Работа"
-                work = b[0]
-            else:
-                k = "Остановлен"
-                work = b[0]
-        else:
-            work = "Таблица не найдена"
-        a = self.__selectfrom(dist_table['Taldefax']['Compress']['compress1']['Alarm'])
-        if a != "Таблица не найдена":
-            if a[0] == 1:
-                k = "Авария"
-                alarm = a[0]
-            else:
-                alarm = a[0]
-        else:
-            alarm = "Таблица не найдена"
-        a = {
-            "alarm": alarm,
-            "work": work,
-            "text": k
-        }
-        return a
+        return self.__check_result_many(dist_table['Taldefax']['Compress']['compress1']['Status'],
+                                        dist_table['Taldefax']['Compress']['compress1']['Alarm'])
+
 
     def compress2(self):
         '''
         Возвращает информацию о состаянии компрессора 2
         '''
-        b = self.__selectfrom(dist_table['Taldefax']['Compress']['compress2']['Status'])
-        k = "Таблица не найдена"
-        if b != "Таблица не найдена":
-            if b[0] == 1:
-                k = "Работа"
-                work = b[0]
-            else:
-                k = "Остановлен"
-                work = b[0]
-        else:
-            work = "Таблица не найдена"
-        a = self.__selectfrom(dist_table['Taldefax']['Compress']['compress2']['Alarm'])
-        if a != "Таблица не найдена":
-            if a[0] == 1:
-                k = "Авария"
-                alarm = a[0]
-            else:
-                alarm = a[0]
-        else:
-            alarm = "Таблица не найдена"
-        a = {
-            "alarm": alarm,
-            "work": work,
-            "text": k
-        }
-        return a
+        return self.__check_result_many(dist_table['Taldefax']['Compress']['compress2']['Status'],
+                                        dist_table['Taldefax']['Compress']['compress2']['Alarm'])
+
 
     def compress3(self):
         '''
         Возвращает информацию о состаянии компрессора 3
         '''
-        b = self.__selectfrom(dist_table['Taldefax']['Compress']['compress3']['Status'])
-        k = "Таблица не найдена"
-        if b != "Таблица не найдена":
-            if b[0] == 1:
-                k = "Работа"
-                work = b[0]
-            else:
-                k = "Остановлен"
-                work = b[0]
-        else:
-            work = "Таблица не найдена"
-        a = self.__selectfrom(dist_table['Taldefax']['Compress']['compress3']['Alarm'])
-        if a != "Таблица не найдена":
-            if a[0] == 1:
-                k = "Авария"
-                alarm = a[0]
-            else:
-                alarm = a[0]
-        else:
-            alarm = "Таблица не найдена"
-        a = {
-            "alarm": alarm,
-            "work": work,
-            "text": k
-        }
-        return a
+        return self.__check_result_many(dist_table['Taldefax']['Compress']['compress3']['Status'],
+                                        dist_table['Taldefax']['Compress']['compress3']['Alarm'])
+
 
     def generator1(self):
         '''
