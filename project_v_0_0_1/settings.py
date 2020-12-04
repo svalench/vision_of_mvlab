@@ -234,19 +234,19 @@ dist_table = {
     },
     "Taldefax": {
         "TransitionReadings": {
-            "methane": "oiugb",
-            "сarbon dioxide": "oiugb",
-            "oxygen": "oiugb",
-            "pressure in": "oiugb",
-            "pressure out": "oiugb",
-            "consumption": "oiugb",
-            "temperature": "oiugb"
+            "methane": "mvlab_temp_real_1",
+            "сarbon dioxide": "mvlab_temp_real_2",
+            "oxygen": "mvlab_temp_real_3",
+            "pressure in": "mvlab_temp_real_4",
+            "pressure out": "mvlab_temp_real_5",
+            "consumption": "mvlab_temp_real_6",
+            "temperature": "mvlab_temp_real_1"
         },
         "GenerationOfElectricity": {
-            "machine 1": "oiugb",
-            "machine 2": "oiugb",
-            "machine 3": "oiugb",
-            "machine 4": "oiugb"
+            "machine 1": "mvlab_temp_real_1",
+            "machine 2": "mvlab_temp_real_2",
+            "machine 3": "mvlab_temp_real_3",
+            "machine 4": "mvlab_temp_real_4"
         },
         "Mode": "m_true",
         "Damper": {

@@ -13,11 +13,20 @@ def decorator_exists(func):
         except utils.OperationalError:
             a = 'Таблица не найдена'
             print(a)
+        except utils.ProgrammingError:
+            a = 'Таблица не найдена'
         return a
     return wrapper
 
 
 
+def _check_the_data_single(a):
+    if a is None:
+        a = [0]
+    if type(a[0]) == str:
+        return a
+    else:
+        return a[0]
 
 class TransitionReadings(object):
     '''
@@ -57,84 +66,49 @@ class TransitionReadings(object):
         Возвращает последнее количество метана
         '''
         a = self.__selectfrom(dist_table['Taldefax']['TransitionReadings']['methane'])
-        if a is None:
-            a = [0]
-        if type(a[0]) == str:
-            return a
-        else:
-            return a[0]
+        return _check_the_data_single(a)
 
     def carbondioxide(self):
         '''
         Возвращает последнее количество углекислого газа
         '''
         a = self.__selectfrom(dist_table['Taldefax']['TransitionReadings']['сarbon dioxide'])
-        if a is None:
-            a = [0]
-        if type(a[0]) == str:
-            return a
-        else:
-            return a[0]
+        return _check_the_data_single(a)
 
     def oxygen(self):
         '''
         Возвращает последнее количество кислорода
         '''
         a = self.__selectfrom(dist_table['Taldefax']['TransitionReadings']['oxygen'])
-        if a is None:
-            a = [0]
-        if type(a[0]) == str:
-            return a
-        else:
-            return a[0]
+        return _check_the_data_single(a)
 
     def pressure_in(self):
         '''
         Возвращает последнее значение давления Pвых компр
         '''
         a = self.__selectfrom(dist_table['Taldefax']['TransitionReadings']['pressure in'])
-        if a is None:
-            a = [0]
-        if type(a[0]) == str:
-            return a
-        else:
-            return a[0]
+        return _check_the_data_single(a)
 
     def pressure_out(self):
         '''
         Возвращает последнее значение давления Pвх генер
         '''
         a = self.__selectfrom(dist_table['Taldefax']['TransitionReadings']['pressure out'])
-        if a is None:
-            a = [0]
-        if type(a[0]) == str:
-            return a
-        else:
-            return a[0]
+        return _check_the_data_single(a)
 
     def consumption(self):
         '''
         Возвращает последнее значение расхода
         '''
         a = self.__selectfrom(dist_table['Taldefax']['TransitionReadings']['consumption'])
-        if a is None:
-            a = [0]
-        if type(a[0]) == str:
-            return a
-        else:
-            return a[0]
+        return _check_the_data_single(a)
 
     def temperature(self):
         '''
         Возвращает последнее значение температуры
         '''
         a = self.__selectfrom(dist_table['Taldefax']['TransitionReadings']['temperature'])
-        if a is None:
-            a = [0]
-        if type(a[0]) == str:
-            return a
-        else:
-            return a[0]
+        return _check_the_data_single(a)
 
 
 
@@ -168,76 +142,41 @@ class GenerationOfElectricity(object):
             a = cursor.fetchone()
         return a
 
-    def machine1(self):
+    def machine1(self) -> str or float or int:
         '''
         Возвращает последнее значение мощности машины 1
         '''
         a = self.__selectfrom(dist_table['Taldefax']['GenerationOfElectricity']['machine 1'])
-        if a is None:
-            a = [0]
-        if type(a[0]) == str:
-            return a
-        else:
-            return a[0]
+        return _check_the_data_single(a)
 
-    def machine2(self):
+    def machine2(self) -> str or float or int:
         '''
         Возвращает последнее значение мощности машины 2
         '''
         a = self.__selectfrom(dist_table['Taldefax']['GenerationOfElectricity']['machine 2'])
-        if a is None:
-            a = [0]
-        if type(a[0]) == str:
-            return a
-        else:
-            return a[0]
+        return _check_the_data_single(a)
 
-    def machine3(self):
+    def machine3(self) -> str or float or int:
         '''
         Возвращает последнее значение мощности машины 3
         '''
         a = self.__selectfrom(dist_table['Taldefax']['GenerationOfElectricity']['machine 3'])
-        if a is None:
-            a = [0]
-        if type(a[0]) == str:
-            return a
-        else:
-            return a[0]
+        return _check_the_data_single(a)
 
-    def machine4(self):
+    def machine4(self) -> str or float or int:
         '''
         Возвращает последнее значение мощности машины 4
         '''
         a = self.__selectfrom(dist_table['Taldefax']['GenerationOfElectricity']['machine 4'])
-        if a is None:
-            a = [0]
-        if type(a[0]) == str:
-            return a
-        else:
-            return a[0]
+        return _check_the_data_single(a)
 
-    def sum(self):
+    def sum(self) -> int or float:
         '''
         Возвращает сумму мощностей 4-х машин
         '''
-        if type(self.machine1()) == str:
-            m1 = 0
-        else:
-            m1 = self.machine1()
-        if type(self.machine2()) == str:
-            m2 = 0
-        else:
-            m2 = self.machine2()
-        if type(self.machine3()) == str:
-            m3 = 0
-        else:
-            m3 = self.machine3()
-        if type(self.machine4()) == str:
-            m4 = 0
-        else:
-            m4 = self.machine4()
-        a = m1 + m2 + m3 + m4
-        return a
+        list_ = [self.machine1(), self.machine2(), self.machine3(), self.machine4()]
+        list_ = list(map(lambda x: 0 if type(x)==str else x, list_))
+        return sum(list_)
 
 class Status(object):
     '''
@@ -276,59 +215,52 @@ class Status(object):
             a = cursor.fetchone()
         return a
 
-    def mode(self):
-        '''
-        Возвращает информацию о режиме работы
-        '''
-        a = self.__selectfrom(dist_table['Taldefax']['Mode'])
+    def __check_result_single(self, a, text1: str = 'состояние True', text2: str = "состояние False") -> str or dict:
+        """проверка условия наличия таблицы и режима работы
+
+        :param str text1: текста для состояния 1
+        :param str text2:  текст для состояние 0
+
+        """
         if a == "Таблица не найдена":
             return a
         else:
             if a[0] == 1:
-                k = "Автоматический режим"
+                k = text1
             else:
-                k = "Ручной режим"
+                k = text2
             a = {
                 "status": a[0],
                 "text": k
             }
             return a
+
+    def mode(self):
+        '''
+        Возвращает информацию о режиме работы
+        '''
+        a = self.__selectfrom(dist_table['Taldefax']['Mode'])
+        text1 = "Автоматический режим"
+        text2 = "Ручной режим"
+        return self.__check_result_single(a, text1, text2)
 
     def damper1(self):
         '''
         Возвращает информацию о состаянии задвижки 1
         '''
         a = self.__selectfrom(dist_table['Taldefax']['Damper']['Dam1'])
-        if a == "Таблица не найдена":
-            return a
-        else:
-            if a[0] == 1:
-                k = "Открыта"
-            else:
-                k = "Закрыта"
-            a = {
-                "status": a[0],
-                "text": k
-            }
-            return a
+        text1 = "Открыта"
+        text2 = "Закрыта"
+        return self.__check_result_single(a, text1, text2)
 
     def damper2(self):
         '''
         Возвращает информацию о состаянии задвижки 2
         '''
         a = self.__selectfrom(dist_table['Taldefax']['Damper']['Dam2'])
-        if a == "Таблица не найдена":
-            return a
-        else:
-            if a[0] == 1:
-                k = "Открыта"
-            else:
-                k = "Закрыта"
-            a = {
-                "status": a[0],
-                "text": k
-            }
-            return a
+        text1 = "Открыта"
+        text2 = "Закрыта"
+        return self.__check_result_single(a, text1, text2)
 
     def pump(self):
         '''
@@ -459,87 +391,42 @@ class Status(object):
         Возвращает информацию о состаянии генератора 1
         '''
         a = self.__selectfrom(dist_table['Taldefax']['Machine']['generator1'])
-        if a == "Таблица не найдена":
-            return a
-        else:
-            if a[0] == 1:
-                k = "Авария Остановлен"
-            else:
-                k = "Работа Генерация"
-            a = {
-                "status": a[0],
-                "text": k
-            }
-            return a
+        text1 = "Авария Остановлен"
+        text2 = "Работа Генерация"
+        return self.__check_result_single(a, text1, text2)
 
     def generator2(self):
         '''
         Возвращает информацию о состаянии генератора 2
         '''
         a = self.__selectfrom(dist_table['Taldefax']['Machine']['generator2'])
-        if a == "Таблица не найдена":
-            return a
-        else:
-            if a[0] == 1:
-                k = "Авария Остановлен"
-            else:
-                k = "Работа Генерация"
-            a = {
-                "status": a[0],
-                "text": k
-            }
-            return a
+        text1 = "Авария Остановлен"
+        text2 = "Работа Генерация"
+        return self.__check_result_single(a, text1, text2)
 
     def generator3(self):
         '''
         Возвращает информацию о состаянии генератора 3
         '''
         a = self.__selectfrom(dist_table['Taldefax']['Machine']['generator3'])
-        if a == "Таблица не найдена":
-            return a
-        else:
-            if a[0] == 1:
-                k = "Авария Остановлен"
-            else:
-                k = "Работа Генерация"
-            a = {
-                "status": a[0],
-                "text": k
-            }
-            return a
+        text1 = "Авария Остановлен"
+        text2 = "Работа Генерация"
+        return self.__check_result_single(a, text1, text2)
 
     def generator4(self):
         '''
         Возвращает информацию о состаянии генератора 4
         '''
         a = self.__selectfrom(dist_table['Taldefax']['Machine']['generator4'])
-        if a == "Таблица не найдена":
-            return a
-        else:
-            if a[0] == 1:
-                k = "Авария Остановлен"
-            else:
-                k = "Работа Генерация"
-            a = {
-                "status": a[0],
-                "text": k
-            }
-            return a
+        text1 = "Авария Остановлен"
+        text2 = "Работа Генерация"
+        return self.__check_result_single(a, text1, text2)
 
     def torch(self):
         '''
         Возвращает информацию о состаянии факела
         '''
         a = self.__selectfrom(dist_table['Taldefax']['Machine']['torch'])
-        if a == "Таблица не найдена":
-            return a
-        else:
-            if a[0] == 1:
-                k = "Авария Остановлен"
-            else:
-                k = "Работа Генерация"
-            a = {
-                "status": a[0],
-                "text": k
-            }
-            return a
+        text1 = "Авария Остановлен"
+        text2 = "Работа Генерация"
+        return self.__check_result_single(a, text1, text2)
