@@ -11,6 +11,11 @@ class DashboardSerializer(serializers.ModelSerializer):
 #         model = Date
 #         fields = '__all__'
 
+class RoleSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Role
+        fields = '__all__'
+
 class DurationIntervalDaySerializer(serializers.ModelSerializer):
     class Meta:
         model = DurationIntervalDay

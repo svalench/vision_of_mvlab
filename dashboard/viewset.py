@@ -8,6 +8,27 @@ from rest_framework.decorators import permission_classes
 from rest_framework.permissions import IsAuthenticated
 
 
+@permission_classes([IsAuthenticated])
+class RoleViews(APIView):
+    def get(self, request):
+        role = UserP.objects.get(id=request.user.pk).role_set.all()
+        are = [None, None, None, None, None, None]
+        for i in role:
+            for r in i.dashboard.all():
+                if r.name == "DurationIntervalDay":
+                    are[0] = r.name
+                elif r.name == "Storehouse":
+                    are[1] = r.name
+                elif r.name == "EditionDay":
+                    are[2] = r.name
+                elif r.name == "SumexpenseDay":
+                    are[3] = r.name
+                elif r.name == "EnergyConsumptionDay":
+                    are[4] = r.name
+                elif r.name == "SpecificConsumptionDay":
+                    are[5] = r.name
+        a = are
+        return Response(a)
 
 
 #виджет «Продолжительность работы, ч», вкладка день
