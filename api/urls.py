@@ -38,4 +38,6 @@ urlpatterns = [
     path('comparison/shift/<yyyy:date1>/<int:id1>/<yyyy:date2>/<int:id2>/', ComparisonShiftViews.as_view()),
     path('teldafax/', teldafax.as_view()),
 
+    path('user/', RoleViews.as_view())
+
 ]
