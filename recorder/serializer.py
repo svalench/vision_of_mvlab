@@ -4,9 +4,7 @@ from rest_framework.serializers import raise_errors_on_nested_writes
 from rest_framework.utils import model_meta
 
 from recorder.models import Workspace, Workarea, ValueSensor, WorkareaData
-from structure.serializer import SensorsSerializer
-
-
+from structure.serializer import SensorsSerializer, Sensors
 
 
 class WorkareaDataSerializer(serializers.ModelSerializer):
@@ -26,12 +24,37 @@ class ValueSensorSerializer(serializers.ModelSerializer):
     ==========
 
     - sensor - связи к связанной модели SensorsSerializer
+    - data_sensor_data - test
 
     """
-    sensor_data = SensorsSerializer(read_only=True)
+
+    sensor_name = serializers.SerializerMethodField('get_sensor_name')
+    uzel_name = serializers.SerializerMethodField('get_uzel_name')
+    department_name = serializers.SerializerMethodField('get_dep_name')
+    factory_name = serializers.SerializerMethodField('get_factory_name')
+
+    def get_sensor_name(self, a):
+        """передает название сенсора"""
+        return a.sensor.name
+
+    def get_dep_name(self, a):
+        """передает название департамента"""
+        return a.sensor.parent.parent.name
+
+    def get_uzel_name(self, a):
+        """передает название узла"""
+        return a.sensor.parent.name
+
+    def get_factory_name(self, a):
+        """передает название завода"""
+        return a.sensor.parent.parent.parent.name
+
     class Meta:
         model = ValueSensor
         fields = '__all__'
+        extra_kwargs = {
+            "parent": {"required": False},
+        }
 
 class WorkareaSerializer(serializers.ModelSerializer):
     """модель сериализации данных для рабочей области
