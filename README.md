@@ -5,6 +5,7 @@
 ### [Авторизация пользователя](#autUser)
 ### [Структура предприятия](#structFactory)
 ### [Dashboard](#Dashboard)
+### [Recorder](#Recorder)
 
 ## <a name="description"> *Описание* </a>
 ###  Для чего
@@ -47,5 +48,12 @@
  В данном разделе будет опиасние модуля структуры предприятия  
  Описание API структуры предприятия [ЗДЕСЬ](structure/README.md)
  
- ## <a name="Dashboard"> *Dashboard * </a>
+ ## <a name="Dashboard"> *Dashboard* </a>
  Подробная документация по API для модуля Dashboard находится [здесь](README/dashboard_README.md)
+ 
+ ## <a name="Recorder"> *Recorder* </a>
+
+Модуль Recorder предназначен для отображения собранных данных за определенные период в графическом виде.  
+
+Для окон ActionWorkSpace, ActionWorkField, recorder_online_minimum, recorder_online, recorder_onlineFullScreen в Figma документация [ТУТ](README/recorder.MD)  
+Дл окон ActionObjectVariables  и  1920_recоrder_variables документация [ТУТ](README/recorder_value.MD)
