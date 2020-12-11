@@ -23,7 +23,6 @@ class MetaView:
         ob = FirstObject.objects.all().first()
         structure = ob.listModels
         ind = BASE_STRUCTURE.index(self.serializer_class.Meta.model.__name__)
-        print(self.serializer_class.Meta.model.__name__)
         new_base = list(BASE_STRUCTURE[:ind])
         new_base.reverse()
         for b in new_base:
