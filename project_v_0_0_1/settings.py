@@ -207,6 +207,7 @@ dist_table:
             "torch" - хранит имя таблицы для статуса факела
 '''
 dist_table = {
+    "DurationIntervalDay": ["m_fosd", 1],
     "EditionDay": "Edition",
     "SumexpenseDay": {
         "iso": ['iso0', 'iso2'],
