@@ -251,6 +251,6 @@ http(s)://<servername>/recorder/chart/workarea/?id=<int:id>
 
 Get data from to
 ```
-http(s)://<servername>/recorder/chart/workarea/?start=<str:YYYY:MM:DD HH:mm:SS>?end=<str:YYYY:MM:DD HH:mm:SS>> 
+http(s)://<servername>/recorder/chart/workarea/?id=<int:id_wirkarea>&start=<str:YYYY-MM-DD HH:mm:SS>&end=<str:YYYY-MM-DD HH:mm:SS>> 
 ```
 returned period from start to end time. If value in period is None. Script will be return value by null
