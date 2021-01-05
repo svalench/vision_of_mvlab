@@ -1,6 +1,6 @@
 # Описание запросов для вкладки Recorder -> Variables  
 
-ДЛя получение списка всех переменных необходимо отправить **GET** запрос на адресс:
+Для получения списка всех переменных необходимо отправить **GET** запрос на адрес:
 ```
 http(s)://<servername>/recorder/structure/ValueSensor/
 ```
@@ -43,7 +43,7 @@ http(s)://<servername>/recorder/structure/ValueSensor/
 ]
 ```
 
-ДЛя добавления наого значени необходимо отправить запос **POST** на адрес:
+Для добавления нового значения необходимо отправить запрос **POST** на адрес:
 
 ```
 http(s)://<servername>/recorder/structure/ValueSensor/
@@ -65,7 +65,7 @@ http(s)://<servername>/recorder/structure/ValueSensor/
 ```
 >  "*" \- необязательные параметры  
   
-Для получение данных одной переменной необходимо отправить **GET** запрос на адрес
+Для получения данных одной переменной необходимо отправить **GET** запрос на адрес
 ```
 http(s)://<servername>/recorder/structure/ValueSensor/<int:id>/
 ```
