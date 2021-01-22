@@ -1,3 +1,4 @@
+from rest_framework import status
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from .models import *
@@ -60,7 +61,8 @@ class DurationIntervalDayViews(APIView):
                 "sum":sum
             }
         except UnboundLocalError:
-            data = 'not Role'
+            data = {"error":'not Role'}
+            return Response(data,status=status.HTTP_404_NOT_FOUND)
         return Response(data)
 
 #виджет «Продолжительность работы, ч», вкладка смена
@@ -112,7 +114,8 @@ class RemainderViews(APIView):
                 }
             }
         except UnboundLocalError:
-            data = 'not Role'
+            data = {"error":'not Role'}
+            return Response(data, status=status.HTTP_404_NOT_FOUND)
         return Response(data)
 
 #виджет «Выпуск панелей» для вкладки «день»
@@ -170,7 +173,8 @@ class EditionDayViews(APIView):
                 "change_sum": change_sum
             }
         except UnboundLocalError:
-            data = 'not Role'
+            data = {"error":'not Role'}
+            return Response(data, status=status.HTTP_404_NOT_FOUND)
         return Response(data)
 
 
@@ -261,7 +265,8 @@ class EditionMonthViews(APIView):
                 "change_sum": change_sum
             }
         except UnboundLocalError:
-            data = 'not Role'
+            data = {"error":'not Role'}
+            return Response(data, status=status.HTTP_404_NOT_FOUND)
         return Response(data)
 
 
@@ -299,7 +304,8 @@ class SumexpenseDayViews(APIView):
                 "kat3": art.kat3
             }
         except UnboundLocalError:
-            data = 'not Role'
+            data = {"error":'not Role'}
+            return Response(data, status=status.HTTP_404_NOT_FOUND)
         return Response(data)
 
 
@@ -347,7 +353,8 @@ class SumexpenseMonthViews(APIView):
                 "kat3": kat3
             }
         except UnboundLocalError:
-            data = 'not Role'
+            data = {"error":'not Role'}
+            return Response(data, status=status.HTTP_404_NOT_FOUND)
         return Response(data)
 
 
@@ -383,7 +390,8 @@ class EnergyConsumptionDayViews(APIView):
                 "gas": art.gas
             }
         except UnboundLocalError:
-            data = 'not Role'
+            data = {"error":'not Role'}
+            return Response(data, status=status.HTTP_404_NOT_FOUND)
         return Response(data)
 
 
@@ -422,7 +430,8 @@ class EnergyConsumptionMonthViews(APIView):
                 "gas": gas
             }
         except UnboundLocalError:
-            data = 'not Role'
+            data = {"error":'not Role'}
+            return Response(data, status=status.HTTP_404_NOT_FOUND)
         return Response(data)
 
 
@@ -460,7 +469,8 @@ class SpecificConsumptionDayViews(APIView):
                 "kat3": art.kat3
             }
         except UnboundLocalError:
-            data = 'not Role'
+            data = {"error":'not Role'}
+            return Response(data, status=status.HTTP_404_NOT_FOUND)
         return Response(data)
 
 
@@ -505,7 +515,8 @@ class SpecificConsumptionMonthViews(APIView):
                 "kat3": kat3
             }
         except UnboundLocalError:
-            data = 'not Role'
+            data = {"error":'not Role'}
+            return Response(data, status=status.HTTP_404_NOT_FOUND)
         return Response(data)
 
 
@@ -575,7 +586,8 @@ class ComparisonDayViews(APIView):
                 "sum2": art2.sum
             }
         except UnboundLocalError:
-            data = 'not Role'
+            data = {"error":'not Role'}
+            return Response(data, status=status.HTTP_404_NOT_FOUND)
         return Response(data)
 
 
@@ -667,7 +679,8 @@ class ComparisonMonthViews(APIView):
                 "sum2": sum2
             }
         except UnboundLocalError:
-            data = 'not Role'
+            data = {"error":'not Role'}
+            return Response(data, status=status.HTTP_404_NOT_FOUND)
         return Response(data)
 
 
