@@ -1,5 +1,20 @@
 # Модуль настройки
 
+## Статусы соединения
+
+Необходимо отправить GET запрос на адрес
+```/settings/status/connection/```
+после чго будет получен ответ вида:
+```
+{
+    <str:connection_name>: [
+        <bool:status_connection>,
+        <str:connection_name>,
+        <str:ip_connection>
+    ]
+}
+```
+
 ## Wizard step1 и step2
 ```settings/wizard/step1```  
 Ниже описана структура запроса POST для создания объекта на шагах wizard 1 и 2 
