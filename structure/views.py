@@ -10,10 +10,31 @@ from rest_framework.renderers import TemplateHTMLRenderer, JSONRenderer
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from project_v_0_0_1.settings import BASE_STRUCTURE, send_status_to_server
+from project_v_0_0_1.settings import BASE_STRUCTURE, SOCKET_PORT_SEREVER
 from structure.models import FirstObject, Shift, Department, Lunch
 from .models import *
 from .serializer import *
+
+
+import json
+import socket
+
+def send_status_to_server():
+    sock = socket.socket()
+    sock.settimeout(1)
+    sock.connect(('localhost', SOCKET_PORT_SEREVER))
+    data = {"data":1}
+    print(data)
+    data = json.dumps(data).encode('utf-8')
+    try:
+        sock.send(data)
+    except:
+        sock.close()
+    res = sock.recv(1024)
+    print(res)
+    sock.close()
+    return json.loads(res)
+
 
 
 @permission_classes([IsAuthenticated])
