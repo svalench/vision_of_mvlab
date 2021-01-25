@@ -10,10 +10,17 @@ from rest_framework.renderers import TemplateHTMLRenderer, JSONRenderer
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from project_v_0_0_1.settings import BASE_STRUCTURE
+from project_v_0_0_1.settings import BASE_STRUCTURE, send_status_to_server
 from structure.models import FirstObject, Shift, Department, Lunch
 from .models import *
 from .serializer import *
+
+
+@permission_classes([IsAuthenticated])
+class StatusConnections(APIView):
+    def get(self, request):
+        res = send_status_to_server()
+        return Response(res)
 
 
 @permission_classes([IsAuthenticated])

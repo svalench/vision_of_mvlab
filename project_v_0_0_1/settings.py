@@ -9,10 +9,11 @@ https://docs.djangoproject.com/en/3.1/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/3.1/ref/settings/
 """
-
+import threading
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
+
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 
@@ -147,7 +148,25 @@ USE_TZ = True
 BASE_STRUCTURE = (
         'Reserv_1', 'Reserv_2', 'Corparation', 'Company', 'Factory', 'Department', 'Agreagat', 'Sensors')
 
-
+import json
+import socket
+globals()['CONNECTIONS_FROM_OPC'] = None
+SOCKET_PORT_SEREVER = 8086
+def send_status_to_server():
+    sock = socket.socket()
+    sock.settimeout(1)
+    sock.connect(('localhost', SOCKET_PORT_SEREVER))
+    data = {"data":1}
+    print(data)
+    data = json.dumps(data).encode('utf-8')
+    try:
+        sock.send(data)
+    except:
+        sock.close()
+    res = sock.recv(1024)
+    print(res)
+    sock.close()
+    return json.loads(res)
 
 
 '''
