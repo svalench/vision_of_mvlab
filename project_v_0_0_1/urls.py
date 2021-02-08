@@ -19,6 +19,27 @@ from api.router import router
 from structure.router import router1
 from recorder.router import router_recorder
 
+# from rest_framework.schemas import get_schema_view
+
+from django.views.generic import TemplateView
+
+from drf_yasg.views import get_schema_view
+from drf_yasg import openapi
+from rest_framework import permissions
+
+schema_view = get_schema_view(
+    openapi.Info(
+        title="Test api",
+        default_version='v0.1',
+        description="Test APIs for dashboard"
+    ),
+    public=True,
+    permission_classes=(permissions.AllowAny,),
+)
+
+from django.conf.urls import url
+
+
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/', include(router.urls)),
@@ -29,4 +50,15 @@ urlpatterns = [
     path('recorder/', include('recorder.urls')),
     path('recorder/structure/', include(router_recorder.urls)),
     path('dashboard/', include('api.urls')),
+    # path('openapi/', get_schema_view(
+    #         title="School Service",
+    #         description="API developers hpoing to use our service"
+    #     ), name='openapi-schema'),
+    # path('docs/', TemplateView.as_view(
+    #         template_name='documentation.html',
+    #         extra_context={'schema_url':'openapi-schema'}
+    #     ), name='swagger-ui'),
+
+    url(r'^swagger(?P<format>\.json|\.yaml)$', schema_view.without_ui(cache_timeout=0), name='schema-json'),
+    url(r'^swagger/$', schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'),
 ]
