@@ -249,13 +249,14 @@ class PlcRemoteUse():
         power3 = self.transform_data_to_value(68, 4, data_read, 'real')
         power4 = self.transform_data_to_value(72, 4, data_read, 'real')
         sum_power = self.transform_data_to_value(80, 4, data_read, 'real')
+        powers = {"power1": power1, 'power2': power2, 'power3': power3, 'power4': power4, 'sum_power': sum_power}
+        return powers
 
-
-    def get_status_machine(self, db=3001, start=5714, offset = 141):
+    def get_status_machine(self, db=3001, start=5714, offset=141):
         work_status = self.get_value(64, 4, 2, 'real')
         time.sleep(0.01)
         data_read = self.client.db_read(db, start, offset)
-        pump_p301_status =3 & int.from_bytes(data_read[114:1], byteorder='little', signed=True)
+        pump_p301_status = 3 & int.from_bytes(data_read[114:1], byteorder='little', signed=True)
         valve_B1101_status = int.from_bytes(data_read[108:1], byteorder='little', signed=True)
         valve_B1601_status = int.from_bytes(data_read[110:1], byteorder='little', signed=True)
 
@@ -271,3 +272,21 @@ class PlcRemoteUse():
         generator_D603_status2 = 24 & int.from_bytes(data_read[128:1], byteorder='little', signed=True)
         generator_D604_status1 = 7 & int.from_bytes(data_read[134:1], byteorder='little', signed=True)
         generator_D604_status2 = 24 & int.from_bytes(data_read[134:1], byteorder='little', signed=True)
+        statuses = {
+            'work_status':work_status,
+            'pump_p301_status':pump_p301_status,
+            'valve_B1101_status':valve_B1101_status,
+            'valve_B1601_status':valve_B1601_status,
+            'compres_V501_status':compres_V501_status,
+            'compres_V502_status':compres_V502_status,
+            'compres_V503_status':compres_V503_status,
+            'generator_D601_status1':generator_D601_status1,
+            'generator_D601_status2':generator_D601_status2,
+            'generator_D602_status1':generator_D602_status1,
+            'generator_D602_status2':generator_D602_status2,
+            'generator_D603_status1':generator_D603_status1,
+            'generator_D603_status2':generator_D603_status2,
+            'generator_D604_status1':generator_D604_status1,
+            'generator_D604_status2':generator_D604_status2,
+        }
+        return statuses
