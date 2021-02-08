@@ -4,3 +4,5 @@ markdown
 django-filter
 django-cors-headers
 psycopg2-binary
+wheel == 0.34.2
+python-snap7 == 0.11
