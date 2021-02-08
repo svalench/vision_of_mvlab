@@ -7,6 +7,7 @@ from users.models import UserP
 from datetime import datetime, timedelta
 from rest_framework.decorators import permission_classes
 from rest_framework.permissions import IsAuthenticated
+from structure.models import Agreagat
 
 
 @permission_classes([IsAuthenticated])
@@ -30,6 +31,9 @@ class RoleViews(APIView):
                     are[5] = r.name
         a = are
         return Response(a)
+
+
+
 
 
 #виджет «Продолжительность работы, ч», вкладка день
@@ -65,10 +69,35 @@ class DurationIntervalDayViews(APIView):
             return Response(data,status=status.HTTP_404_NOT_FOUND)
         return Response(data)
 
+
 #виджет «Продолжительность работы, ч», вкладка смена
 @permission_classes([IsAuthenticated])
 class DurationIntervalShiftViews(APIView):
-    pass
+    def get(self, request, date, id):
+        a = Agreagat.objects.get(pk=dist_table['DurationIntervalDay'][1]).parent.shift_set.get(pk=id)
+        if DurationIntervalDay.objects.filter(date=date, start__gte=a.start, end__lte=a.end).exists():
+            k = DurationIntervalDay.objects.filter(date=date, start__gte=a.start, end__lte=a.end).order_by('start')
+        else:
+            calculate_duration_shift(date, a.start, a.end)
+            k = DurationIntervalDay.objects.filter(date=date, start__gte=a.start, end__lte=a.end).order_by('start')
+        sum = 0
+        format = "%H:%M:%S"
+        data = []
+        for i in k:
+            duration = datetime.strptime(str(i.end), format) - datetime.strptime(str(i.start), format)
+            duration = duration.total_seconds() / 3600
+            k = {
+                "start": i.start,
+                "end": i.end,
+                "duration": duration
+            }
+            data.append(k)
+            sum = sum + duration
+        data = {
+            "interval": data,
+            "sum": sum
+        }
+        return Response(data)
 
 #виджет «Остатки на складах»
 @permission_classes([IsAuthenticated])
@@ -275,7 +304,49 @@ class EditionMonthViews(APIView):
 #виджет «Выпуск панелей» для вкладки «смена»
 @permission_classes([IsAuthenticated])
 class EditionShiftViews(APIView):
-    pass
+    def get(self, request, date, id):
+        a = Agreagat.objects.get(pk=dist_table['DurationIntervalDay'][1]).parent.shift_set.get(pk=id)
+        k = calculate_edition_shift(date, a.start, a.end)
+        if id == 0:
+            id = 4
+        else:
+            id = id - 1
+        a = Agreagat.objects.get(pk=dist_table['DurationIntervalDay'][1]).parent.shift_set.get(pk=id)
+        k_pred = calculate_edition_shift(date, a.start, a.end)
+
+        if k_pred["suitable"] != 0:
+            change_suitable = (((k["suitable"] / k_pred["suitable"]) - 1) * 100)
+        else:
+            change_suitable = 0
+        if k_pred["substandard"] != 0:
+            change_substandard = (((k["substandard"] / k_pred["substandard"]) - 1) * 100)
+        else:
+            change_substandard = 0
+        if k_pred["defect"] != 0:
+            change_defect = (((k["defect"] / k_pred["defect"]) - 1) * 100)
+        else:
+            change_defect = 0
+        if k["flooded"] != 0:
+            change_flooded = (((k["flooded"] / k_pred["flooded"]) - 1) * 100)
+        else:
+            change_flooded = 0
+        if k["sum"] != 0:
+            change_sum = (((k["sum"] / k_pred["sum"]) - 1) * 100)
+        else:
+            change_sum = 0
+        data = {
+            "suitable": k["suitable"],
+            "change_suitable": change_suitable,
+            "substandard": k["substandard"],
+            "change_substandard": change_substandard,
+            "defect": k["defect"],
+            "change_defect": change_defect,
+            "flooded": k["flooded"],
+            "change_flooded": change_flooded,
+            "sum": k["sum"],
+            "change_sum": change_sum
+        }
+        return Response(data)
 
 
 
@@ -363,7 +434,10 @@ class SumexpenseMonthViews(APIView):
 #виджет «Суммарный расход» для вкладки «смена»
 @permission_classes([IsAuthenticated])
 class SumexpenseShiftViews(APIView):
-    pass
+    def get(self, request, date, id):
+        a = Agreagat.objects.get(pk=dist_table['DurationIntervalDay'][1]).parent.shift_set.get(pk=id)
+        k = calculate_sumexpense_shift(date, a.start, a.end)
+        return Response(k)
 
 
 
@@ -441,7 +515,10 @@ class EnergyConsumptionMonthViews(APIView):
 #виджет «Расход энергоресурсов» для вкладки «смена»
 @permission_classes([IsAuthenticated])
 class EnergyConsumptionShiftViews(APIView):
-    pass
+    def get(self, request, date, id):
+        a = Agreagat.objects.get(pk=dist_table['DurationIntervalDay'][1]).parent.shift_set.get(pk=id)
+        k = calculate_energy_consumption_shift(date, a.start, a.end)
+        return Response(k)
 
 
 
@@ -524,7 +601,10 @@ class SpecificConsumptionMonthViews(APIView):
 #виджет «Удельный расход на км» для вкладки «смена»
 @permission_classes([IsAuthenticated])
 class SpecificConsumptionShiftViews(APIView):
-    pass
+    def get(self, request, date, id):
+        a = Agreagat.objects.get(pk=dist_table['DurationIntervalDay'][1]).parent.shift_set.get(pk=id)
+        k = calculate_specific_shift(date, a.start, a.end)
+        return Response(k)
 
 
 #виджет «Модуль сравнения» для вкладки «день»
@@ -687,4 +767,46 @@ class ComparisonMonthViews(APIView):
 #виджет «Модуль сравнения» для вкладки «месяц»
 @permission_classes([IsAuthenticated])
 class ComparisonShiftViews(APIView):
-    pass
+    def get(self, request, date1, date2, id1, id2):
+        a1 = Agreagat.objects.get(pk=dist_table['DurationIntervalDay'][1]).parent.shift_set.get(pk=id1)
+        a2 = Agreagat.objects.get(pk=dist_table['DurationIntervalDay'][1]).parent.shift_set.get(pk=id2)
+        k1 = calculate_edition_shift(date1, a1.start, a1.end)
+        k2 = calculate_edition_shift(date2, a2.start, a2.end)
+        if k2['suitable'] != 0:
+            sui1_ch = ((k1['suitable'] / k2['suitable']) - 1) * 100
+        else:
+            sui1_ch = 0
+        if k2['substandard'] != 0:
+            sub1_ch = ((k1['substandard'] / k2['substandard']) - 1) * 100
+        else:
+            sub1_ch = 0
+        if k2['defect'] != 0:
+            def1_ch = ((k1['defect'] / k2['defect']) - 1) * 100
+        else:
+            def1_ch = 0
+        if k2['flooded'] != 0:
+            flo_ch = ((k1['flooded'] / k2['flooded']) - 1) * 100
+        else:
+            flo_ch = 0
+        if k2['sum'] != 0:
+            sum1_ch = ((k1['sum'] / k2['sum']) - 1) * 100
+        else:
+            sum1_ch = 0
+        data = {
+            "suitable1": k1['suitable'],
+            "sui1_ch": sui1_ch,
+            "suitable2": k2['suitable'],
+            "substandard1": k1['substandard'],
+            "sub1_ch": sub1_ch,
+            "substandard2": k2['substandard'],
+            "defect1": k1['defect'],
+            "def1_ch": def1_ch,
+            "defect2": k2['defect'],
+            "flooded1": k1['flooded'],
+            "flo_ch": flo_ch,
+            "flooded2": k2['flooded'],
+            "sum1": k1['sum'],
+            "sum1_ch": sum1_ch,
+            "sum2": k2['sum']
+        }
+        return Response(data)

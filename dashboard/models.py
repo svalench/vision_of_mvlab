@@ -2,7 +2,9 @@ from django.db import models
 from users.models import *
 from django.db import connection
 import datetime
+from structure.models import Agreagat
 from project_v_0_0_1.settings import dist_table
+from rest_framework.exceptions import ValidationError
 
 
 
@@ -47,6 +49,26 @@ class Role(models.Model):
     dashboard = models.ManyToManyField(Dashboard)
 
 
+def calculate_duration_shift(date, start, end):
+    with connection.cursor() as cursor:
+        sql1 = '''SELECT value, now_time FROM '''
+        sql2 = ''' WHERE now_time>=%s and now_time<%s ORDER BY now_time'''
+        sql = sql1 + dist_table['DurationIntervalDay'][0] + sql2
+        date_start = datetime.datetime(date.year, date.month, date.day, start.hour, start.minute, start.second)
+        date_end = datetime.datetime(date.year, date.month, date.day, end.hour, end.minute, end.second)
+        cursor.execute(sql, [date_start, date_end])
+        a = cursor.fetchall()
+        k = 0
+        for i in a:
+            if i[0] == 1 and k == 0:
+                k += 1
+                date_start1 = datetime.time(i[1].hour, i[1].minute, i[1].second)
+            if i[0] == 0 and k == 1:
+                k = 0
+                date_end1 = datetime.time(i[1].hour, i[1].minute, i[1].second)
+                obj = DurationIntervalDay(start=date_start1, end=date_end1, date=date)
+                obj.save()
+        return 0
 
 
 # для виджета продолжительность работы
@@ -67,6 +89,26 @@ class DurationIntervalDay(models.Model):
     start = models.TimeField('start work')
     end = models.TimeField('end work')
     date = models.DateField(auto_now=False, auto_now_add=False)
+
+    def __exists_table(self, text):
+        with connection.cursor() as cursor:
+            engine = connection.vendor
+            if engine == 'sqlite':
+                sql = '''SELECT count(*) FROM sqlite_master WHERE type="table" AND name="'''
+            elif engine == 'postgresql':
+                sql = '''SELECT count(*) FROM information_schema.tables WHERE table_schema = 'public' AND table_name ="'''
+            sql = sql + text + '"'
+            cursor.execute(sql)
+            a = cursor.fetchall()[0][0]
+        return a
+
+    def save(self):
+        a = self.__exists_table(dist_table['DurationIntervalDay'][0])
+        if a:
+            super(DurationIntervalDay, self).save()
+        else:
+            raise ValidationError('did not find the agreagat table')
+
 
 
 
@@ -226,6 +268,36 @@ def calculate_edition(date):
     return k
 
 
+def calculate_edition_shift(date, start, end):
+    sql = '''SELECT value, now_time, status FROM ''' + dist_table['EditionDay'] + ''' WHERE now_time>=%s and now_time<%s and status=%s ORDER BY now_time DESC LIMIT 1'''
+    with connection.cursor() as cursor:
+        date_start = datetime.datetime(date.year, date.month, date.day, start.hour, start.minute, start.second)
+        date_end = datetime.datetime(date.year, date.month, date.day, end.hour, end.minute, end.second)
+        cursor.execute(sql, [date_start, date_end, 0])
+        brak = cursor.fetchone()
+        if brak == None:
+            brak = [0]
+        cursor.execute(sql, [date_start, date_end, 1])
+        godno = cursor.fetchone()
+        if godno == None:
+            godno = [0]
+        cursor.execute(sql, [date_start, date_end, 2])
+        ne_kond = cursor.fetchone()
+        if ne_kond == None:
+            ne_kond = [0]
+        cursor.execute(sql, [date_start, date_end, 3])
+        zalito = cursor.fetchone()
+        if zalito == None:
+            zalito = [0]
+        a = {
+            "suitable": godno[0],
+            "substandard": ne_kond[0],
+            "defect": brak[0],
+            "flooded": zalito[0],
+            "sum": brak[0]+ne_kond[0]+godno[0]
+        }
+    return a
+
 # для виджета Выпуск панелей
 class EditionDay(models.Model):
     '''
@@ -330,6 +402,70 @@ def calculate_sumexpense(date):
         data.save()
     return data
 
+def calculate_sumexpense_shift(date, start, end):
+    date_start = datetime.datetime(date.year, date.month, date.day, start.hour, start.minute, start.second)
+    date_end = datetime.datetime(date.year, date.month, date.day, end.hour, end.minute, end.second)
+    sql1 = '''SELECT value, now_time FROM '''
+    sql2 = ''' WHERE now_time>=%s and now_time<%s ORDER BY now_time DESC LIMIT 1'''
+    iso = 0
+    pol = 0
+    pen = 0
+    kat1 = 0
+    kat2 = 0
+    kat3 = 0
+    with connection.cursor() as cursor:
+        for i in dist_table['SumexpenseDay']['iso']:
+            sql = sql1 + i + sql2
+            cursor.execute(sql, [date_start, date_end])
+            data = cursor.fetchone()
+            if data == None:
+                data = [0]
+            iso += data[0]
+        for i in dist_table['SumexpenseDay']['pol']:
+            sql = sql1 + i + sql2
+            cursor.execute(sql, [date_start, date_end])
+            data = cursor.fetchone()
+            if data == None:
+                data = [0]
+            pol += data[0]
+        for i in dist_table['SumexpenseDay']['pen']:
+            sql = sql1 + i + sql2
+            cursor.execute(sql, [date_start, date_end])
+            data = cursor.fetchone()
+            if data == None:
+                data = [0]
+            pen += data[0]
+        for i in dist_table['SumexpenseDay']['kat1']:
+            sql = sql1 + i + sql2
+            cursor.execute(sql, [date_start, date_end])
+            data = cursor.fetchone()
+            if data == None:
+                data = [0]
+            kat1 += data[0]
+        for i in dist_table['SumexpenseDay']['kat2']:
+            sql = sql1 + i + sql2
+            cursor.execute(sql, [date_start, date_end])
+            data = cursor.fetchone()
+            if data == None:
+                data = [0]
+            kat2 += data[0]
+        for i in dist_table['SumexpenseDay']['kat3']:
+            sql = sql1 + i + sql2
+            cursor.execute(sql, [date_start, date_end])
+            data = cursor.fetchone()
+            if data == None:
+                data = [0]
+            kat3 += data[0]
+    a = {
+        "iso": iso,
+        "pol": pol,
+        "pen": pen,
+        "kat1": kat1,
+        "kat2": kat2,
+        "kat3": kat3
+    }
+    return a
+
 
 
 
@@ -372,38 +508,39 @@ def calculate_energy_consumption(date):
     """
     with connection.cursor() as cursor:
         sql1 = '''SELECT value, now_time FROM '''
-        sql2 = ''' WHERE now_time>=%s and now_time<%s ORDER BY now_time DESC LIMIT 1'''
-        sql = sql1 + dist_table['EnergyConsumptionDay']['input1'] + sql2
+        sql21 = ''' WHERE now_time>=%s and now_time<%s ORDER BY now_time DESC LIMIT 1'''
+        sql22 = ''' WHERE now_time>=%s and now_time<%s ORDER BY now_time ASC LIMIT 1'''
+        sql = sql1 + dist_table['EnergyConsumptionDay']['input1'] + sql21
         date_now = date + datetime.timedelta(days=1)
         cursor.execute(sql, [date, date_now])
         data1 = cursor.fetchone()
         if data1 == None:
             data1 = [0]
-        sql = sql1 + dist_table['EnergyConsumptionDay']['input1'] + sql2
+        sql = sql1 + dist_table['EnergyConsumptionDay']['input1'] + sql22
         cursor.execute(sql, [date, date_now])
         data2 = cursor.fetchone()
         if data2 == None:
             data2 = [0]
         data_in_1 = data1[0]-data2[0]
-        sql = sql1 + dist_table['EnergyConsumptionDay']['input2'] + sql2
+        sql = sql1 + dist_table['EnergyConsumptionDay']['input2'] + sql21
         date_now = date + datetime.timedelta(days=1)
         cursor.execute(sql, [date, date_now])
         data1 = cursor.fetchone()
         if data1 == None:
             data1 = [0]
-        sql = sql1 + dist_table['EnergyConsumptionDay']['input2'] + sql2
+        sql = sql1 + dist_table['EnergyConsumptionDay']['input2'] + sql22
         cursor.execute(sql, [date, date_now])
         data2 = cursor.fetchone()
         if data2 == None:
             data2 = [0]
         data_in_2 = data1[0]-data2[0]
-        sql = sql1 + dist_table['EnergyConsumptionDay']['gas'] + sql2
+        sql = sql1 + dist_table['EnergyConsumptionDay']['gas'] + sql21
         date_now = date + datetime.timedelta(days=1)
         cursor.execute(sql, [date, date_now])
         data1 = cursor.fetchone()
         if data1 == None:
             data1 = [0]
-        sql = sql1 + dist_table['EnergyConsumptionDay']['gas'] + sql2
+        sql = sql1 + dist_table['EnergyConsumptionDay']['gas'] + sql22
         cursor.execute(sql, [date, date_now])
         data2 = cursor.fetchone()
         if data2 == None:
@@ -414,6 +551,54 @@ def calculate_energy_consumption(date):
         if datetime.datetime.now().date() != date:
             k.save()
         return k
+
+
+def calculate_energy_consumption_shift(date, start, end):
+    date_start = datetime.datetime(date.year, date.month, date.day, start.hour, start.minute, start.second)
+    date_end = datetime.datetime(date.year, date.month, date.day, end.hour, end.minute, end.second)
+    sql1 = '''SELECT value, now_time FROM '''
+    sql21 = ''' WHERE now_time>=%s and now_time<%s ORDER BY now_time DESC LIMIT 1'''
+    sql22 = ''' WHERE now_time>=%s and now_time<%s ORDER BY now_time ASC LIMIT 1'''
+    with connection.cursor() as cursor:
+        sql = sql1 + dist_table['EnergyConsumptionDay']['input1'] + sql21
+        cursor.execute(sql, [date_start, date_end])
+        data_end = cursor.fetchone()
+        if data_end == None:
+            data_end = [0]
+        sql = sql1 + dist_table['EnergyConsumptionDay']['input1'] + sql22
+        cursor.execute(sql, [date_start,date_end])
+        data_start = cursor.fetchone()
+        if data_start == None:
+            data_start = [0]
+        data_in1 = data_end[0] - data_start[0]
+        sql = sql1 + dist_table['EnergyConsumptionDay']['input2'] + sql21
+        cursor.execute(sql, [date_start, date_end])
+        data_end = cursor.fetchone()
+        if data_end == None:
+            data_end = [0]
+        sql = sql1 + dist_table['EnergyConsumptionDay']['input2'] + sql22
+        cursor.execute(sql, [date_start, date_end])
+        data_start = cursor.fetchone()
+        if data_start == None:
+            data_start = [0]
+        data_in2 = data_end[0] - data_start[0]
+        sql = sql1 + dist_table['EnergyConsumptionDay']['gas'] + sql21
+        cursor.execute(sql, [date_start, date_end])
+        data_end = cursor.fetchone()
+        if data_end == None:
+            data_end = [0]
+        sql = sql1 + dist_table['EnergyConsumptionDay']['gas'] + sql22
+        cursor.execute(sql, [date_start, date_end])
+        data_start = cursor.fetchone()
+        if data_start == None:
+            data_start = [0]
+        data_gas = data_end[0] - data_start[0]
+        data = {
+            "input1": data_in1,
+            "input2": data_in2,
+            "gas": data_gas
+        }
+    return data
 
 
 
@@ -522,6 +707,75 @@ def calculate_specific(date):
     if datetime.datetime.now().date() != date:
         data.save()
     return data
+
+
+
+def calculate_specific_shift(date, start, end):
+    date_start = datetime.datetime(date.year, date.month, date.day, start.hour, start.minute, start.second)
+    date_end = datetime.datetime(date.year, date.month, date.day, end.hour, end.minute, end.second)
+    sql1 = '''SELECT value, now_time FROM '''
+    sql2 = ''' WHERE now_time>=%s and now_time<%s ORDER BY now_time DESC LIMIT 1'''
+    iso = 0
+    pol = 0
+    pen = 0
+    kat1 = 0
+    kat2 = 0
+    kat3 = 0
+    with connection.cursor() as cursor:
+        for i in dist_table['SpecificConsumptionDay']['iso']:
+            sql = sql1 + i + sql2
+            cursor.execute(sql, [date_start, date_end])
+            data = cursor.fetchone()
+            if data == None:
+                data = [0]
+            iso += data[0]
+        for i in dist_table['SpecificConsumptionDay']['pol']:
+            sql = sql1 + i + sql2
+            cursor.execute(sql, [date_start, date_end])
+            data = cursor.fetchone()
+            if data == None:
+                data = [0]
+            pol += data[0]
+        for i in dist_table['SpecificConsumptionDay']['pen']:
+            sql = sql1 + i + sql2
+            cursor.execute(sql, [date_start, date_end])
+            data = cursor.fetchone()
+            if data == None:
+                data = [0]
+            pen += data[0]
+        for i in dist_table['SpecificConsumptionDay']['kat1']:
+            sql = sql1 + i + sql2
+            cursor.execute(sql, [date_start, date_end])
+            data = cursor.fetchone()
+            if data == None:
+                data = [0]
+            kat1 += data[0]
+        for i in dist_table['SpecificConsumptionDay']['kat2']:
+            sql = sql1 + i + sql2
+            cursor.execute(sql, [date_start, date_end])
+            data = cursor.fetchone()
+            if data == None:
+                data = [0]
+            kat2 += data[0]
+        for i in dist_table['SpecificConsumptionDay']['kat3']:
+            sql = sql1 + i + sql2
+            cursor.execute(sql, [date_start, date_end])
+            data = cursor.fetchone()
+            if data == None:
+                data = [0]
+            kat3 += data[0]
+    a = {
+        "iso": iso,
+        "pol": pol,
+        "pen": pen,
+        "kat1": kat1,
+        "kat2": kat2,
+        "kat3": kat3
+    }
+    return a
+
+
+
 
 # для виджета Удельный расход на км
 class SpecificConsumptionDay(models.Model):
