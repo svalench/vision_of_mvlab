@@ -92,7 +92,11 @@ class DurationIntervalDay(models.Model):
 
     def __exists_table(self, text):
         with connection.cursor() as cursor:
-            sql = '''SELECT count(*) FROM sqlite_master WHERE type="table" AND name="'''
+            engine = connection.vendor
+            if engine == 'sqlite':
+                sql = '''SELECT count(*) FROM sqlite_master WHERE type="table" AND name="'''
+            elif engine == 'postgresql':
+                sql = '''SELECT count(*) FROM information_schema.tables WHERE table_schema = 'public' AND table_name ="'''
             sql = sql + text + '"'
             cursor.execute(sql)
             a = cursor.fetchall()[0][0]
