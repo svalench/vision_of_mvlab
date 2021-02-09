@@ -287,10 +287,10 @@ dist_table = {
 
 # PlcRemoteUse ___ init
 PLC_init = {
-    "address": "123.123.123",
-    "rack": "1",
-    "slot": "1",
-    "port": "123"
+    "address": "192.168.32.128",
+    "rack": "0",
+    "slot": "2",
+    "port": "102"
 }
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.1/howto/static-files/
