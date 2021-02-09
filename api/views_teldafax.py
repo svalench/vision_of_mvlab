@@ -1,3 +1,5 @@
+from rest_framework.exceptions import ValidationError
+
 from dashboard.teldefax_dashboard import TransitionReadings, GenerationOfElectricity, Status
 from rest_framework.views import APIView
 from rest_framework.response import Response
