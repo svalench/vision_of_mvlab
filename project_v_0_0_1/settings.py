@@ -88,7 +88,7 @@ WSGI_APPLICATION = 'project_v_0_0_1.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': str(BASE_DIR / 'dbs1213.sqlite3'),
+        'NAME': str(BASE_DIR / 'dbs123.sqlite3'),
     }
     # 'default': {
     #     'ENGINE': 'django.db.backends.postgresql_psycopg2',
@@ -238,13 +238,13 @@ dist_table = {
     },
     "Taldefax": {
         "TransitionReadings": {
-            "methane": "mvlab_temp_real_1",
-            "сarbon dioxide": "mvlab_temp_real_2",
-            "oxygen": "mvlab_temp_real_3",
-            "pressure in": "mvlab_temp_real_4",
-            "pressure out": "mvlab_temp_real_5",
-            "consumption": "mvlab_temp_real_6",
-            "temperature": "mvlab_temp_real_1"
+            "methane": "oiugb",
+            "сarbon dioxide": "oiugb",
+            "oxygen": "oiugb",
+            "pressure in": "oiugb",
+            "pressure out": "oiugb",
+            "consumption": "oiugb",
+            "temperature": "oiugb"
         },
         "GenerationOfElectricity": {
             "machine 1": "mvlab_temp_real_1",

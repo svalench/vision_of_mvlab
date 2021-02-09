@@ -764,7 +764,7 @@ class ComparisonMonthViews(APIView):
         return Response(data)
 
 
-#виджет «Модуль сравнения» для вкладки «месяц»
+#виджет «Модуль сравнения» для вкладки «смена»
 @permission_classes([IsAuthenticated])
 class ComparisonShiftViews(APIView):
     def get(self, request, date1, date2, id1, id2):

@@ -12,7 +12,7 @@ class teldafax(TransitionReadings, GenerationOfElectricity, Status, APIView):
     Класс для вывода данных для dashboard
     """
     def get(self, request):
-        name_dash = self.request.query_params.get('name')
+        # name_dash = self.request.query_params.get('name')
         a = {
             "methane": self.methane(),
             "carbondioxide": self.carbondioxide(),
