@@ -20,17 +20,23 @@ import json
 import socket
 
 def send_status_to_server():
-    sock = socket.socket()
-    sock.settimeout(1)
-    sock.connect(('localhost', SOCKET_PORT_SEREVER))
-    data = {"data":1}
-    print(data)
-    data = json.dumps(data).encode('utf-8')
+    try:
+        sock = socket.socket()
+        sock.settimeout(1)
+        sock.connect(('localhost', SOCKET_PORT_SEREVER))
+        data = {"data":1}
+        print(data)
+        data = json.dumps(data).encode('utf-8')
+    except:
+        return {"error":"no connection to socket"}
     try:
         sock.send(data)
     except:
         sock.close()
-    res = sock.recv(1024)
+    try:
+        res = sock.recv(1024)
+    except:
+        return {"error":"no connection to socket"}
     print(res)
     sock.close()
     return json.loads(res)
