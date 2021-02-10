@@ -259,7 +259,7 @@ class PlcRemoteUse():
 
     def get_status_machine(self, db=3001, start=5714, offset=141):
         try:
-            work_status = self.get_value(64, 4, 2, 'real')
+            work_status = self.get_value(64, 4, 2, 'int')
             time.sleep(0.01)
             data_read = self.client.db_read(db, start, offset)
             pump_p301_status = 3 & int.from_bytes(data_read[114:1], byteorder='little', signed=True)
