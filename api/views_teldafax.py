@@ -1,11 +1,35 @@
+import json
+import socket
+
 from rest_framework.exceptions import ValidationError
 
 from dashboard.teldefax_dashboard import TransitionReadings, GenerationOfElectricity, Status
 from rest_framework.views import APIView
 from rest_framework.response import Response
 
-from api.get_value_from_siemens_teldafax import PlcRemoteUse
-from project_v_0_0_1.settings import PLC_init
+from project_v_0_0_1.settings import SOCKET_PORT_SEREVER
+
+
+def get_dashboard(data):
+    try:
+        sock = socket.socket()
+        sock.settimeout(1)
+        sock.connect(('localhost', SOCKET_PORT_SEREVER))
+        print(data)
+        data = json.dumps(data).encode('utf-8')
+    except:
+        return {"error":"no connection to socket"}
+    try:
+        sock.send(data)
+    except:
+        sock.close()
+    try:
+        res = sock.recv(1024)
+    except:
+        return {"error":"no connection to socket"}
+    print(res)
+    sock.close()
+    return json.loads(res)
 
 class teldafax(TransitionReadings, GenerationOfElectricity, Status, APIView):
     """
@@ -28,9 +52,12 @@ class teldafax(TransitionReadings, GenerationOfElectricity, Status, APIView):
 
 class Teldafax_status(APIView):
     def get(self, request):
-        data = PlcRemoteUse(PLC_init["address"], PLC_init["rack"], PLC_init["slot"], PLC_init["port"])
-        data1 = data.get_dashboard_teldafax_value_power()
-        data2 = data.get_status_machine()
+        data = get_dashboard({"dash_teldafax":True})
+        if "data1" in data:
+            data1 = data['data1']
+            data2 = data["data2"]
+        else:
+            raise ValidationError("Нет связи с микросервисом")
         try:
             Response = {
                 'power1': data1["power1"],
