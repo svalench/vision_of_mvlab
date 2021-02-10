@@ -278,22 +278,25 @@ class PlcRemoteUse():
             generator_D603_status2 = 24 & int.from_bytes(data_read[128:1], byteorder='little', signed=True)
             generator_D604_status1 = 7 & int.from_bytes(data_read[134:1], byteorder='little', signed=True)
             generator_D604_status2 = 24 & int.from_bytes(data_read[134:1], byteorder='little', signed=True)
+
+            fakel_A604 = int.from_bytes(data_read[140:1], byteorder='little', signed=True) #😀
             statuses = {
-                'work_status':work_status,
-                'pump_p301_status':pump_p301_status,
-                'valve_B1101_status':valve_B1101_status,
-                'valve_B1601_status':valve_B1601_status,
-                'compres_V501_status':compres_V501_status,
-                'compres_V502_status':compres_V502_status,
-                'compres_V503_status':compres_V503_status,
-                'generator_D601_status1':generator_D601_status1,
-                'generator_D601_status2':generator_D601_status2,
-                'generator_D602_status1':generator_D602_status1,
-                'generator_D602_status2':generator_D602_status2,
-                'generator_D603_status1':generator_D603_status1,
-                'generator_D603_status2':generator_D603_status2,
-                'generator_D604_status1':generator_D604_status1,
-                'generator_D604_status2':generator_D604_status2,
+                'work_status': work_status,
+                'pump_p301_status': pump_p301_status,
+                'valve_B1101_status': valve_B1101_status,
+                'valve_B1601_status': valve_B1601_status,
+                'compres_V501_status': compres_V501_status,
+                'compres_V502_status': compres_V502_status,
+                'compres_V503_status': compres_V503_status,
+                'generator_D601_status1': generator_D601_status1,
+                'generator_D601_status2': generator_D601_status2,
+                'generator_D602_status1': generator_D602_status1,
+                'generator_D602_status2': generator_D602_status2,
+                'generator_D603_status1': generator_D603_status1,
+                'generator_D603_status2': generator_D603_status2,
+                'generator_D604_status1': generator_D604_status1,
+                'generator_D604_status2': generator_D604_status2,
+                'fakel_A604': fakel_A604
             }
             return statuses
         except:
