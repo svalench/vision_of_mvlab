@@ -52,7 +52,8 @@ class Teldafax_status(APIView):
                 'generator_D603_status1':data2["generator_D603_status1"],
                 'generator_D603_status2':data2["generator_D603_status2"],
                 'generator_D604_status1':data2["generator_D604_status1"],
-                'generator_D604_status2':data2["generator_D604_status2"]
+                'generator_D604_status2':data2["generator_D604_status2"],
+                'fakel_A604':data2["fakel_A604"]
             }
         except:
             raise ValidationError("Нет связи с плк")
