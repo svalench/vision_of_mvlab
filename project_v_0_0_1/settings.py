@@ -130,7 +130,8 @@ CORS_ALLOWED_ORIGINS = [
     "http://mvlab.devzsg.net",
     "http://localhost:8000",
 ]
-CORS_ORIGIN_ALLOW_ALL = True
+if DEBUG:
+    CORS_ORIGIN_ALLOW_ALL = True
 AUTH_USER_MODEL = 'users.UserP'
 # Internationalization
 # https://docs.djangoproject.com/en/3.1/topics/i18n/
