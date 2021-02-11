@@ -95,7 +95,7 @@ DATABASES = {
         'NAME': 'db1',
         'USER': 'mvlab',
         'PASSWORD': 'z1x2c3',
-        'HOST': '172.16.0.1',
+        'HOST': '172.17.0.1',
         'PORT': '5432',
     }
 }
