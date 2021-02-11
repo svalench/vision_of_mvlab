@@ -6,6 +6,7 @@ https://docs.djangoproject.com/en/3.1/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/3.1/ref/settings/
 """
+import os
 import threading
 from pathlib import Path
 
@@ -18,16 +19,23 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/3.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
+
+def get_env_value(env_variable, for_develop):
+    try:
+        return os.environ[env_variable]
+    except:
+        return for_develop
+
+
 SECRET_KEY = '+h4b@t!%)**n@v6#o4o$x9tme_!8ju%62l4gqpk^7+xf_$#2_5'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = get_env_value('DEBUG', True)
 
 ALLOWED_HOSTS = ['*']
 
-
 # Application definition
-#sdcfs
+# sdcfs
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
@@ -78,14 +86,17 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'project_v_0_0_1.wsgi.application'
 
-
 # Database
 # https://docs.djangoproject.com/en/3.1/ref/settings/#databases
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': str(BASE_DIR / 'dbs1213.sqlite3'),
+        'ENGINE': get_env_value('ENGINE', 'django.db.backends.sqlite3'),
+        'NAME': get_env_value('NAME', str(BASE_DIR / 'dbs1213.sqlite3')),
+        'USER': get_env_value('USER', ''),
+        'PASSWORD': get_env_value('PASSWORD', ''),
+        'HOST': get_env_value('HOST', ''),
+        'PORT': get_env_value('PORT', ''),
     }
     # 'default': {
     #     'ENGINE': 'django.db.backends.postgresql_psycopg2',
@@ -96,7 +107,6 @@ DATABASES = {
     #     'PORT': '5432',
     # }
 }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/3.1/ref/settings/#auth-password-validators
@@ -132,6 +142,7 @@ CORS_ALLOWED_ORIGINS = [
 ]
 if DEBUG:
     CORS_ORIGIN_ALLOW_ALL = True
+
 AUTH_USER_MODEL = 'users.UserP'
 # Internationalization
 # https://docs.djangoproject.com/en/3.1/topics/i18n/
@@ -147,9 +158,8 @@ USE_L10N = True
 USE_TZ = True
 
 BASE_STRUCTURE = (
-        'Reserv_1', 'Reserv_2', 'Corparation', 'Company', 'Factory', 'Department', 'Agreagat', 'Sensors')
-SOCKET_PORT_SEREVER = 8086
-
+    'Reserv_1', 'Reserv_2', 'Corparation', 'Company', 'Factory', 'Department', 'Agreagat', 'Sensors')
+SOCKET_PORT_SEREVER = get_env_value('SOCKET_PORT', 8086)
 
 '''
 dist_table:
