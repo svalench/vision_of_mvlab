@@ -37,8 +37,10 @@ ALLOWED_HOSTS = ['*']
 # Application definition
 # sdcfs
 INSTALLED_APPS = [
+    'django.contrib.sites',
     'django.contrib.admin',
     'django.contrib.auth',
+
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
@@ -53,8 +55,10 @@ INSTALLED_APPS = [
     'users',
     'recorder',
     'dashboard',
-]
 
+    'finalware',
+]
+SITE_ID = 1
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -107,6 +111,15 @@ DATABASES = {
     #     'PORT': '5432',
     # }
 }
+
+SITE_SUPERUSER_USERNAME = get_env_value('SUPERUSER_NAME', 'wert')
+
+# This field is stored in the `email` field, provided, that `User.USERNAME_FIELD` is not an `email`.
+# If `User.USERNAME_FIELD` is already an email address, set `SITE_SUPERUSER_EMAIL = SITE_SUPERUSER_USERNAME`
+SITE_SUPERUSER_EMAIL = get_env_value('SUPERUSER_EMAIL', 'av@mvlab.by')
+
+# A hashed version of `SITE_SUPERUSER_PASSWORD` will be store in superuser's `password` field.
+SITE_SUPERUSER_PASSWORD = get_env_value('SUPERUSER_PASSWORD', '123')
 
 # Password validation
 # https://docs.djangoproject.com/en/3.1/ref/settings/#auth-password-validators
