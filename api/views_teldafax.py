@@ -14,7 +14,7 @@ def get_dashboard(data):
     try:
         sock = socket.socket()
         sock.settimeout(1)
-        sock.connect(('localhost', SOCKET_PORT_SEREVER))
+        sock.connect(('0.0.0.0', SOCKET_PORT_SEREVER))
         print(data)
         data = json.dumps(data).encode('utf-8')
     except:
