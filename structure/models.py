@@ -98,19 +98,15 @@ class Reserv_1(models.Model):
         """возвращает все занные на уровень ниже"""
         return self.reserv_2_set.all()
 
-    def save(self, merker=False):
-        ob = FirstObject.objects.all().first()
-        if merker:
-            super(Reserv_1, self).save()
-        else:
-            if (ob):
-                ob.start_object = self.pk
-                ob.save()
-                super(Reserv_1, self).save()
-            else:
-                raise ValidationError('No structure in ferststructure',
-                                      code='invalid'
-                                      )
+    def save(self,*args, **kwargs):
+        try:
+            ob = FirstObject.objects.all().first()
+            super(Reserv_1, self).save(force_insert=True, *args, **kwargs)
+            ob.start_object = self.pk
+            ob.save()
+        except:
+            super(Reserv_1, self).save(*args, **kwargs)
+
 
 
 
