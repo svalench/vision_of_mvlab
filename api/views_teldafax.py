@@ -14,7 +14,7 @@ def get_dashboard(data):
     try:
         sock = socket.socket()
         sock.settimeout(1)
-        sock.connect(('0.0.0.0', SOCKET_PORT_SEREVER))
+        sock.connect(('128.65.54.166', 8084))
         print(data)
         data = json.dumps(data).encode('utf-8')
     except:
@@ -53,13 +53,14 @@ class teldafax(TransitionReadings, GenerationOfElectricity, Status, APIView):
 class Teldafax_status(APIView):
     def get(self, request):
         data = get_dashboard({"dash_teldafax":True})
+        print(data)
         if "data1" in data:
             data1 = data['data1']
             data2 = data["data2"]
         else:
             raise ValidationError("Нет связи с микросервисом")
         try:
-            Response = {
+            res = {
                 'power1': data1["power1"],
                 'power2': data1["power2"],
                 'power3': data1["power3"],
@@ -83,5 +84,5 @@ class Teldafax_status(APIView):
             }
         except:
             raise ValidationError("Нет связи с плк")
-        return Response
+        return Response(res)
 
