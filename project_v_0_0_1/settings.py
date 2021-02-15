@@ -133,7 +133,7 @@ CORS_ALLOWED_ORIGINS = [
     "http://mvlab.devzsg.net",
     "http://localhost:8000",
 ]
-
+CORS_ORIGIN_ALLOW_ALL = True
 AUTH_USER_MODEL = 'users.UserP'
 # Internationalization
 # https://docs.djangoproject.com/en/3.1/topics/i18n/
@@ -286,12 +286,7 @@ dist_table = {
 }
 
 # PlcRemoteUse ___ init
-PLC_init = {
-    "address": "123.123.123",
-    "rack": "1",
-    "slot": "1",
-    "port": "123"
-}
+
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.1/howto/static-files/
 
