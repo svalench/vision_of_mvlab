@@ -1,12 +1,14 @@
 from django.urls import path
 
 from .views import *
+from .viewset import *
 
 urlpatterns = [
     path('wizard/step1/', Parametrs.step1, name='wizard_sep1'),
     path('get_structure/', Parametrs.get_structure,name='get_structure'),
     path('create/department/', Parametrs.create_shift,name='create_dep'),
 
+    path('Reserv_1/', Reserv_1View.as_view()),
     path('Reserv2/search/<int:pk>/', Reserv2_Search.as_view()),
     path('Corparation/search/<int:pk>/', Corparation_Search.as_view()),
     path('Company/search/<int:pk>/', Company_Search.as_view()),

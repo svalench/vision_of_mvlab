@@ -1,6 +1,6 @@
 ### *Вкладка резерв 1*
 POST запрос.  
-Путь: /structure/Reserv1/  
+Путь: /structure/Reserv_1/  
 ```
 {
     "name":str
@@ -12,7 +12,7 @@ POST запрос.
 
 GET запрос.
 Для отображения записей в поле "название резерв1"  
-Путь: /structure/Reserv1/
+Путь: /structure/Reserv_1/
 ```
 {
     {
@@ -24,7 +24,7 @@ GET запрос.
 ```
 
 POST запрос.  
-Путь: /structure/Reserv2/  
+Путь: /structure/Reserv_2/  
 ```
 {
     "name":str,
@@ -37,7 +37,7 @@ POST запрос.
 ### *Вкладка Организация*
 GET запрос.
 Для отображения записей в поле "название резерв1"  
-Путь: /structure/Reserv1/
+Путь: /structure/Reserv_1/
 ```
 {
     {

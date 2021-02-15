@@ -24,7 +24,7 @@ def send_status_to_server():
         sock = socket.socket()
         sock.settimeout(1)
         sock.connect(('localhost', SOCKET_PORT_SEREVER))
-        data = {"data":1}
+        data = {"data": 1}
         print(data)
         data = json.dumps(data).encode('utf-8')
     except:
@@ -104,7 +104,9 @@ class Parametrs(APIView):
                 'name': ob.name,
                 'customer': ob.customer,
                 'contract': ob.contract,
-                'structure': ob.structure
+                'structure': ob.structure,
+                'date_add': ob.date_add,
+                'date_update': ob.date_update
             }
         else:
             structure = {'result': 'empty'}

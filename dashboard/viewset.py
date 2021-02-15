@@ -10,7 +10,7 @@ from rest_framework.permissions import IsAuthenticated
 from structure.models import Agreagat
 
 
-@permission_classes([IsAuthenticated])
+#@permission_classes([IsAuthenticated])
 class RoleViews(APIView):
     def get(self, request):
         role = UserP.objects.get(id=request.user.pk).role_set.all()

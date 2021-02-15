@@ -8,6 +8,9 @@ from rest_framework.permissions import IsAuthenticated
 
 from .serializer import *
 
+from rest_framework.views import APIView
+import json
+
 
 class MetaView:
     """
@@ -18,6 +21,7 @@ class MetaView:
     
     - create - проверяем есть ли в созданной структуре родитель если нет то id передан от уровня выше и мы переопределям id
     """
+
     def create(self, request, *args, **kwargs):
         """ переопределенный метод для проверки приходящих данных. Если parent указан не для предыдущей связванной модели то переопределяем его"""
         ob = FirstObject.objects.all().first()
@@ -32,7 +36,7 @@ class MetaView:
                     i = new_base.index(b)
                     str_query = new_base[:i]
                     str_query.reverse()
-                    if(str_query):
+                    if (str_query):
                         for q in str_query:
                             if q == "Reserv_1":
                                 c = Reserv_1.all().first()
@@ -43,7 +47,9 @@ class MetaView:
                             c = a.child_model().first()
                         request.data['parent'] = c.id
                 except:
-                    raise ValidationError('Create '+str(BASE_STRUCTURE[ind])+' . Not found '+b+' with pk %s' % request.data['parent'])
+                    raise ValidationError(
+                        'Create ' + str(BASE_STRUCTURE[ind]) + ' . Not found ' + b + ' with pk %s' % request.data[
+                            'parent'])
             break
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
@@ -53,16 +59,30 @@ class MetaView:
 
 
 
-class Reserv_1View(viewsets.ModelViewSet):
-    queryset = Reserv_1.objects.all()
-    serializer_class = Reserv_1Serializer
+# class Reserv_1View(MetaView, viewsets.ModelViewSet):
+#     serializer_class = Reserv_1Serializer
+#     queryset = Reserv_1.objects.all()
+#
+#     def perform_create(self, serializer):
+#         serializer.save(True)
+#
+#     def get_permissions(self):
+#         if self.request.method == 'GET':
+#             self.permission_classes = [IsAuthenticated]
+#         else:
+#             self.permission_classes = [IsAdminUser]
+#         return super(Reserv_1View, self).get_permissions()
 
-    def get_permissions(self):
-        if self.request.method == 'GET':
-            self.permission_classes = [IsAuthenticated]
-        else:
-            self.permission_classes = [IsAdminUser]
-        return super(Reserv_1View, self).get_permissions()
+
+class Reserv_1View(APIView):
+    def post(self, request):
+        data = request.body.decode('utf8')
+        data_json = json.loads(data)
+        a = FirstObject.objects.all().first()
+        print(a.start_object)
+        a = Reserv_1(name=data_json["name"])
+        a.save()
+        return Response({"succes"})
 
 
 class Reserv_2View(MetaView, viewsets.ModelViewSet):
@@ -159,8 +179,6 @@ class AgreagatView(MetaView, viewsets.ModelViewSet):
         else:
             self.permission_classes = [IsAdminUser]
         return super(AgreagatView, self).get_permissions()
-
-
 
 
 class SensorsView(MetaView, viewsets.ModelViewSet):

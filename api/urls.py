@@ -18,8 +18,8 @@ class DateConverter:
 register_converter(DateConverter, 'yyyy')
 
 urlpatterns = [
-    path('duration/<yyyy:date>/day/', DurationIntervalDayViews.as_view()),
-    path('duration/<yyyy:date>/shift/<int:id>/', DurationIntervalShiftViews.as_view()),
+    path('duration/<yyyy:date>/day/', DurationIntervalDayViews.as_view(), name="duration_day"),
+    path('duration/<yyyy:date>/shift/<int:id>/', DurationIntervalShiftViews.as_view(), name="duration_shift"),
     path('remainder/<yyyy:date>/', RemainderViews.as_view()),
     path('edition/<yyyy:date>/month/', EditionMonthViews.as_view()),
     path('edition/<yyyy:date>/day/', EditionDayViews.as_view()),
