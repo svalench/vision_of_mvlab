@@ -104,7 +104,9 @@ class Parametrs(APIView):
                 'name': ob.name,
                 'customer': ob.customer,
                 'contract': ob.contract,
-                'structure': ob.structure
+                'structure': ob.structure,
+                'date_add':ob.date_add,
+                'date_update':ob.date_update
             }
         else:
             structure = {'result': 'empty'}
