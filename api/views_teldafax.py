@@ -87,3 +87,8 @@ class Teldafax_status(APIView):
             raise ValidationError("Нет связи с плк")
         return Response(res)
 
+class GetStatusConnectionsTeldafax(APIView):
+
+    def get(self):
+        data = get_dashboard({"sss": True})
+        return Response(data)

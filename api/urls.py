@@ -2,7 +2,7 @@ from django.urls import path, include
 from django.urls import path, register_converter
 from datetime import datetime
 from dashboard.viewset import *
-from api.views_teldafax import teldafax, Teldafax_status
+from api.views_teldafax import teldafax, Teldafax_status, GetStatusConnectionsTeldafax
 
 
 class DateConverter:
@@ -38,6 +38,7 @@ urlpatterns = [
     path('comparison/shift/<yyyy:date1>/<int:id1>/<yyyy:date2>/<int:id2>/', ComparisonShiftViews.as_view()),
     path('teldafax/value/', teldafax.as_view()),
     path('teldafax/status/', Teldafax_status.as_view()),
+    path('teldafax/status/connections/', GetStatusConnectionsTeldafax.as_view()),
 
     path('user/', RoleViews.as_view())
 
