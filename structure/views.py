@@ -117,7 +117,7 @@ class Parametrs(APIView):
         """удаление структуры"""
         ob = FirstObject.objects.all().first()
         ob.delete()
-        structure = {'result': 'empty'}
+        structure = {'result': 'structure %s delete' % ob.id}
         return Response(structure)
 
     @api_view(('POST',))
