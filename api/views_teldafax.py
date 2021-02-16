@@ -89,6 +89,6 @@ class Teldafax_status(APIView):
 
 class GetStatusConnectionsTeldafax(APIView):
 
-    def get(self):
+    def get(self, request):
         data = get_dashboard({"sss": True})
         return Response(data)
