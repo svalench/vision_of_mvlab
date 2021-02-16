@@ -112,6 +112,14 @@ class Parametrs(APIView):
             structure = {'result': 'empty'}
         return Response(structure)
 
+    @api_view(('DELETE',))
+    def delete_structure(self):
+        """удаление структуры"""
+        ob = FirstObject.objects.all().first()
+        ob.delete()
+        structure = {'result': 'empty'}
+        return Response(structure)
+
     @api_view(('POST',))
     def create_shift(self):
         """метод созданиия цеха совместно со сменами и перерывами """
