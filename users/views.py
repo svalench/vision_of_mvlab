@@ -2,9 +2,9 @@ import math
 import random
 from datetime import datetime
 import string
-from .models import User
+from .models import User, UserP
 from django.shortcuts import render
-from rest_framework import status
+from rest_framework import status, viewsets
 from rest_framework.authtoken.views import ObtainAuthToken
 from rest_framework.authtoken.models import Token
 from rest_framework.decorators import api_view, permission_classes
@@ -66,6 +66,16 @@ class UserModelView(APIView):
         print(serializer.data)
         return Response(serializer.data)
 
+
+class UserData(viewsets.ModelViewSet):
+    queryset = UserP.objects.all()
+    serializer_class = UserSerializer
+
+    def get_object(self):
+        return self.request.user
+
+    def list(self, request, *args, **kwargs):
+        return self.retrieve(request, *args, **kwargs)
 
 # preobrazovanie datetimestamp v unix time
 def datetimeconverter(o):
