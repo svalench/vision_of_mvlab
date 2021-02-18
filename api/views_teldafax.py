@@ -56,8 +56,8 @@ class TeldafaxErrorTablesAndStatusInIt(APIView):
             if engine == 'sqlite':
                 sql = '''SELECT count(*) FROM sqlite_master WHERE type="table" AND name="'''
             elif engine == 'postgresql':
-                sql = '''SELECT count(*) FROM information_schema.tables WHERE table_schema = 'public' AND table_name ="'''
-            sql = sql + "mvlab_alarms" + '"'
+                sql = """SELECT count(*) FROM information_schema.tables WHERE table_schema = 'public' AND table_name ='"""
+            sql = sql + "mvlab_alarms" + ";'"
             cursor.execute(sql)
             a = cursor.fetchall()[0][0]
         if a:
