@@ -1,6 +1,7 @@
 import json
 import socket
 
+from django.db import connection
 from rest_framework.exceptions import ValidationError
 
 from dashboard.teldefax_dashboard import TransitionReadings, GenerationOfElectricity, Status
@@ -48,12 +49,29 @@ class teldafax(TransitionReadings, GenerationOfElectricity, Status, APIView):
         }
         return Response(a)
 
-
+class TeldafaxErrorTablesAndStatusInIt(APIView):
+    def get(self, request):
+        with connection.cursor() as cursor:
+            engine = connection.vendor
+            if engine == 'sqlite':
+                sql = '''SELECT count(*) FROM sqlite_master WHERE type="table" AND name="'''
+            elif engine == 'postgresql':
+                sql = '''SELECT count(*) FROM information_schema.tables WHERE table_schema = 'public' AND table_name ="'''
+            sql = sql + "mvlab_alarms" + '"'
+            cursor.execute(sql)
+            a = cursor.fetchall()[0][0]
+        if a:
+            with connection.cursor() as cursor:
+                sql = """SELECT * FROM mvlab_alarms WHERE status=1;"""
+                cursor.execute(sql)
+                res = cursor.fetchall()
+        else:
+            res={"error":"no Table Error in DB"}
+        return Response(res)
 
 class Teldafax_status(APIView):
     def get(self, request):
         data = get_dashboard({"dash_teldafax":True})
-        print(data)
         if "data1" in data:
             data1 = data['data1']
             data2 = data["data2"]
