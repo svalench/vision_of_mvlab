@@ -64,7 +64,12 @@ class TeldafaxErrorTablesAndStatusInIt(APIView):
             with connection.cursor() as cursor:
                 sql = """SELECT * FROM mvlab_alarms WHERE status=1;"""
                 cursor.execute(sql)
-                res = cursor.fetchall()
+                res_alarms = cursor.fetchall()
+            with connection.cursor() as cursor:
+                sql = """SELECT * FROM mvlab_warnings WHERE status=1;"""
+                cursor.execute(sql)
+                res_warnings = cursor.fetchall()
+                res = {"alarms":res_alarms, "warnings":res_warnings}
         else:
             res={"error":"no Table Error in DB"}
         return Response(res)
