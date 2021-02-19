@@ -7,55 +7,55 @@ class Reserv_1Serializer(serializers.ModelSerializer):
         fields = '__all__'
 
 class Reserv_2Serializer(serializers.ModelSerializer):
-    parent = Reserv_1Serializer( read_only=True)
+    parents = Reserv_1Serializer(source='parent', read_only=True)
     class Meta:
         model = Reserv_2
         fields = '__all__'
 
 class CorparationSerializer(serializers.ModelSerializer):
-    parent = Reserv_2Serializer(read_only=True)
+    parents = Reserv_2Serializer(source='parent',read_only=True)
     class Meta:
         model = Corparation
         fields = '__all__'
 
 class CompanySerializer(serializers.ModelSerializer):
-    parent = CorparationSerializer(read_only=True)
+    parents = CorparationSerializer(source='parent',read_only=True)
     class Meta:
         model = Company
         fields = '__all__'
 
 class FactorySerializer(serializers.ModelSerializer):
-    parent = CompanySerializer(read_only=True)
+    parents = CompanySerializer(source='parent',read_only=True)
     class Meta:
         model = Factory
         fields = '__all__'
 
 class DepartmentSerializer(serializers.ModelSerializer):
-    parent = FactorySerializer(read_only=True)
+    parents = FactorySerializer(source='parent',read_only=True)
     class Meta:
         model = Department
         fields = '__all__'
 
 class ShiftSerializer(serializers.ModelSerializer):
-    parent = DepartmentSerializer(read_only=True)
+    parents = DepartmentSerializer(source='parent',read_only=True)
     class Meta:
         model = Shift
         fields = '__all__'
 
 class LunchSerializer(serializers.ModelSerializer):
-    parent = ShiftSerializer(read_only=True)
+    parents = ShiftSerializer(source='parent',read_only=True)
     class Meta:
         model = Lunch
         fields = '__all__'
 
 class AgreagatSerializer(serializers.ModelSerializer):
-    parent = DepartmentSerializer(read_only=True)
+    parents = DepartmentSerializer(source='parent',read_only=True)
     class Meta:
         model = Agreagat
         fields = '__all__'
 
 class SensorsSerializer(serializers.ModelSerializer):
-    parent = AgreagatSerializer(read_only=True)
+    parents = AgreagatSerializer(source='parent',read_only=True)
     class Meta:
         model = Sensors
         fields = '__all__'
