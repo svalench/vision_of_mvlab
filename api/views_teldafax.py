@@ -19,7 +19,7 @@ def get_dashboard(data):
         print(data)
         data = json.dumps(data).encode('utf-8')
     except:
-        return {"error":[0,"no connection to socket"]}
+        return {"error":[0,"error","no connection to socket"]}
     try:
         sock.send(data)
     except:
