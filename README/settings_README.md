@@ -14,7 +14,10 @@
     ]
 }
 ```
-
+Если соединения нет будет приходить ответ вида:
+```
+{"error":[0,"error","no connection to socket"]}
+```
 ## Wizard step1 и step2
 ```settings/wizard/step1```  
 Ниже описана структура запроса POST для создания объекта на шагах wizard 1 и 2 
