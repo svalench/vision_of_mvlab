@@ -126,7 +126,7 @@ class Parametrs(APIView):
         data = self.data
         dep = Department(
             name=data['name'],
-            parent_id=data['factory_id']
+            parent_id=data['parent']
         )
         dep.save()
         k = 0
