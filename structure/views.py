@@ -147,7 +147,8 @@ class Parametrs(APIView):
                 )
                 lunch.save()
             k += 1
-        return Response({'result': 'success'}, status=201)
+        res = DepartmentShiftsSerializer(dep)
+        return Response(res.data, status=201)
 
 
 @permission_classes([IsAuthenticated])
