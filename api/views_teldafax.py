@@ -115,3 +115,10 @@ class GetStatusConnectionsTeldafax(APIView):
     def get(self, request):
         data = get_dashboard({"sss": True})
         return Response(data)
+
+
+class GetConnectionsTeldafax(APIView):
+
+    def get(self, request):
+        data = get_dashboard({"get_connections": True})
+        return Response(data)
