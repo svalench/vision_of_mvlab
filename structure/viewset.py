@@ -59,30 +59,30 @@ class MetaView:
 
 
 
-# class Reserv_1View(MetaView, viewsets.ModelViewSet):
-#     serializer_class = Reserv_1Serializer
-#     queryset = Reserv_1.objects.all()
-#
-#     def perform_create(self, serializer):
-#         serializer.save(True)
-#
-#     def get_permissions(self):
-#         if self.request.method == 'GET':
-#             self.permission_classes = [IsAuthenticated]
-#         else:
-#             self.permission_classes = [IsAdminUser]
-#         return super(Reserv_1View, self).get_permissions()
+class Reserv_1View(MetaView, viewsets.ModelViewSet):
+    serializer_class = Reserv_1Serializer
+    queryset = Reserv_1.objects.all()
+
+    # def perform_create(self, serializer):
+    #     serializer.save(True)
+
+    def get_permissions(self):
+        if self.request.method == 'GET':
+            self.permission_classes = [IsAuthenticated]
+        else:
+            self.permission_classes = [IsAdminUser]
+        return super(Reserv_1View, self).get_permissions()
 
 
-class Reserv_1View(APIView):
-    def post(self, request):
-        data = request.body.decode('utf8')
-        data_json = json.loads(data)
-        a = FirstObject.objects.all().first()
-        print(a.start_object)
-        a = Reserv_1(name=data_json["name"])
-        a.save()
-        return Response({"succes"})
+# class Reserv_1View(APIView):
+#     def post(self, request):
+#         data = request.body.decode('utf8')
+#         data_json = json.loads(data)
+#         a = FirstObject.objects.all().first()
+#         print(a.start_object)
+#         a = Reserv_1(name=data_json["name"])
+#         a.save()
+#         return Response({"succes"})
 
 
 class Reserv_2View(MetaView, viewsets.ModelViewSet):

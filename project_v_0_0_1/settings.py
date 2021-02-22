@@ -238,13 +238,13 @@ dist_table = {
     },
     "Taldefax": {
         "TransitionReadings": {
-            "methane": "oiugb",
-            "сarbon dioxide": "oiugb",
-            "oxygen": "oiugb",
-            "pressure in": "oiugb",
-            "pressure out": "oiugb",
-            "consumption": "oiugb",
-            "temperature": "oiugb"
+            "methane": "oi1ugb",
+            "сarbon dioxide": "oi2ugb",
+            "oxygen": "oi3ugb",
+            "pressure in": "oi4ugb",
+            "pressure out": "oi5ugb",
+            "consumption": "oiu6gb",
+            "temperature": "oiu7gb"
         },
         "GenerationOfElectricity": {
             "machine 1": "mvlab_temp_real_1",

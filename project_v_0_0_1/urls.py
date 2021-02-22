@@ -16,7 +16,7 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 from api.router import router
-# from structure.router import router1
+from structure.router import router1
 from recorder.router import router_recorder
 
 # from rest_framework.schemas import get_schema_view
@@ -43,8 +43,8 @@ from django.conf.urls import url
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/', include(router.urls)),
-    path('structure/', include('structure.urls')),
-    # path('structure/', include(router1.urls)),
+    # path('structure/', include('structure.urls')),
+    path('structure/', include(router1.urls)),
     path('settings/',include('structure.urls')),
     path('user/', include('users.urls')),
     path('recorder/', include('recorder.urls')),

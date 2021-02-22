@@ -4,7 +4,7 @@ from .viewset import *
 
 router1 = routers.DefaultRouter()
 
-# router1.register(r'Reserv_1', Reserv_1View)
+router1.register(r'Reserv_1', Reserv_1View)
 router1.register(r'Reserv_2', Reserv_2View)
 router1.register(r'Corparation', CorparationView)
 router1.register(r'Company', CompanyView)

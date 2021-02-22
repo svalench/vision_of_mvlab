@@ -307,7 +307,7 @@ class EditionShiftViews(APIView):
     def get(self, request, date, id):
         a = Agreagat.objects.get(pk=dist_table['DurationIntervalDay'][1]).parent.shift_set.get(pk=id)
         k = calculate_edition_shift(date, a.start, a.end)
-        if id == 0:
+        if id == 1:
             id = 4
         else:
             id = id - 1
