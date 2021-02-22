@@ -1,3 +1,4 @@
+import gzip
 import json
 import socket
 
@@ -29,6 +30,25 @@ def get_dashboard(data):
     except:
         return {"error":[0,"error","no connection to socket"]}
     print(res)
+    sock.close()
+    return json.loads(res)
+
+def get_dashboard_gzip(data):
+    try:
+        sock = socket.socket()
+        sock.settimeout(1)
+        sock.connect(('128.65.54.166', 8084))
+        print(data)
+        data = json.dumps(data).encode('utf-8')
+    except:
+        return {"error":[0,"error","no connection to socket"]}
+    try:
+        sock.send(data)
+    except:
+        sock.close()
+
+    res = sock.recv(6148*2)
+    res = gzip.decompress(res)
     sock.close()
     return json.loads(res)
 
@@ -120,5 +140,5 @@ class GetStatusConnectionsTeldafax(APIView):
 class GetConnectionsTeldafax(APIView):
 
     def get(self, request):
-        data = get_dashboard({"get_connections": True})
+        data = get_dashboard_gzip({"get_connections": True})
         return Response(data)
