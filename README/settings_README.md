@@ -4,7 +4,7 @@
 
 Отправить GET запрос на адрес
 ```
-teldafax/connections/
+/dashboard/teldafax/connections/
 ```
 После чего придет ответ со структурой
 
