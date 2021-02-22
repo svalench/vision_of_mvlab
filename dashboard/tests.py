@@ -11,11 +11,11 @@ import random
 from django.db import connection
 from project_v_0_0_1.settings import dist_table
 import json
-from structure.models import FirstObject
 
 
 # Create your tests here.
 class Test_dashboard(APITestCase):
+
     def setUp(self):
         # создание имя дашборда
         name_dash = ["DurationIntervalDay", "Storehouse", "EditionDay", "SumexpenseDay", "EnergyConsumptionDay",
@@ -35,7 +35,7 @@ class Test_dashboard(APITestCase):
         name_dash = Dashboard.objects.all()
         for Dash in name_dash:
             self.rol.dashboard.add(Dash)  # self.dashboard)
-        # добавление структуры
+            # добавление структуры
         data1 = {
             "levlel_0": 0,
             "levlel_1": 1,
@@ -54,114 +54,38 @@ class Test_dashboard(APITestCase):
         }
         json_str = json.dumps(data2)
         url = reverse("wizard_sep1")
-        response = self.client.post(url, data=json_str, HTTP_AUTHORIZATION='Token {}'.format(self.token), content_type='application/json')
-        json_response = json.loads(response.content.decode('utf8'))
-        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
-        self.assertEqual(json_response["data"], "success")
-        # проверка созданной структуры
-        response = self.client.get('/settings/get_structure/', HTTP_AUTHORIZATION='Token {}'.format(self.token))
-        json_response = json.loads(response.content.decode('utf8'))
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(json_response["name"], "asd")
-        self.assertEqual(json_response["customer"], "asd")
-        self.assertEqual(json_response["contract"], "asd")
-        self.assertEqual(json_response["structure"]["levlel_0"], 0)
-        self.assertEqual(json_response["structure"]["levlel_1"], 1)
-        self.assertEqual(json_response["structure"]["levlel_2"], 2)
-        self.assertEqual(json_response["structure"]["levlel_3"], 3)
-        self.assertEqual(json_response["structure"]["levlel_4"], 4)
-        self.assertEqual(json_response["structure"]["levlel_5"], 5)
-        self.assertEqual(json_response["structure"]["levlel_6"], 6)
-        self.assertEqual(json_response["structure"]["levlel_7"], 7)
+        self.client.post(url, data=json_str, HTTP_AUTHORIZATION='Token {}'.format(self.token), content_type="application/json")
         # добавление элементов в структуру
         data = {
             "name": "asdasd"
         }
         json_data = json.dumps(data)
-        response = self.client.post('/structure/Reserv_1/', data=json_data, HTTP_AUTHORIZATION='Token {}'.format(self.token), content_type='application/json')
-        json_response = json.loads(response.content.decode('utf8'))
-        self.assertEqual(json_response["id"], 1)
-        self.assertEqual(json_response["name"], "asdasd")
-        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
-        response = self.client.get("/structure/Reserv_1/", HTTP_AUTHORIZATION='Token {}'.format(self.token), content_type='application/json')
-        json_response = json.loads(response.content.decode('utf8'))
-        self.assertEqual(json_response[0]["id"], 1)
-        self.assertEqual(json_response[0]["name"], "asdasd")
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.client.post('/structure/Reserv_1/', data=json_data, HTTP_AUTHORIZATION='Token {}'.format(self.token), content_type='application/json')
         data = {
             "name": "asd",
             "parent": 1
         }
         json_data = json.dumps(data)
-        response = self.client.post("/structure/Reserv_2/", data=json_data, HTTP_AUTHORIZATION='Token {}'.format(self.token), content_type='application/json')
-        json_response = json.loads(response.content.decode('utf8'))
-        self.assertEqual(json_response["id"], 1)
-        self.assertEqual(json_response["name"], "asd")
-        self.assertEqual(json_response["parent"], 1)
-        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
-        url = reverse("searchReserv2", kwargs={"pk": 1})
-        response = self.client.get(url, HTTP_AUTHORIZATION='Token {}'.format(self.token), content_type='application/json')
-        json_response = json.loads(response.content.decode('utf8'))
-        self.assertEqual(json_response[0]["id"], 1)
-        self.assertEqual(json_response[0]["name"], "asd")
-        self.assertEqual(json_response[0]["parent"], 1)
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.client.post("/structure/Reserv_2/", data=json_data, HTTP_AUTHORIZATION='Token {}'.format(self.token), content_type='application/json')
         data = {
             "name": "asd",
             "parent": 1
         }
         json_data = json.dumps(data)
-        response = self.client.post('/structure/Corparation/', data=json_data, HTTP_AUTHORIZATION='Token {}'.format(self.token), content_type='application/json')
-        json_response = json.loads(response.content.decode('utf8'))
-        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
-        self.assertEqual(json_response["id"], 1)
-        self.assertEqual(json_response["parent"], 1)
-        self.assertEqual(json_response["name"], "asd")
-        url = reverse('searchCorparation', kwargs={"pk": 1})
-        response = self.client.get(url, HTTP_AUTHORIZATION='Token {}'.format(self.token), content_type='application/json')
-        json_response = json.loads(response.content.decode('utf8'))
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(json_response[0]["id"], 1)
-        self.assertEqual(json_response[0]["name"], "asd")
-        self.assertEqual(json_response[0]["parent"], 1)
+        self.client.post('/structure/Corparation/', data=json_data, HTTP_AUTHORIZATION='Token {}'.format(self.token), content_type='application/json')
         data = {
             "name": "asd",
             "parent": 1
         }
         json_data = json.dumps(data)
-        response = self.client.post("/structure/Company/", data=json_data,  HTTP_AUTHORIZATION='Token {}'.format(self.token), content_type='application/json')
-        json_response = json.loads(response.content.decode('utf8'))
-        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
-        self.assertEqual(json_response["id"], 1)
-        self.assertEqual(json_response["name"], "asd")
-        self.assertEqual(json_response["parent"], 1)
-        url = reverse('searchCompany', kwargs={"pk": 1})
-        response = self.client.get(url, HTTP_AUTHORIZATION='Token {}'.format(self.token), content_type='application/json')
-        json_response = json.loads(response.content.decode('utf8'))
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(json_response[0]["id"], 1)
-        self.assertEqual(json_response[0]["name"], "asd")
-        self.assertEqual(json_response[0]["parent"], 1)
+        self.client.post("/structure/Company/", data=json_data, HTTP_AUTHORIZATION='Token {}'.format(self.token), content_type='application/json')
         data = {
             "parent": 1,
             "name": "asd",
             "address": "asd"
         }
         json_data = json.dumps(data)
-        response = self.client.post('/structure/Factory/', data=json_data, HTTP_AUTHORIZATION='Token {}'.format(self.token), content_type='application/json')
-        json_response = json.loads(response.content.decode('utf8'))
-        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
-        self.assertEqual(json_response["parent"], 1)
-        self.assertEqual(json_response["name"], "asd")
-        self.assertEqual(json_response["address"], "asd")
-        url = reverse('searchFactory', kwargs={"pk": 1})
-        response = self.client.get(url, HTTP_AUTHORIZATION='Token {}'.format(self.token), content_type='application/json')
-        json_response = json.loads(response.content.decode('utf8'))
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(json_response[0]["id"], 1)
-        self.assertEqual(json_response[0]["name"], "asd")
-        self.assertEqual(json_response[0]["address"], "asd")
-        self.assertEqual(json_response[0]["parent"], 1)
+        self.client.post('/structure/Factory/', data=json_data, HTTP_AUTHORIZATION='Token {}'.format(self.token), content_type='application/json')
         data_lanch1 = {
             "start": "03:15:00",
             "end": "04:15:00"
@@ -184,9 +108,9 @@ class Test_dashboard(APITestCase):
             "lanch": [data_lanch1]
         }
         data_shifts2 = {
-                "start": "06:00:00",
-                "end": "12:00:00",
-                "lanch": [data_lanch2]
+            "start": "06:00:00",
+            "end": "12:00:00",
+            "lanch": [data_lanch2]
         }
         data_shifts3 = {
             "start": "12:00:00",
@@ -205,10 +129,84 @@ class Test_dashboard(APITestCase):
             "shifts": [data_shifts1, data_shifts2, data_shifts3, data_shifts4]
         }
         json_data = json.dumps(data)
-        response = self.client.post('/settings/create/department/', data=json_data, HTTP_AUTHORIZATION='Token {}'.format(self.token), content_type='application/json')
+        self.client.post('/settings/create/department/', data=json_data, HTTP_AUTHORIZATION='Token {}'.format(self.token), content_type='application/json')
+        data = {
+            "name": "asd",
+            "parent": 1
+        }
+        json_data = json.dumps(data)
+        self.client.post('/structure/Agreagat/', data=json_data, HTTP_AUTHORIZATION='Token {}'.format(self.token), content_type='application/json')
+        data = {
+            "name": "asd",
+            "parent": 1,
+            "designation": "asd"
+        }
+        json_data = json.dumps(data)
+        self.client.post('/structure/Sensors/', data=json_data, HTTP_AUTHORIZATION='Token {}'.format(self.token), content_type='application/json')
+        return 0
+
+    def test_get_struct(self):
+        # проверка созданной структуры
+        response = self.client.get('/settings/get_structure/', HTTP_AUTHORIZATION='Token {}'.format(self.token))
         json_response = json.loads(response.content.decode('utf8'))
-        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
-        self.assertEqual(json_response["result"], "success")
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(json_response["name"], "asd")
+        self.assertEqual(json_response["customer"], "asd")
+        self.assertEqual(json_response["contract"], "asd")
+        self.assertEqual(json_response["structure"]["levlel_0"], 0)
+        self.assertEqual(json_response["structure"]["levlel_1"], 1)
+        self.assertEqual(json_response["structure"]["levlel_2"], 2)
+        self.assertEqual(json_response["structure"]["levlel_3"], 3)
+        self.assertEqual(json_response["structure"]["levlel_4"], 4)
+        self.assertEqual(json_response["structure"]["levlel_5"], 5)
+        self.assertEqual(json_response["structure"]["levlel_6"], 6)
+        self.assertEqual(json_response["structure"]["levlel_7"], 7)
+
+    def test_get_reserv1(self):
+        response = self.client.get("/structure/Reserv_1/", HTTP_AUTHORIZATION='Token {}'.format(self.token), content_type='application/json')
+        json_response = json.loads(response.content.decode('utf8'))
+        self.assertEqual(json_response[0]["id"], 1)
+        self.assertEqual(json_response[0]["name"], "asdasd")
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+    def test_get_reserv2(self):
+        url = reverse("searchReserv2", kwargs={"pk": 1})
+        response = self.client.get(url, HTTP_AUTHORIZATION='Token {}'.format(self.token), content_type='application/json')
+        json_response = json.loads(response.content.decode('utf8'))
+        self.assertEqual(json_response[0]["id"], 1)
+        self.assertEqual(json_response[0]["name"], "asd")
+        self.assertEqual(json_response[0]["parent"], 1)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+    def test_get_corparation(self):
+        url = reverse('searchCorparation', kwargs={"pk": 1})
+        response = self.client.get(url, HTTP_AUTHORIZATION='Token {}'.format(self.token), content_type='application/json')
+        json_response = json.loads(response.content.decode('utf8'))
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(json_response[0]["id"], 1)
+        self.assertEqual(json_response[0]["name"], "asd")
+        self.assertEqual(json_response[0]["parent"], 1)
+
+    def test_get_company(self):
+        url = reverse('searchCompany', kwargs={"pk": 1})
+        response = self.client.get(url, HTTP_AUTHORIZATION='Token {}'.format(self.token), content_type='application/json')
+        json_response = json.loads(response.content.decode('utf8'))
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(json_response[0]["id"], 1)
+        self.assertEqual(json_response[0]["name"], "asd")
+        self.assertEqual(json_response[0]["parent"], 1)
+
+    def test_get_factory(self):
+        url = reverse('searchFactory', kwargs={"pk": 1})
+        response = self.client.get(url, HTTP_AUTHORIZATION='Token {}'.format(self.token), content_type='application/json')
+        json_response = json.loads(response.content.decode('utf8'))
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(json_response[0]["id"], 1)
+        self.assertEqual(json_response[0]["name"], "asd")
+        self.assertEqual(json_response[0]["address"], "asd")
+        self.assertEqual(json_response[0]["parent"], 1)
+
+    def test_get_search_department(self):
         url = reverse('searchDepartment', kwargs={"pk": 1})
         response = self.client.get(url, HTTP_AUTHORIZATION='Token {}'.format(self.token), content_type='application/json')
         json_response = json.loads(response.content.decode('utf8'))
@@ -216,17 +214,8 @@ class Test_dashboard(APITestCase):
         self.assertEqual(json_response[0]["id"], 1)
         self.assertEqual(json_response[0]["name"], "asd")
         self.assertEqual(json_response[0]["parent"], 1)
-        data = {
-            "name": "asd",
-            "parent": 1
-        }
-        json_data = json.dumps(data)
-        response = self.client.post('/structure/Agreagat/', data=json_data, HTTP_AUTHORIZATION='Token {}'.format(self.token), content_type='application/json')
-        json_response = json.loads(response.content.decode('utf8'))
-        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
-        self.assertEqual(json_response["id"], 1)
-        self.assertEqual(json_response["name"], "asd")
-        self.assertEqual(json_response["parent"], 1)
+
+    def test_get_agreagat(self):
         url = reverse('searchAgreagat', kwargs={"pk": 1})
         response = self.client.get(url, HTTP_AUTHORIZATION='Token {}'.format(self.token), content_type='application/json')
         json_response = json.loads(response.content.decode('utf8'))
@@ -234,23 +223,6 @@ class Test_dashboard(APITestCase):
         self.assertEqual(json_response[0]["id"], 1)
         self.assertEqual(json_response[0]["name"], "asd")
         self.assertEqual(json_response[0]["parent"], 1)
-        data = {
-            "name": "asd",
-            "parent": 1,
-            "designation": "asd"
-        }
-        json_data = json.dumps(data)
-        response = self.client.post('/structure/Sensors/', data=json_data, HTTP_AUTHORIZATION='Token {}'.format(self.token), content_type='application/json')
-        json_response = json.loads(response.content.decode('utf8'))
-        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
-        self.assertEqual(json_response["id"], 1)
-        self.assertEqual(json_response["name"], "asd")
-        self.assertEqual(json_response["designation"], "asd")
-
-
-
-
-
 
     def test_durat(self):
 
@@ -333,6 +305,7 @@ class Test_dashboard(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
     def test_remainder(self):
+        # заполнение базы
         a = Storehouse(name="number 1")
         a.save()
         b = Storehouse(name="number 2")
@@ -349,11 +322,6 @@ class Test_dashboard(APITestCase):
             c.save()
             c = DateValue(date=dat, value=val, parent=sub1)
             c.save()
-            # for j in range(5):
-            #     dat = datetime.date(2020, 11, 21)
-            #     val = random.randint(0, 10000)/100
-            #     c = DateValue(date=dat, value=val, parent=sub)
-            #     c.save()
         for i in k:
             sub = Substance(name=i, short_name=i, table_name=i, parent=b)
             sub.save()
@@ -362,12 +330,9 @@ class Test_dashboard(APITestCase):
             c = DateValue(date=dat, value=val, parent=sub)
             c.save()
 
-
         # запрос данных остатков
         date = datetime.date(2020,11,21)
-
         url = reverse('remainder', kwargs={"date": '2020-11-21'})
-
         response = self.client.get(url, HTTP_AUTHORIZATION='Token {}'.format(self.token))
         json_response = json.loads(response.content.decode('utf8'))
         self.assertEqual(response.status_code, status.HTTP_200_OK)
@@ -410,11 +375,7 @@ class Test_dashboard(APITestCase):
 
             #таблица не джанго
         with connection.cursor() as cursor:
-            engine = connection.vendor
-            if engine == 'sqlite':
-                sql = '''CREATE TABLE ''' + dist_table['EditionDay'] + ''' (value real, now_time datetime, status INTEGER)'''
-            elif engine == 'postgresql':
-                sql = '''CREATE TABLE ''' + dist_table['EditionDay'] + ''' (value real, now_time datetime, status INTEGER)'''
+            sql = '''CREATE TABLE ''' + dist_table['EditionDay'] + ''' (value real, now_time datetime, status INTEGER)'''
             cursor.execute(sql)
             date = datetime.datetime(2020, 11, 15, 4, 5, 5)
             time_delta_hor = datetime.timedelta(hours=6)
@@ -427,9 +388,7 @@ class Test_dashboard(APITestCase):
                                    """', '""" + str(j) + "' )")
                 date = date + time_delta_hor
 
-
         #запрос для месяца
-
         url = reverse('edition_month', kwargs={"date": "2020-11-22"})
         response = self.client.get(url, HTTP_AUTHORIZATION='Token {}'.format(self.token))
         json_response = json.loads(response.content.decode('utf8'))
@@ -446,7 +405,6 @@ class Test_dashboard(APITestCase):
         self.assertEqual(type(json_response['change_sum']), float)
 
         #запрос для дня
-
         url = reverse('edition_day', kwargs={"date": "2020-11-21"})
         response = self.client.get(url, HTTP_AUTHORIZATION='Token {}'.format(self.token))
         json_response = json.loads(response.content.decode('utf8'))
@@ -463,7 +421,6 @@ class Test_dashboard(APITestCase):
         self.assertEqual(type(json_response['change_sum']), float)
 
         #запрос смены
-
         url = reverse('edition_shift', kwargs={"date": "2020-11-20", "id": 3})
         response = self.client.get(url, HTTP_AUTHORIZATION='Token {}'.format(self.token))
         json_response = json.loads(response.content.decode('utf8'))
@@ -483,7 +440,7 @@ class Test_dashboard(APITestCase):
 
         #заполнение базы
 
-        # таблицы джанго
+            # таблицы джанго
         date = datetime.date(2020, 11, 1)
         time_del = datetime.timedelta(days=1)
         for i in range(32):
@@ -493,69 +450,44 @@ class Test_dashboard(APITestCase):
             a.save()
             date = date + time_del
 
-        # таблицы вне джанго
+            # таблицы вне джанго
         with connection.cursor() as cursor:
-            sql = '''CREATE TABLE ''' + dist_table['SumexpenseDay']['iso'][
-                0] + ''' (value real, now_time datetime)'''
-            cursor.execute(sql)
-            sql = '''CREATE TABLE ''' + dist_table['SumexpenseDay']['iso'][
-                1] + ''' (value real, now_time datetime)'''
-            cursor.execute(sql)
-            sql = '''CREATE TABLE ''' + dist_table['SumexpenseDay']['pol'][
-                0] + ''' (value real, now_time datetime)'''
-            cursor.execute(sql)
-            sql = '''CREATE TABLE ''' + dist_table['SumexpenseDay']['pol'][
-                1] + ''' (value real, now_time datetime)'''
-            cursor.execute(sql)
-            sql = '''CREATE TABLE ''' + dist_table['SumexpenseDay']['pen'][
-                0] + ''' (value real, now_time datetime)'''
-            cursor.execute(sql)
-            sql = '''CREATE TABLE ''' + dist_table['SumexpenseDay']['pen'][
-                1] + ''' (value real, now_time datetime)'''
-            cursor.execute(sql)
-            sql = '''CREATE TABLE ''' + dist_table['SumexpenseDay']['kat1'][
-                0] + ''' (value real, now_time datetime)'''
-            cursor.execute(sql)
-            sql = '''CREATE TABLE ''' + dist_table['SumexpenseDay']['kat2'][
-                0] + ''' (value real, now_time datetime)'''
-            cursor.execute(sql)
-            sql = '''CREATE TABLE ''' + dist_table['SumexpenseDay']['kat3'][
-                0] + ''' (value real, now_time datetime)'''
-            cursor.execute(sql)
+            for i in dist_table['SumexpenseDay']['iso']:
+                cursor.execute('''CREATE TABLE ''' + i + ''' (value real, now_time datetime)''')
+            for i in dist_table['SumexpenseDay']['pol']:
+                cursor.execute('''CREATE TABLE ''' + i + ''' (value real, now_time datetime)''')
+            for i in dist_table['SumexpenseDay']['pen']:
+                cursor.execute('''CREATE TABLE ''' + i + ''' (value real, now_time datetime)''')
+            for i in dist_table['SumexpenseDay']['kat1']:
+                cursor.execute('''CREATE TABLE ''' + i + ''' (value real, now_time datetime)''')
+            for i in dist_table['SumexpenseDay']['kat2']:
+                cursor.execute('''CREATE TABLE ''' + i + ''' (value real, now_time datetime)''')
+            for i in dist_table['SumexpenseDay']['kat3']:
+                cursor.execute('''CREATE TABLE ''' + i + ''' (value real, now_time datetime)''')
             date = datetime.datetime(2020, 11, 15, 4, 5, 5)
             time_delta_hor = datetime.timedelta(hours=6)
             for i in range(40):
-                cursor.execute("""INSERT INTO """ + dist_table['SumexpenseDay']['iso'][0] +
-                               """ VALUES ('""" + str(random.randint(1, 10000)/100) +
-                               """', '""" + str(date) + "' )")
-                cursor.execute("""INSERT INTO """ + dist_table['SumexpenseDay']['iso'][1] +
-                               """ VALUES ('""" + str(random.randint(1, 10000) / 100) +
-                               """', '""" + str(date) + "' )")
-                cursor.execute("""INSERT INTO """ + dist_table['SumexpenseDay']['pol'][0] +
-                               """ VALUES ('""" + str(random.randint(1, 10000) / 100) +
-                               """', '""" + str(date) + "' )")
-                cursor.execute("""INSERT INTO """ + dist_table['SumexpenseDay']['pol'][1] +
-                               """ VALUES ('""" + str(random.randint(1, 10000) / 100) +
-                               """', '""" + str(date) + "' )")
-                cursor.execute("""INSERT INTO """ + dist_table['SumexpenseDay']['pen'][0] +
-                               """ VALUES ('""" + str(random.randint(1, 10000) / 100) +
-                               """', '""" + str(date) + "' )")
-                cursor.execute("""INSERT INTO """ + dist_table['SumexpenseDay']['pen'][1] +
-                               """ VALUES ('""" + str(random.randint(1, 10000) / 100) +
-                               """', '""" + str(date) + "' )")
-                cursor.execute("""INSERT INTO """ + dist_table['SumexpenseDay']['kat1'][0] +
-                               """ VALUES ('""" + str(random.randint(1, 10000) / 100) +
-                               """', '""" + str(date) + "' )")
-                cursor.execute("""INSERT INTO """ + dist_table['SumexpenseDay']['kat2'][0] +
-                               """ VALUES ('""" + str(random.randint(1, 10000) / 100) +
-                               """', '""" + str(date) + "' )")
-                cursor.execute("""INSERT INTO """ + dist_table['SumexpenseDay']['kat3'][0] +
-                               """ VALUES ('""" + str(random.randint(1, 10000) / 100) +
-                               """', '""" + str(date) + "' )")
+                for j in dist_table['SumexpenseDay']['iso']:
+                    cursor.execute("""INSERT INTO """ + j + """ VALUES ('""" + str(random.randint(1, 10000)/100) +
+                                   """', '""" + str(date) + "' )")
+                for j in dist_table['SumexpenseDay']['pol']:
+                    cursor.execute("""INSERT INTO """ + j + """ VALUES ('""" + str(random.randint(1, 10000) / 100) +
+                                   """', '""" + str(date) + "' )")
+                for j in dist_table['SumexpenseDay']['pen']:
+                    cursor.execute("""INSERT INTO """ + j + """ VALUES ('""" + str(random.randint(1, 10000) / 100) +
+                                   """', '""" + str(date) + "' )")
+                for j in dist_table['SumexpenseDay']['kat1']:
+                    cursor.execute("""INSERT INTO """ + j + """ VALUES ('""" + str(random.randint(1, 10000) / 100) +
+                                   """', '""" + str(date) + "' )")
+                for j in dist_table['SumexpenseDay']['kat2']:
+                    cursor.execute("""INSERT INTO """ + j + """ VALUES ('""" + str(random.randint(1, 10000) / 100) +
+                                   """', '""" + str(date) + "' )")
+                for j in dist_table['SumexpenseDay']['kat3']:
+                    cursor.execute("""INSERT INTO """ + j + """ VALUES ('""" + str(random.randint(1, 10000) / 100) +
+                                   """', '""" + str(date) + "' )")
                 date = date + time_delta_hor
 
         # проверка для месяца
-
         url = reverse('sumexpense_month', kwargs={'date': '2020-11-21'})
         response = self.client.get(url, HTTP_AUTHORIZATION='Token {}'.format(self.token))
         json_response = json.loads(response.content.decode('utf8'))
@@ -568,7 +500,6 @@ class Test_dashboard(APITestCase):
         self.assertEqual(type(json_response['kat3']), float)
 
         # проверка для дня
-
         url = reverse('sumexpense_day', kwargs={'date': '2020-11-21'})
         response = self.client.get(url, HTTP_AUTHORIZATION='Token {}'.format(self.token))
         json_response = json.loads(response.content.decode('utf8'))
@@ -581,7 +512,6 @@ class Test_dashboard(APITestCase):
         self.assertEqual(type(json_response['kat3']), float)
 
         # проверка для смены
-
         url = reverse('sumexpense_shift', kwargs={'date': '2020-11-21', 'id': 3})
         response = self.client.get(url, HTTP_AUTHORIZATION='Token {}'.format(self.token))
         json_response = json.loads(response.content.decode('utf8'))
@@ -597,7 +527,7 @@ class Test_dashboard(APITestCase):
 
         # заполнение базы
 
-        # таблица джанго
+            # таблица джанго
         date = datetime.date(2020, 11, 1)
         delta_day = datetime.timedelta(days=1)
         for i in range(70):
@@ -605,7 +535,7 @@ class Test_dashboard(APITestCase):
             a.save()
             date = date + delta_day
 
-        # таблицы не джанго
+            # таблицы не джанго
         with connection.cursor() as cursor:
             sql = '''CREATE TABLE ''' + dist_table['EnergyConsumptionDay']['input1'] + ''' (value real, now_time datetime)'''
             cursor.execute(sql)
@@ -627,9 +557,7 @@ class Test_dashboard(APITestCase):
                                """', '""" + str(date) + "' )")
                 date = date + delta_time
 
-
         # проверка месяц
-
         url = reverse('energyconsumption_month', kwargs={'date': '2020-11-29'})
         response = self.client.get(url, HTTP_AUTHORIZATION='Token {}'.format(self.token))
         json_response = json.loads(response.content.decode('utf8'))
@@ -639,7 +567,6 @@ class Test_dashboard(APITestCase):
         self.assertEqual(type(json_response['gas']), float)
 
         # проверка дня
-
         url = reverse('energyconsumption_day', kwargs={'date': '2020-11-20'})
         response = self.client.get(url, HTTP_AUTHORIZATION='Token {}'.format(self.token))
         json_response = json.loads(response.content.decode('utf8'))
@@ -649,7 +576,6 @@ class Test_dashboard(APITestCase):
         self.assertEqual(type(json_response['gas']), float)
 
         # проверка для смены
-
         url = reverse('energyconsumption_shift', kwargs={'date': '2020-11-21', 'id': 3})
         response = self.client.get(url, HTTP_AUTHORIZATION='Token {}'.format(self.token))
         json_response = json.loads(response.content.decode('utf8'))
@@ -662,7 +588,7 @@ class Test_dashboard(APITestCase):
 
         # добавление в базу
 
-        # таблица джанго
+            # таблица джанго
         date = datetime.date(2020, 11, 1)
         delta_day = datetime.timedelta(days=1)
         for i in range(32):
@@ -676,65 +602,41 @@ class Test_dashboard(APITestCase):
             a.save()
             date = date +delta_day
 
-        # таблицы не джанго
+            # таблицы не джанго
         with connection.cursor() as cursor:
-            sql = '''CREATE TABLE ''' + dist_table['SpecificConsumptionDay']['iso'][
-                0] + ''' (value real, now_time datetime)'''
-            cursor.execute(sql)
-            sql = '''CREATE TABLE ''' + dist_table['SpecificConsumptionDay']['iso'][
-                1] + ''' (value real, now_time datetime)'''
-            cursor.execute(sql)
-            sql = '''CREATE TABLE ''' + dist_table['SpecificConsumptionDay']['pol'][
-                0] + ''' (value real, now_time datetime)'''
-            cursor.execute(sql)
-            sql = '''CREATE TABLE ''' + dist_table['SpecificConsumptionDay']['pol'][
-                1] + ''' (value real, now_time datetime)'''
-            cursor.execute(sql)
-            sql = '''CREATE TABLE ''' + dist_table['SpecificConsumptionDay']['pen'][
-                0] + ''' (value real, now_time datetime)'''
-            cursor.execute(sql)
-            sql = '''CREATE TABLE ''' + dist_table['SpecificConsumptionDay']['pen'][
-                1] + ''' (value real, now_time datetime)'''
-            cursor.execute(sql)
-            sql = '''CREATE TABLE ''' + dist_table['SpecificConsumptionDay']['kat1'][
-                0] + ''' (value real, now_time datetime)'''
-            cursor.execute(sql)
-            sql = '''CREATE TABLE ''' + dist_table['SpecificConsumptionDay']['kat2'][
-                0] + ''' (value real, now_time datetime)'''
-            cursor.execute(sql)
-            sql = '''CREATE TABLE ''' + dist_table['SpecificConsumptionDay']['kat3'][
-                0] + ''' (value real, now_time datetime)'''
-            cursor.execute(sql)
+            for i in dist_table['SpecificConsumptionDay']['iso']:
+                cursor.execute('''CREATE TABLE ''' + i + ''' (value real, now_time datetime)''')
+            for i in dist_table['SpecificConsumptionDay']['pol']:
+                cursor.execute('''CREATE TABLE ''' + i + ''' (value real, now_time datetime)''')
+            for i in dist_table['SpecificConsumptionDay']['pen']:
+                cursor.execute('''CREATE TABLE ''' + i + ''' (value real, now_time datetime)''')
+            for i in dist_table['SpecificConsumptionDay']['kat1']:
+                cursor.execute('''CREATE TABLE ''' + i + ''' (value real, now_time datetime)''')
+            for i in dist_table['SpecificConsumptionDay']['kat2']:
+                cursor.execute('''CREATE TABLE ''' + i + ''' (value real, now_time datetime)''')
+            for i in dist_table['SpecificConsumptionDay']['kat3']:
+                cursor.execute('''CREATE TABLE ''' + i + ''' (value real, now_time datetime)''')
             date = datetime.datetime(2020, 11, 1, 0, 15, 0)
             delta_time = datetime.timedelta(hours=6)
             for i in range(124):
-                cursor.execute("""INSERT INTO """ + dist_table['SpecificConsumptionDay']['iso'][0] +
-                               """ VALUES ('""" + str(random.randint(1, 10000) / 100) +
-                               """', '""" + str(date) + "' )")
-                cursor.execute("""INSERT INTO """ + dist_table['SpecificConsumptionDay']['iso'][1] +
-                               """ VALUES ('""" + str(random.randint(1, 10000) / 100) +
-                               """', '""" + str(date) + "' )")
-                cursor.execute("""INSERT INTO """ + dist_table['SpecificConsumptionDay']['pol'][0] +
-                               """ VALUES ('""" + str(random.randint(1, 10000) / 100) +
-                               """', '""" + str(date) + "' )")
-                cursor.execute("""INSERT INTO """ + dist_table['SpecificConsumptionDay']['pol'][1] +
-                               """ VALUES ('""" + str(random.randint(1, 10000) / 100) +
-                               """', '""" + str(date) + "' )")
-                cursor.execute("""INSERT INTO """ + dist_table['SpecificConsumptionDay']['pen'][0] +
-                               """ VALUES ('""" + str(random.randint(1, 10000) / 100) +
-                               """', '""" + str(date) + "' )")
-                cursor.execute("""INSERT INTO """ + dist_table['SpecificConsumptionDay']['pen'][1] +
-                               """ VALUES ('""" + str(random.randint(1, 10000) / 100) +
-                               """', '""" + str(date) + "' )")
-                cursor.execute("""INSERT INTO """ + dist_table['SpecificConsumptionDay']['kat1'][0] +
-                               """ VALUES ('""" + str(random.randint(1, 10000) / 100) +
-                               """', '""" + str(date) + "' )")
-                cursor.execute("""INSERT INTO """ + dist_table['SpecificConsumptionDay']['kat2'][0] +
-                               """ VALUES ('""" + str(random.randint(1, 10000) / 100) +
-                               """', '""" + str(date) + "' )")
-                cursor.execute("""INSERT INTO """ + dist_table['SpecificConsumptionDay']['kat3'][0] +
-                               """ VALUES ('""" + str(random.randint(1, 10000) / 100) +
-                               """', '""" + str(date) + "' )")
+                for j in dist_table['SpecificConsumptionDay']['iso']:
+                    cursor.execute("""INSERT INTO """ + j + """ VALUES ('""" + str(random.randint(1, 10000) / 100) +
+                                   """', '""" + str(date) + "' )")
+                for j in dist_table['SpecificConsumptionDay']['pol']:
+                    cursor.execute("""INSERT INTO """ + j + """ VALUES ('""" + str(random.randint(1, 10000) / 100) +
+                                   """', '""" + str(date) + "' )")
+                for j in dist_table['SpecificConsumptionDay']['pen']:
+                    cursor.execute("""INSERT INTO """ + j + """ VALUES ('""" + str(random.randint(1, 10000) / 100) +
+                                   """', '""" + str(date) + "' )")
+                for j in dist_table['SpecificConsumptionDay']['kat1']:
+                    cursor.execute("""INSERT INTO """ + j + """ VALUES ('""" + str(random.randint(1, 10000) / 100) +
+                                   """', '""" + str(date) + "' )")
+                for j in dist_table['SpecificConsumptionDay']['kat2']:
+                    cursor.execute("""INSERT INTO """ + j + """ VALUES ('""" + str(random.randint(1, 10000) / 100) +
+                                   """', '""" + str(date) + "' )")
+                for j in dist_table['SpecificConsumptionDay']['kat3']:
+                    cursor.execute("""INSERT INTO """ + j + """ VALUES ('""" + str(random.randint(1, 10000) / 100) +
+                                   """', '""" + str(date) + "' )")
                 date = date + delta_time
 
             # проверка месяца
@@ -777,7 +679,7 @@ class Test_dashboard(APITestCase):
 
         # заполнение базы
 
-        # таблица джанго
+            # таблица джанго
         date = datetime.date(2020, 11, 1)
         delta_day = datetime.timedelta(days=1)
         for i in range(80):
@@ -790,31 +692,19 @@ class Test_dashboard(APITestCase):
             a.save()
             date = date + delta_day
 
-        # таблица не джанго
+            # таблица не джанго
         with connection.cursor() as cursor:
             sql = '''CREATE TABLE ''' + dist_table['EditionDay'] + ''' (value real, status INTEGER, now_time datetime)'''
             cursor.execute(sql)
             date = datetime.datetime(2020, 11, 1, 0, 15, 0)
             delta_time = datetime.timedelta(hours=6)
             for i in range(124):
-                cursor.execute("""INSERT INTO """ + dist_table['EditionDay'] +
-                               """ VALUES ('""" + str(random.randint(1, 1000) / 10) +
-                               """', '""" + str(0) +
-                               """', '""" + str(date) + "' )")
-                cursor.execute("""INSERT INTO """ + dist_table['EditionDay'] +
-                               """ VALUES ('""" + str(random.randint(1, 1000) / 10) +
-                               """', '""" + str(1) +
-                               """', '""" + str(date) + "' )")
-                cursor.execute("""INSERT INTO """ + dist_table['EditionDay'] +
-                               """ VALUES ('""" + str(random.randint(1, 1000) / 10) +
-                               """', '""" + str(2) +
-                               """', '""" + str(date) + "' )")
-                cursor.execute("""INSERT INTO """ + dist_table['EditionDay'] +
-                               """ VALUES ('""" + str(random.randint(1, 1000) / 10) +
-                               """', '""" + str(3) +
-                               """', '""" + str(date) + "' )")
+                for j in ['0', '1', '2', '3']:
+                    cursor.execute("""INSERT INTO """ + dist_table['EditionDay'] +
+                                   """ VALUES ('""" + str(random.randint(1, 1000) / 10) +
+                                   """', '""" + j +
+                                   """', '""" + str(date) + "' )")
                 date = date + delta_time
-
 
         # проверка месяц
         url = reverse('comparison_month', kwargs={'date1': '2020-12-29', 'date2': '2020-11-29'})
@@ -924,7 +814,6 @@ class Test_dashboard(APITestCase):
                 date = date + delta_time
 
             #проверка value
-
             url = reverse('teldafax_value')
             response = self.client.get(url)
             json_response = json.loads(response.content.decode('utf8'))
@@ -938,7 +827,6 @@ class Test_dashboard(APITestCase):
             self.assertEqual(type(json_response['temperature']), float)
 
             # проверка статуса
-
             url = reverse('teldafax_status')
             response = self.client.get(url)
             json_response = json.loads(response.content.decode('utf8'))
