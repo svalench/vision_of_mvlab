@@ -27,7 +27,7 @@ def get_dashboard(data):
     try:
         res = sock.recv(1024)
     except:
-        return {"error":"no connection to socket"}
+        return {"error":[0,"error","no connection to socket"]}
     print(res)
     sock.close()
     return json.loads(res)
