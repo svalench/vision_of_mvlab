@@ -36,16 +36,33 @@ class DepartmentSerializer(serializers.ModelSerializer):
         model = Department
         fields = '__all__'
 
+
 class ShiftSerializer(serializers.ModelSerializer):
-    parents = DepartmentSerializer(source='parent',read_only=True)
+    #parents = DepartmentSerializer(source='parent',read_only=True)
     class Meta:
         model = Shift
         fields = '__all__'
 
 class LunchSerializer(serializers.ModelSerializer):
-    parents = ShiftSerializer(source='parent',read_only=True)
+    #parents = ShiftSerializer(source='parent',read_only=True)
     class Meta:
         model = Lunch
+        fields = '__all__'
+
+
+class ShiftsLunchSerializer(serializers.ModelSerializer):
+    """модель представления смен с полной структурой обедов"""
+    lunchs = LunchSerializer(source='lunch_set.all', many=True, read_only=True)
+    class Meta:
+        model = Shift
+        fields = '__all__'
+
+class DepartmentShiftsSerializer(serializers.ModelSerializer):
+    """модель представления департамента с полной вложенной структурой смен и обедов и всех родителей"""
+    shifts = ShiftsLunchSerializer(source='shift_set.all', many=True, read_only=True)
+    parents = FactorySerializer(source='parent', read_only=True)
+    class Meta:
+        model = Department
         fields = '__all__'
 
 class AgreagatSerializer(serializers.ModelSerializer):

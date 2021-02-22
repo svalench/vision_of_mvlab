@@ -125,7 +125,7 @@ class FactoryView(MetaView, viewsets.ModelViewSet):
 
 class DepartmentView(MetaView, viewsets.ModelViewSet):
     queryset = Department.objects.all()
-    serializer_class = DepartmentSerializer
+    serializer_class = DepartmentShiftsSerializer
 
     def get_permissions(self):
         if self.request.method == 'GET':
