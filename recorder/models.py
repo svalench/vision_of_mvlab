@@ -46,6 +46,7 @@ class ValueSensor(models.Model):
     name = models.CharField(max_length=255, default='no name')
     name_connection = models.CharField(max_length=255, default='no name connection')
     table_name = models.CharField(max_length=255, default='no table name')
+    unit = models.CharField(max_length=255, default='')
     up_level_alarm = models.FloatField(default=0.00)
     down_level_alarm = models.FloatField(default=0.00)
     up_level = models.FloatField(default=0.00)
