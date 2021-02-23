@@ -20,7 +20,7 @@ def get_dashboard(data):
         print(data)
         data = json.dumps(data).encode('utf-8')
     except:
-        return {"error":[0,"error","no connection to socket"]}
+        return {"error": [0, "error", "no connection to socket"]}
     try:
         sock.send(data)
     except:
@@ -28,34 +28,39 @@ def get_dashboard(data):
     try:
         res = sock.recv(1024)
     except:
-        return {"error":[0,"error","no connection to socket"]}
+        return {"error": [0, "error", "no connection to socket"]}
     print(res)
     sock.close()
     return json.loads(res)
 
+
 def get_dashboard_gzip(data):
     try:
         sock = socket.socket()
-        sock.settimeout(1)
+        sock.settimeout(5)
         sock.connect(('128.65.54.166', 8084))
         print(data)
         data = json.dumps(data).encode('utf-8')
     except:
-        return {"error":[0,"error","no connection to socket"]}
+        return {"error": [0, "error", "no connection to socket"]}
     try:
         sock.send(data)
     except:
         sock.close()
 
-    res = sock.recv(6148*2)
-    res = gzip.decompress(res)
+    rlen = int.from_bytes( sock.recv(1024), "big")
+    res = bytearray()
+    for i in range(rlen):
+        res+= sock.recv(1024)
     sock.close()
     return json.loads(res)
+
 
 class teldafax(TransitionReadings, GenerationOfElectricity, Status, APIView):
     """
     Класс для вывода данных для dashboard
     """
+
     def get(self, request):
         name_dash = self.request.query_params.get('name')
         a = {
@@ -68,6 +73,7 @@ class teldafax(TransitionReadings, GenerationOfElectricity, Status, APIView):
             "temperature": self.temperature()
         }
         return Response(a)
+
 
 class TeldafaxErrorTablesAndStatusInIt(APIView):
     def get(self, request):
@@ -89,14 +95,15 @@ class TeldafaxErrorTablesAndStatusInIt(APIView):
                 sql = """SELECT * FROM mvlab_warnings WHERE status=1;"""
                 cursor.execute(sql)
                 res_warnings = cursor.fetchall()
-                res = {"alarms":res_alarms, "warnings":res_warnings}
+                res = {"alarms": res_alarms, "warnings": res_warnings}
         else:
-            res={"error":"no Table Error in DB"}
+            res = {"error": "no Table Error in DB"}
         return Response(res)
+
 
 class Teldafax_status(APIView):
     def get(self, request):
-        data = get_dashboard({"dash_teldafax":True})
+        data = get_dashboard({"dash_teldafax": True})
         if "data1" in data:
             data1 = data['data1']
             data2 = data["data2"]
@@ -113,22 +120,23 @@ class Teldafax_status(APIView):
                 'pump_p301_status': data2["pump_p301_status"],
                 'valve_B1101_status': data2["valve_B1101_status"],
                 'valve_B1601_status': data2["valve_B1601_status"],
-                'compres_V501_status':data2["compres_V501_status"],
-                'compres_V502_status':data2["compres_V502_status"],
-                'compres_V503_status':data2["compres_V503_status"],
-                'generator_D601_status1':data2["generator_D601_status1"],
-                'generator_D601_status2':data2["generator_D601_status2"],
-                'generator_D602_status1':data2["generator_D602_status1"],
-                'generator_D602_status2':data2["generator_D602_status2"],
-                'generator_D603_status1':data2["generator_D603_status1"],
-                'generator_D603_status2':data2["generator_D603_status2"],
-                'generator_D604_status1':data2["generator_D604_status1"],
-                'generator_D604_status2':data2["generator_D604_status2"],
-                "fakel_A604":data2['fakel_A604']
+                'compres_V501_status': data2["compres_V501_status"],
+                'compres_V502_status': data2["compres_V502_status"],
+                'compres_V503_status': data2["compres_V503_status"],
+                'generator_D601_status1': data2["generator_D601_status1"],
+                'generator_D601_status2': data2["generator_D601_status2"],
+                'generator_D602_status1': data2["generator_D602_status1"],
+                'generator_D602_status2': data2["generator_D602_status2"],
+                'generator_D603_status1': data2["generator_D603_status1"],
+                'generator_D603_status2': data2["generator_D603_status2"],
+                'generator_D604_status1': data2["generator_D604_status1"],
+                'generator_D604_status2': data2["generator_D604_status2"],
+                "fakel_A604": data2['fakel_A604']
             }
         except:
             raise ValidationError("Нет связи с плк")
         return Response(res)
+
 
 class GetStatusConnectionsTeldafax(APIView):
 
@@ -140,5 +148,11 @@ class GetStatusConnectionsTeldafax(APIView):
 class GetConnectionsTeldafax(APIView):
 
     def get(self, request):
-        data = get_dashboard_gzip({"get_connections": True})
+        data = get_dashboard({"get_connections": True})
+        return Response(data)
+
+class GetConnectionsVariablesTeldafax(APIView):
+
+    def get(self, request, id):
+        data = get_dashboard_gzip({"get_connections": True, "connection_name":id})
         return Response(data)
