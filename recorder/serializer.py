@@ -27,7 +27,7 @@ class ValueSensorSerializer(serializers.ModelSerializer):
     - data_sensor_data - test
 
     """
-
+    parents = SensorsSerializer(source='sensor', read_only=True)
     sensor_name = serializers.SerializerMethodField('get_sensor_name')
     uzel_name = serializers.SerializerMethodField('get_uzel_name')
     department_name = serializers.SerializerMethodField('get_dep_name')
