@@ -148,11 +148,28 @@ class GetStatusConnectionsTeldafax(APIView):
 class GetConnectionsTeldafax(APIView):
 
     def get(self, request):
-        data = get_dashboard({"get_connections": True})
-        return Response(data)
+        with connection.cursor() as cursor:
+            sql = """SELECT * FROM mvlab_connections;"""
+            cursor.execute(sql)
+            res_alarms = cursor.fetchall()
+        data = json.loads(res_alarms[0])
+        ss = []
+        count = 0
+        for d in data:
+            ss.append({'connection_name': d['name'], "ip": d['ip'], 'key': count})
+            count += 1
+        return Response(ss)
 
 class GetConnectionsVariablesTeldafax(APIView):
 
     def get(self, request, id):
-        data = get_dashboard_gzip({"get_connections": True, "connection_name":id})
-        return Response(data)
+        with connection.cursor() as cursor:
+            sql = """SELECT * FROM mvlab_connections;"""
+            cursor.execute(sql)
+            res_alarms = cursor.fetchall()
+        data = json.loads(res_alarms[0])
+        ss = data[id]['value_list']
+        ass = []
+        for i in ss:
+            ass.append({"name": i['name']})
+        return Response(ass)
