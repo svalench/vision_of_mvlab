@@ -152,7 +152,7 @@ class GetConnectionsTeldafax(APIView):
             sql = """SELECT * FROM mvlab_connections;"""
             cursor.execute(sql)
             res_alarms = cursor.fetchall()
-        data = json.loads(res_alarms[0])
+        data = json.loads(res_alarms[0][2])
         ss = []
         count = 0
         for d in data:
@@ -167,7 +167,7 @@ class GetConnectionsVariablesTeldafax(APIView):
             sql = """SELECT * FROM mvlab_connections;"""
             cursor.execute(sql)
             res_alarms = cursor.fetchall()
-        data = json.loads(res_alarms[0])
+        data = json.loads(res_alarms[0][2])
         ss = data[id]['value_list']
         ass = []
         for i in ss:
