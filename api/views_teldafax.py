@@ -149,7 +149,7 @@ class GetConnectionsTeldafax(APIView):
 
     def get(self, request):
         with connection.cursor() as cursor:
-            sql = """SELECT * FROM mvlab_alarms WHERE status=1;"""
+            sql = """SELECT * FROM mvlab_connections;"""
             cursor.execute(sql)
             res_alarms = cursor.fetchall()
         data = json.loads(res_alarms[0])
@@ -164,7 +164,7 @@ class GetConnectionsVariablesTeldafax(APIView):
 
     def get(self, request, id):
         with connection.cursor() as cursor:
-            sql = """SELECT * FROM mvlab_alarms WHERE status=1;"""
+            sql = """SELECT * FROM mvlab_connections;"""
             cursor.execute(sql)
             res_alarms = cursor.fetchall()
         data = json.loads(res_alarms[0])
