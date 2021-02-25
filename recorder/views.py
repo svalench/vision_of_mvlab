@@ -86,7 +86,7 @@ class ChartData(APIView):
                     res['values'] = ValueSensor.objects.get(pk=l.value.id).get_last_shift()
             else:
                 if start is not None and end is not None:
-                    res['values'] = ValueSensor.objects.get(pk=l.value.id).get_mode_by_periods_interval(start=start, end=end)
+                    res['values'] = ValueSensor.objects.get(pk=l.value.id).get_period(start=start, end=end)
                 else:
                     res['values'] = ValueSensor.objects.get(pk=l.value.id).get_last_shift()
             a.append(res)
