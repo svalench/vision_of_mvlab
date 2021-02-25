@@ -43,7 +43,7 @@ urlpatterns = [
     path('teldafax/messages/alarms/', TeldafaxErrorTablesAndStatusInIt.as_view()),
     path('teldafax/status/connections/', GetStatusConnectionsTeldafax.as_view()),
     path('teldafax/connections/', GetConnectionsTeldafax.as_view()),
-    path('teldafax/connections/variables/<int:id>', GetConnectionsVariablesTeldafax.as_view()),
+    path('teldafax/connections/variables/<int:id>/', GetConnectionsVariablesTeldafax.as_view()),
     path('user/', RoleViews.as_view())
 
 ]
