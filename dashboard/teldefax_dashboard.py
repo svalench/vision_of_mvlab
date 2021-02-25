@@ -59,7 +59,9 @@ class TransitionReadings(object):
             a = cursor.fetchone()
         return a
 
-
+    def get_frequece_compressors(self, name):
+        a = self.__selectfrom(dist_table['Taldefax']['TransitionReadings']['methane'])
+        return _check_the_data_single(a)
 
     def methane(self):
         '''

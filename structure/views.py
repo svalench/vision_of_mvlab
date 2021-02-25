@@ -107,9 +107,18 @@ class Parametrs(APIView):
                 'structure': ob.structure,
                 'date_add': ob.date_add,
                 'date_update': ob.date_update
+
             }
         else:
             structure = {'result': 'empty'}
+        return Response(structure)
+
+    @api_view(('DELETE',))
+    def delete_structure(self):
+        """удаление структуры"""
+        ob = FirstObject.objects.all().first()
+        ob.delete()
+        structure = {'result': 'structure %s delete' % ob.id}
         return Response(structure)
 
     @api_view(('POST',))
@@ -118,7 +127,7 @@ class Parametrs(APIView):
         data = self.data
         dep = Department(
             name=data['name'],
-            parent=Factory.objects.get(pk=data['parent'])
+            parent_id=data['parent']
         )
         dep.save()
         k = 0
@@ -139,7 +148,8 @@ class Parametrs(APIView):
                 )
                 lunch.save()
             k += 1
-        return Response({'result': 'success'}, status=201)
+        res = DepartmentShiftsSerializer(dep)
+        return Response(res.data, status=201)
 
 
 @permission_classes([IsAuthenticated])

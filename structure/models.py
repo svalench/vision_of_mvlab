@@ -109,6 +109,7 @@ class Reserv_1(models.Model):
 
 
 
+
 class Reserv_2(models.Model):
     """
     Резервный класс для структуры предприятия

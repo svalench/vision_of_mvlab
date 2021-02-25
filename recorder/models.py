@@ -46,6 +46,7 @@ class ValueSensor(models.Model):
     name = models.CharField(max_length=255, default='no name')
     name_connection = models.CharField(max_length=255, default='no name connection')
     table_name = models.CharField(max_length=255, default='no table name')
+    unit = models.CharField(max_length=255, default='')
     up_level_alarm = models.FloatField(default=0.00)
     down_level_alarm = models.FloatField(default=0.00)
     up_level = models.FloatField(default=0.00)
@@ -128,7 +129,7 @@ class ValueSensor(models.Model):
         if (((datetime.datetime.strptime(end,f) - datetime.datetime.strptime(start,f))) < datetime.timedelta(hours=2)):
             curs = connection.cursor()
             curs.execute(
-                f"""SELECT * FROM {str(self.table_name)} WHERE now_time >= '{
+                f"""SELECT now_time::timestamp, key, value FROM {str(self.table_name)} WHERE now_time >= '{
                 str(start)}' AND now_time<'{str(end)}';""")
             query = curs.fetchall()
             fieldnames = [name[0] for name in curs.description]
@@ -141,7 +142,8 @@ class ValueSensor(models.Model):
             return result
         else:
             a = self._generate_period_min(start, end)
-            return self._get_mode_by_periods(var=a['var'], periods=a['periods'])
+            # return self._get_mode_by_periods(var=a['var'], periods=a['periods'])
+            return self.get_mode_by_periods_interval(start=start, end=end, interval=a['var'])
 
     def _generate_period_min(self, start, end) -> dict:
         """
