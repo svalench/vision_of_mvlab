@@ -16,7 +16,7 @@ class CreateUserTest(APITestCase):
         self.data = {'username': 'mike', 'first_name': 'Mike', 'last_name': 'Tyson1', 'password': '2222'}
 
     def test_can_create_user(self):
-        request = factory.post('/api/Users', data=self.data,HTTP_AUTHORIZATION='Token {}'.format(self.token))
+        request = factory.post('/api/Users', data=self.data, HTTP_AUTHORIZATION='Token {}'.format(self.token))
         force_authenticate(request, user=self.superuser)
         view = UserList.as_view({'post': 'create'})
         response = view(request)

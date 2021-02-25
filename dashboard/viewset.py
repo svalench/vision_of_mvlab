@@ -10,7 +10,7 @@ from rest_framework.permissions import IsAuthenticated
 from structure.models import Agreagat
 
 
-@permission_classes([IsAuthenticated])
+#@permission_classes([IsAuthenticated])
 class RoleViews(APIView):
     def get(self, request):
         role = UserP.objects.get(id=request.user.pk).role_set.all()
@@ -307,7 +307,7 @@ class EditionShiftViews(APIView):
     def get(self, request, date, id):
         a = Agreagat.objects.get(pk=dist_table['DurationIntervalDay'][1]).parent.shift_set.get(pk=id)
         k = calculate_edition_shift(date, a.start, a.end)
-        if id == 0:
+        if id == 1:
             id = 4
         else:
             id = id - 1
@@ -764,7 +764,7 @@ class ComparisonMonthViews(APIView):
         return Response(data)
 
 
-#виджет «Модуль сравнения» для вкладки «месяц»
+#виджет «Модуль сравнения» для вкладки «смена»
 @permission_classes([IsAuthenticated])
 class ComparisonShiftViews(APIView):
     def get(self, request, date1, date2, id1, id2):

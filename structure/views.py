@@ -24,7 +24,7 @@ def send_status_to_server():
         sock = socket.socket()
         sock.settimeout(1)
         sock.connect(('localhost', SOCKET_PORT_SEREVER))
-        data = {"data":1}
+        data = {"data": 1}
         print(data)
         data = json.dumps(data).encode('utf-8')
     except:
@@ -105,8 +105,9 @@ class Parametrs(APIView):
                 'customer': ob.customer,
                 'contract': ob.contract,
                 'structure': ob.structure,
-                'date_add':ob.date_add,
-                'date_update':ob.date_update
+                'date_add': ob.date_add,
+                'date_update': ob.date_update
+
             }
         else:
             structure = {'result': 'empty'}
@@ -154,7 +155,7 @@ class Parametrs(APIView):
 @permission_classes([IsAuthenticated])
 class Reserv2_Search(APIView):
     def get(self, request, pk):
-        art = Reserv_2.objects.filter(res1=pk)
+        art = Reserv_2.objects.filter(parent=pk)
         # the many param informs the serializer that it will be serializing more than a single article.
         serializer = Reserv_2Serializer(art, many=True)
         return Response(serializer.data)
@@ -163,7 +164,7 @@ class Reserv2_Search(APIView):
 @permission_classes([IsAuthenticated])
 class Corparation_Search(APIView):
     def get(self, request, pk):
-        art = Corparation.objects.filter(res2=pk)
+        art = Corparation.objects.filter(parent=pk)
         # the many param informs the serializer that it will be serializing more than a single article.
         serializer = CorparationSerializer(art, many=True)
         return Response(serializer.data)
@@ -172,7 +173,7 @@ class Corparation_Search(APIView):
 @permission_classes([IsAuthenticated])
 class Company_Search(APIView):
     def get(self, request, pk):
-        art = Company.objects.filter(corp=pk)
+        art = Company.objects.filter(parent=pk)
         # the many param informs the serializer that it will be serializing more than a single article.
         serializer = CompanySerializer(art, many=True)
         return Response(serializer.data)
@@ -181,7 +182,7 @@ class Company_Search(APIView):
 @permission_classes([IsAuthenticated])
 class Factory_Search(APIView):
     def get(self, request, pk):
-        art = Factory.objects.filter(comp=pk)
+        art = Factory.objects.filter(parent=pk)
         # the many param informs the serializer that it will be serializing more than a single article.
         serializer = FactorySerializer(art, many=True)
         return Response(serializer.data)
@@ -190,7 +191,7 @@ class Factory_Search(APIView):
 @permission_classes([IsAuthenticated])
 class Department_Search(APIView):
     def get(self, request, pk):
-        art = Department.objects.filter(factory=pk)
+        art = Department.objects.filter(parent=pk)
         # the many param informs the serializer that it will be serializing more than a single article.
         serializer = DepartmentSerializer(art, many=True)
         return Response(serializer.data)
@@ -199,7 +200,7 @@ class Department_Search(APIView):
 @permission_classes([IsAuthenticated])
 class Agreagat_Search(APIView):
     def get(self, request, pk):
-        art = Agreagat.objects.filter(dep=pk)
+        art = Agreagat.objects.filter(parent=pk)
         # the many param informs the serializer that it will be serializing more than a single article.
         serializer = AgreagatSerializer(art, many=True)
         return Response(serializer.data)
