@@ -112,6 +112,23 @@ class TransitionReadings(object):
         a = self.__selectfrom(dist_table['Taldefax']['TransitionReadings']['temperature'])
         return _check_the_data_single(a)
 
+    def frequency1(self):
+
+        a = self.__selectfrom('mvlab_connect1_freq_v501')
+        return _check_the_data_single(a)
+
+    def frequency2(self):
+        a = self.__selectfrom('mvlab_connect1_freq_v502')
+        return _check_the_data_single(a)
+
+    def frequency3(self):
+        a = self.__selectfrom('mvlab_connect1_freq_v503')
+        return _check_the_data_single(a)
+
+    def pressure(self):
+        a = self.__selectfrom('mvlab_connect1_p1101')
+        return _check_the_data_single(a)
+
 
 
 class GenerationOfElectricity(object):

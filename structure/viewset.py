@@ -29,7 +29,7 @@ class MetaView:
         ind = BASE_STRUCTURE.index(self.serializer_class.Meta.model.__name__)
         new_base = list(BASE_STRUCTURE[:ind])
         new_base.reverse()
-        if 'parent' in request.data:
+        if 'parent' in request.data or self.serializer_class.Meta.model.__name__ == "Reserv_1":
             for b in new_base:
                 if b in structure:
                     try:

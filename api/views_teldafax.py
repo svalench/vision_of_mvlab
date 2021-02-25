@@ -70,7 +70,11 @@ class teldafax(TransitionReadings, GenerationOfElectricity, Status, APIView):
             "pressure_in": self.pressure_in(),
             "pressure_out": self.pressure_out(),
             "consumption": self.consumption(),
-            "temperature": self.temperature()
+            "temperature": self.temperature(),
+            "frequency1": self.frequency1(),
+            "frequency2": self.frequency2(),
+            "frequency3": self.frequency3(),
+            "pressure": self.pressure
         }
         return Response(a)
 
