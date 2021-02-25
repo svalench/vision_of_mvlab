@@ -88,7 +88,7 @@ dashboard/teldafax/connections/variables/<id>/
 >\<i> - номер по порядку
 ## Получение данных о созданной структуре
 
-```settings/wizard/step1```  
+```settings/get_structure/```  
 Данный GET запрос возвращает данные по созданной ранее структуре
 ```
 {
