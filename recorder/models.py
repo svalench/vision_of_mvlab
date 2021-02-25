@@ -142,7 +142,8 @@ class ValueSensor(models.Model):
             return result
         else:
             a = self._generate_period_min(start, end)
-            return self._get_mode_by_periods(var=a['var'], periods=a['periods'])
+            # return self._get_mode_by_periods(var=a['var'], periods=a['periods'])
+            return self.get_mode_by_periods_interval(start=start, end=end, interval=a['var'])
 
     def _generate_period_min(self, start, end) -> dict:
         """
