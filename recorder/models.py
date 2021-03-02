@@ -154,7 +154,7 @@ class ValueSensor(models.Model):
         :return: dict {'var':real,'periods':real}
         """
         f = '%Y-%m-%d %H:%M:%S'
-        points = 100  # количество точек
+        points = 200  # количество точек
         minutes = (datetime.datetime.strptime(end,f)- datetime.datetime.strptime(start,f)).total_seconds() / 60
         interval = minutes / points
         return {'var': interval, 'periods': minutes}
