@@ -263,9 +263,9 @@ class ValueSensor(models.Model):
         curs = connection.cursor()
         sql = "with period_t as (SELECT n as ti from generate_series('" + str(start) + "'::timestamp,'" + str(
                 end) + "'::timestamp,'" + str(interval) + " minute'::interval) n)" \
-            "SELECT ti as now_time, (SELECT mode() WITHIN GROUP (ORDER BY value) as modevar" \
+            "SELECT ti as now_time, IFNULL((SELECT mode() WITHIN GROUP (ORDER BY value) as modevar" \
             " FROM " + str(self.table_name) + \
-            " r WHERE r.value IS NOT NULL and  r.now_time>=ti and r.now_time<(ti+('"+str(interval)+" minutes'::interval))) as value from " + str(
+            " r WHERE r.value IS NOT NULL and  r.now_time>=ti and r.now_time<(ti+('"+str(interval)+" minutes'::interval))),0) as value from " + str(
             self.table_name) + " b right join " \
                                "period_t a ON b.now_time>=ti AND b.now_time<(ti+('"+str(interval)+" minutes'::interval)) GROUP BY ti" \
                                " ORDER BY ti desc"
