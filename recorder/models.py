@@ -274,7 +274,7 @@ class ValueSensor(models.Model):
         try:
             curs.execute(sql)
         except Exception as a:
-            return False
+            return a
         query = curs.fetchall()
         fieldnames = [name[0] for name in curs.description]
         result = []
