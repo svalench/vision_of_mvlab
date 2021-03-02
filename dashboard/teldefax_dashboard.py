@@ -114,7 +114,7 @@ class TransitionReadings(object):
 
     def frequency1(self):
 
-        a = self.__selectfrom('mvlab_connect1_freq_v501')
+        a = self.__selectfrom('mvlab_temp_connect1_freq_v501')
         return _check_the_data_single(a)
 
     def frequency2(self):

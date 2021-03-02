@@ -54,7 +54,7 @@ class MetaView:
             try:
                 first_object = structure[0]
                 if self.serializer_class.Meta.model.__name__ == first_object:
-                    request.data['parent'] = globals()[new_base[1]].objects.all().first().id
+                    request.data['parent'] = globals()[new_base[0]].objects.all().first().id
                     print('========================================================')
                     print('========================IS GREAT!!!!!!!========================')
             except:
