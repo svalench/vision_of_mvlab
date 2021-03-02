@@ -266,7 +266,7 @@ class ValueSensor(models.Model):
             "SELECT ti as now_time, COALESCE((SELECT mode() WITHIN GROUP (ORDER BY value) as modevar" \
             " FROM " + str(self.table_name) + \
             " r WHERE r.value IS NOT NULL and  r.now_time>=ti and r.now_time<(ti+('"+str(interval)+ \
-            " minutes'::interval))),(SELECT value FROM " + str(self.table_name) + " r WHERE r.now_time>=ti  " \
+            " minutes'::interval))),(SELECT value FROM " + str(self.table_name) + " r WHERE  r.now_time>=(ti-('"+str(interval)+ " minutes'::interval))  " \
             " ORDER BY r.now_time desc LIMIT 1) ) as value from " \
               + str(self.table_name) + " b right join " \
             "period_t a ON b.now_time>=ti AND b.now_time<(ti+('"+str(interval)+" minutes'::interval)) GROUP BY ti" \
