@@ -129,6 +129,22 @@ class TransitionReadings(object):
         a = self.__selectfrom('mvlab_temp_connect1_p1101')
         return _check_the_data_single(a)
 
+    def power1(self):
+        a = self.__selectfrom('mvlab_temp_connect1_power1')
+        return _check_the_data_single(a)
+
+    def power2(self):
+        a = self.__selectfrom('mvlab_temp_connect1_power2')
+        return _check_the_data_single(a)
+
+    def power3(self):
+        a = self.__selectfrom('mvlab_temp_connect1_power3')
+        return _check_the_data_single(a)
+
+    def power4(self):
+        a = self.__selectfrom('mvlab_temp_connect1_power_sum')
+        return _check_the_data_single(a)
+
 
 
 class GenerationOfElectricity(object):
