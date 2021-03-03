@@ -14,6 +14,9 @@ class Workspace(models.Model):
     name = models.CharField(max_length=255, default='workspace')
     parent = models.ForeignKey(UserP, on_delete=models.CASCADE)
 
+    def __str__(self):
+        return self.name
+
 
 class ValueSensor(models.Model):
     """класс предназначен для связи модели структуры Джанго и модуля сбора данных
@@ -307,7 +310,8 @@ class Workarea(models.Model):
     parent = models.ForeignKey(Workspace, on_delete=models.CASCADE)
     data = models.ManyToManyField(ValueSensor, through='WorkareaData',through_fields=('workarea', 'value'),)
 
-
+    def __str__(self):
+        return self.name
 
 class WorkareaData(models.Model):
     """
@@ -316,3 +320,6 @@ class WorkareaData(models.Model):
     workarea = models.ForeignKey(Workarea, on_delete=models.CASCADE)
     value = models.ForeignKey(ValueSensor, on_delete=models.CASCADE)
     color = models.CharField(max_length=50, default='#000000')
+
+    def __str__(self):
+        return self.workarea.name +"-" +self.value.name
