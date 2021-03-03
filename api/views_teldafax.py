@@ -63,6 +63,11 @@ class teldafax(TransitionReadings, GenerationOfElectricity, Status, APIView):
 
     def get(self, request):
         name_dash = self.request.query_params.get('name')
+        power1 = self.power1()
+        power2 = self.power2()
+        power3 = self.power3()
+        power4 = self.power4()
+        sum_power = power1 + power2 + power3 + power4
         a = {
             "methane": self.methane(),
             "carbondioxide": self.carbondioxide(),
@@ -75,10 +80,11 @@ class teldafax(TransitionReadings, GenerationOfElectricity, Status, APIView):
             "frequency2": self.frequency2(),
             "frequency3": self.frequency3(),
             "pressure": self.pressure(),
-            "power1": self.power1(),
-            "power2": self.power2(),
-            "power3": self.power3(),
-            "power4": self.power4()
+            "power1": power1,
+            "power2": power2,
+            "power3": power3,
+            "power4": power4,
+            'sum_power': sum_power,
         }
         return Response(a)
 
