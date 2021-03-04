@@ -177,13 +177,11 @@ class Parametrs(APIView):
 def creat_or_udate_lunch(shift, lunchs):
     for lunch in lunchs:
         if "id" in lunch:
-            try:
-                ln = Lunch.objects.get(id=lunch['id'])
-                ln.start = lunch['start']
-                ln.end = lunch['end']
-                ln.save()
-            except:
-                ValidationError("No find lunch pk with %s" % lunch['id'])
+            print(lunch['id'])
+            ln = Lunch.objects.get(id=int(lunch['id']))
+            ln.start = lunch['start']
+            ln.end = lunch['end']
+            ln.save()
         else:
             ln = Lunch(start=shift.start, end=shift.end, parent_id=shift.pk)
             ln.save()
