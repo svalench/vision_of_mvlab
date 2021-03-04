@@ -9,6 +9,7 @@ urlpatterns = [
     path('get_structure/', Parametrs.get_structure,name='get_structure'),
     path('delete_structure/', Parametrs.delete_structure,name='delete_structure'),
     path('create/department/', Parametrs.create_shift,name='create_dep'),
+    path('update/department/<int:pk>/', Parametrs.update_shift,name='update_dep'),
 
     # path('Reserv_1/', Reserv_1View.as_view()),
     path('Reserv2/search/<int:pk>/', Reserv2_Search.as_view(), name='searchReserv2'),
