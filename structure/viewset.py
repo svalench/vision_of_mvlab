@@ -43,13 +43,13 @@ class MetaView:
                                     c = Reserv_1.all().first()
                                     break
                                 if str_query.index(q) == 0:
-                                    c = a.child_model().first()
+                                    c = list(a.child_model())[0]
                                     continue
-                                c = a.child_model().first()
+                                c = list(a.child_model())[0]
                             request.data['parent'] = c.id
                     except:
                         raise ValidationError('Create '+str(BASE_STRUCTURE[ind])+' . Not found '+b+' with pk %s' % request.data['parent'])
-                break
+                    break
         else:
             try:
                 first_object = structure[0]
@@ -60,11 +60,17 @@ class MetaView:
             except:
                 raise ValidationError("See viewset in structure class MetaView error in create object if not find parent in query")
         serializer = self.get_serializer(data=request.data)
+        print("-----------"*12)
         serializer.is_valid(raise_exception=True)
         self.perform_create(serializer)
         headers = self.get_success_headers(serializer.data)
         return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
 
+    def validate_parent(self, value):
+        """
+        Validate parent row
+        """
+        return value
 
 
 class Reserv_1View(MetaView, viewsets.ModelViewSet):
