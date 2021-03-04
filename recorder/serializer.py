@@ -99,8 +99,14 @@ class WorkareaSerializer(serializers.ModelSerializer):
         return instance
 
 class WorkspaceSerializer(serializers.ModelSerializer):
+    """класс сериализация для модели Workspace"""
     child = WorkareaDataSerializer(source='workarea_set.all', read_only=True, many=True)
-    """класс сериализации для модели Workspace"""
+    workares = serializers.SerializerMethodField('get_workareas')
+
+    def get_workareas(self, a):
+        """передает название сенсора"""
+        return [{"id":i.id,"name":i.name} for i in a.workarea_set.all()]
+
     class Meta:
         model = Workspace
         fields = '__all__'
