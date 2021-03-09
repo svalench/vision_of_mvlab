@@ -158,6 +158,7 @@ class Parametrs(APIView):
         dep = Department.objects.get(id=pk)
         dep.parent_id = data['parent']
         dep.name = data['name']
+        dep.save()
         for shift in data['shifts']:
             if "id" in shift:
                 sh = Shift.objects.get(id=shift['id'])
