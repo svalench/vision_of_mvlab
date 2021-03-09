@@ -86,7 +86,11 @@ class MetaView:
             for index, item in enumerate(structure):
                 if self.serializer_class.Meta.model.__name__ == item:
                     parent = globals()[structure[index-1]].objects.get(pk=request.data['parent'])
-                    c = list(parent.child_model())[0]
+                    print(parent)
+                    try:
+                        c = list(parent.child_model())[0]
+                    except:
+                        continue
                     if c.__class__.__name__ not in structure:
                         request.data['parent'] = c.id
                         break
