@@ -87,9 +87,9 @@ class MetaView:
                 if self.serializer_class.Meta.model.__name__ == item:
                     parent = globals()[structure[index-1]].objects.get(pk=request.data['parent'])
                     c = list(parent.child_model())[0]
-                    print(c)
-                    request.data['parent'] = c.id
-                    break
+                    if c.__class__.__name__ not in structure:
+                        request.data['parent'] = c.id
+                        break
 
         serializer = self.get_serializer(instance, data=request.data, partial=partial)
         serializer.is_valid(raise_exception=True)
