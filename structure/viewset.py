@@ -82,8 +82,7 @@ class MetaView:
         ind = BASE_STRUCTURE.index(self.serializer_class.Meta.model.__name__)
         new_base = list(BASE_STRUCTURE[:ind])
         new_base.reverse()
-        print("&&"*12)
-        if 'parent' in request.data or self.serializer_class.Meta.model.__name__ == "Reserv_1":
+        if 'parent' in request.data or self.serializer_class.Meta.model.__name__ != "Reserv_1":
             for index, item in enumerate(structure):
                 if self.serializer_class.Meta.model.__name__ == item:
                     parent = globals()[structure[index-1]].objects.get(pk=request.data['parent'])
