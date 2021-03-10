@@ -335,6 +335,27 @@ class Department(models.Model):
         shift = self.shift_set.filter(start__lt=now, end__gte=now)
         return shift
 
+    def save(self, *args, **kwargs):
+        try:
+            a = args[0]
+            if not len(args)>1 and  args[0]:
+                super(Department, self).save()
+            else:
+                ob = FirstObject.objects.all().first()
+                structure = ob.listModels
+                super(Department, self).save(*args, **kwargs)
+                if('Agreagat' not in structure and not self.agreagat_set.all().first()):
+                    a = Agreagat(parent_id=self.id)
+                    a.save()
+        except IndexError as e:
+            ob = FirstObject.objects.all().first()
+            structure = ob.listModels
+            super(Department, self).save(*args, **kwargs)
+            if (
+                    'Agreagat' not in structure and not self.agreagat_set.all().first()):
+                a = Agreagat(parent_id=self.id)
+                a.save()
+
 
 class Shift(models.Model):
     """

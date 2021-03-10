@@ -49,6 +49,28 @@ class StatusConnections(APIView):
         return Response(res)
 
 
+def find_parent_id(prentid):
+    ob = FirstObject.objects.all().first()
+    structure = ob.listModels
+    if 'Department' in structure:
+        ind_struct = structure.index('Department')
+        parent_name = structure[ind_struct-1]
+        ind = BASE_STRUCTURE.index('Department')
+        ind_parent = BASE_STRUCTURE.index(parent_name)
+        counter = ind - ind_parent
+        a = globals()[parent_name].objects.get(pk=prentid)
+        print(a.child_model())
+        c = list(a.child_model())[0]
+        for i in range(counter):
+            try:
+                c = list(c.child_model())[0]
+            except:
+                continue
+        print(c)
+        return c.id
+    else:
+        return prentid
+
 @permission_classes([IsAuthenticated])
 @renderer_classes((TemplateHTMLRenderer, JSONRenderer))
 class Parametrs(APIView):
@@ -122,10 +144,14 @@ class Parametrs(APIView):
         structure = {'result': 'structure %s delete' % ob.id}
         return Response(structure)
 
+
+
+
     @api_view(('POST',))
     def create_shift(self):
         """метод созданиия цеха совместно со сменами и перерывами """
         data = self.data
+        data['parent'] = find_parent_id(data['parent'])
         dep = Department(
             name=data['name'],
             parent_id=data['parent']

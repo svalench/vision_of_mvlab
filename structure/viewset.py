@@ -33,6 +33,7 @@ class MetaView:
             if self.serializer_class.Meta.model.__name__ in structure:
                 ind_struct = structure.index(self.serializer_class.Meta.model.__name__)
                 parent_name = structure[ind_struct - 1]
+                id = self.find_parent_id(parent_name, request.data['parent'],structure)
                 try:
                     id = self.find_parent_id(parent_name, request.data['parent'])
                     request.data['parent'] = id
@@ -49,23 +50,24 @@ class MetaView:
                 raise ValidationError(
                     "See viewset in structure class MetaView error in create object if not find parent in query")
         serializer = self.get_serializer(data=request.data)
-        print("-----------" * 12)
         serializer.is_valid(raise_exception=True)
         self.perform_create(serializer)
         headers = self.get_success_headers(serializer.data)
         return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
 
-    def find_parent_id(self, parentname, prentid):
+    def find_parent_id(self, parentname, prentid,structure):
         ind = BASE_STRUCTURE.index(self.serializer_class.Meta.model.__name__)
         ind_parent = BASE_STRUCTURE.index(parentname)
         counter = ind - ind_parent
-        a = globals()[ind_parent].objects.get(pk=prentid)
+        a = globals()[parentname].objects.get(pk=prentid)
+        print(a.child_model())
         c = list(a.child_model())[0]
         for i in range(counter):
             try:
                 c = list(c.child_model())[0]
             except:
                 continue
+        print(c)
         return c.id
 
     def validate_parent(self, value):
