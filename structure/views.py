@@ -78,6 +78,7 @@ class Parametrs(APIView):
                          )
         last_id = 0
         start_id = 0
+        ob.save()
         for s in BASE_STRUCTURE:
             if s in BASE_STRUCTURE[data['structure']['levlel_0']]:
                 break
