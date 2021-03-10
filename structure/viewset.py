@@ -35,11 +35,11 @@ class MetaView:
                 parent_name = structure[ind_struct - 1]
                 id = self.find_parent_id(parent_name, request.data['parent'],structure)
                 try:
-                    id = self.find_parent_id(parent_name, request.data['parent'])
+                    id = self.find_parent_id(parent_name, request.data['parent'],structure)
                     request.data['parent'] = id
                 except:
                     raise ValidationError(
-                        'Create ' + str(BASE_STRUCTURE[ind]) + ' . Not found ' + parent_name + ' with pk %s' % request.data[
+                        'Create ' + str(BASE_STRUCTURE[ind]) + '. Not found ' + parent_name + ' with pk %s' % request.data[
                             'parent'])
         else:
             try:
@@ -61,7 +61,10 @@ class MetaView:
         counter = ind - ind_parent
         a = globals()[parentname].objects.get(pk=prentid)
         print(a.child_model())
-        c = list(a.child_model())[0]
+        try:
+            c = list(a.child_model())[0]
+        except:
+            return prentid
         for i in range(counter):
             try:
                 c = list(c.child_model())[0]
@@ -89,7 +92,13 @@ class MetaView:
 
             for index, item in enumerate(structure):
                 if self.serializer_class.Meta.model.__name__ == item:
-                    parent = globals()[structure[index - 1]].objects.get(pk=request.data['parent'])
+                    if index == 0:
+                        print(kwargs)
+                        this = globals()[structure[index]].objects.get(pk=kwargs['pk'])
+                        parent = this.parent
+                        request.data['parent'] = parent.id
+                    else:
+                        parent = globals()[structure[index - 1]].objects.get(pk=request.data['parent'])
                     print(parent)
                     try:
                         c = list(parent.child_model())[0]
