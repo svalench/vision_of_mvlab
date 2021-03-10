@@ -29,70 +29,50 @@ class MetaView:
         ind = BASE_STRUCTURE.index(self.serializer_class.Meta.model.__name__)
         new_base = list(BASE_STRUCTURE[:ind])
         new_base.reverse()
-        if 'parent' in request.data or self.serializer_class.Meta.model.__name__ == "Reserv_1":
-
-            for b in new_base:
-                if b in structure:
-
-                    try:
-                        a = globals()[b].objects.get(pk=request.data['parent'])
-                        i = new_base.index(b)
-                        str_query = new_base[:i]
-                        str_query.reverse()
-                        print("--" * 12)
-                        print(i)
-                        print(a)
-                        print(new_base)
-                        print(str_query)
-                        if (str_query):
-                            for q in str_query:
-                                if q == "Reserv_1":
-                                    c = Reserv_1.all().first()
-                                    break
-                                if str_query.index(q) == 0:
-                                    c = list(a.child_model())[0]
-                                    continue
-                                c = list(a.child_model())[0]
-                                print(c.__class__.__name__, structure, a.__class__.__name__)
-                                for last in range(10):
-                                    print(c.id)
-                                    if c.__class__.__name__ != structure[1]:
-                                        try:
-                                            c = list(c.child_model())[0]
-                                        except:
-                                            break
-                                    else:
-                                        break
-                                    print(c.__class__.__name__, structure)
-                                    request.data['parent'] = c.id
-
-                            print(c.id, 'LAST')
-                            request.data['parent'] = c.id
-                    except:
-                        raise ValidationError('Create '+str(BASE_STRUCTURE[ind])+' . Not found '+b+' with pk %s' % request.data['parent'])
-                    break
+        if 'parent' in request.data:
+            if self.serializer_class.Meta.model.__name__ in structure:
+                ind_struct = structure.index(self.serializer_class.Meta.model.__name__)
+                parent_name = structure[ind_struct - 1]
+                try:
+                    id = self.find_parent_id(parent_name, request.data['parent'])
+                    request.data['parent'] = id
+                except:
+                    raise ValidationError(
+                        'Create ' + str(BASE_STRUCTURE[ind]) + ' . Not found ' + parent_name + ' with pk %s' % request.data[
+                            'parent'])
         else:
             try:
                 first_object = structure[0]
-                if self.serializer_class.Meta.model.__name__ == first_object:
+                if self.serializer_class.Meta.model.__name__ == first_object and self.serializer_class.Meta.model.__name__ != "Reserv_1":
                     request.data['parent'] = globals()[new_base[0]].objects.all().first().id
-                    print('========================================================')
-                    print('========================IS GREAT!!!!!!!========================')
             except:
-                raise ValidationError("See viewset in structure class MetaView error in create object if not find parent in query")
+                raise ValidationError(
+                    "See viewset in structure class MetaView error in create object if not find parent in query")
         serializer = self.get_serializer(data=request.data)
-        print("-----------"*12)
+        print("-----------" * 12)
         serializer.is_valid(raise_exception=True)
         self.perform_create(serializer)
         headers = self.get_success_headers(serializer.data)
         return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
+
+    def find_parent_id(self, parentname, prentid):
+        ind = BASE_STRUCTURE.index(self.serializer_class.Meta.model.__name__)
+        ind_parent = BASE_STRUCTURE.index(parentname)
+        counter = ind - ind_parent
+        a = globals()[ind_parent].objects.get(pk=prentid)
+        c = list(a.child_model())[0]
+        for i in range(counter):
+            try:
+                c = list(c.child_model())[0]
+            except:
+                continue
+        return c.id
 
     def validate_parent(self, value):
         """
         Validate parent row
         """
         return value
-
 
     def update(self, request, *args, **kwargs):
         partial = kwargs.pop('partial', False)
@@ -107,7 +87,7 @@ class MetaView:
 
             for index, item in enumerate(structure):
                 if self.serializer_class.Meta.model.__name__ == item:
-                    parent = globals()[structure[index-1]].objects.get(pk=request.data['parent'])
+                    parent = globals()[structure[index - 1]].objects.get(pk=request.data['parent'])
                     print(parent)
                     try:
                         c = list(parent.child_model())[0]
@@ -128,6 +108,7 @@ class MetaView:
             instance._prefetched_objects_cache = {}
 
         return Response(serializer.data)
+
 
 class Reserv_1View(MetaView, viewsets.ModelViewSet):
     serializer_class = Reserv_1Serializer
