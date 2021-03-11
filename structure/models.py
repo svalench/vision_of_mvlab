@@ -101,11 +101,20 @@ class Reserv_1(models.Model):
     def save(self,*args, **kwargs):
         try:
             ob = FirstObject.objects.all().first()
+            structure = ob.listModels
             super(Reserv_1, self).save(force_insert=True, *args, **kwargs)
             ob.start_object = self.pk
             ob.save()
+            if (
+                    'Reserv_2' not in structure and not self.reserv_2_set.all().first()):
+                a = Reserv_2(parent_id=self.id)
+                a.save()
         except:
             super(Reserv_1, self).save(*args, **kwargs)
+            if (
+                    'Reserv_2' not in structure and not self.reserv_2_set.all().first()):
+                a = Reserv_2(parent_id=self.id)
+                a.save()
 
 
 
