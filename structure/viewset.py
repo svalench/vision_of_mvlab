@@ -29,48 +29,96 @@ class MetaView:
         ind = BASE_STRUCTURE.index(self.serializer_class.Meta.model.__name__)
         new_base = list(BASE_STRUCTURE[:ind])
         new_base.reverse()
-        if 'parent' in request.data or self.serializer_class.Meta.model.__name__ == "Reserv_1":
-            for b in new_base:
-                if b in structure:
-                    try:
-                        a = globals()[b].objects.get(pk=request.data['parent'])
-                        i = new_base.index(b)
-                        str_query = new_base[:i]
-                        str_query.reverse()
-                        if(str_query):
-                            for q in str_query:
-                                if q == "Reserv_1":
-                                    c = Reserv_1.all().first()
-                                    break
-                                if str_query.index(q) == 0:
-                                    c = list(a.child_model())[0]
-                                    continue
-                                c = list(a.child_model())[0]
-                            request.data['parent'] = c.id
-                    except:
-                        raise ValidationError('Create '+str(BASE_STRUCTURE[ind])+' . Not found '+b+' with pk %s' % request.data['parent'])
-                    break
+        if 'parent' in request.data:
+            if self.serializer_class.Meta.model.__name__ in structure:
+                ind_struct = structure.index(self.serializer_class.Meta.model.__name__)
+                parent_name = structure[ind_struct - 1]
+                id = self.find_parent_id(parent_name, request.data['parent'],structure)
+                try:
+                    id = self.find_parent_id(parent_name, request.data['parent'],structure)
+                    request.data['parent'] = id
+                except:
+                    raise ValidationError(
+                        'Create ' + str(BASE_STRUCTURE[ind]) + '. Not found ' + parent_name + ' with pk %s' % request.data[
+                            'parent'])
         else:
             try:
                 first_object = structure[0]
-                if self.serializer_class.Meta.model.__name__ == first_object:
+                if self.serializer_class.Meta.model.__name__ == first_object and self.serializer_class.Meta.model.__name__ != "Reserv_1":
                     request.data['parent'] = globals()[new_base[0]].objects.all().first().id
-                    print('========================================================')
-                    print('========================IS GREAT!!!!!!!========================')
             except:
-                raise ValidationError("See viewset in structure class MetaView error in create object if not find parent in query")
+                raise ValidationError(
+                    "See viewset in structure class MetaView error in create object if not find parent in query")
         serializer = self.get_serializer(data=request.data)
-        print("-----------"*12)
         serializer.is_valid(raise_exception=True)
         self.perform_create(serializer)
         headers = self.get_success_headers(serializer.data)
         return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
+
+    def find_parent_id(self, parentname, prentid,structure):
+        ind = BASE_STRUCTURE.index(self.serializer_class.Meta.model.__name__)
+        ind_parent = BASE_STRUCTURE.index(parentname)
+        counter = ind - ind_parent
+        a = globals()[parentname].objects.get(pk=prentid)
+        print(a.child_model())
+        try:
+            c = list(a.child_model())[0]
+        except:
+            return prentid
+        for i in range(counter):
+            try:
+                c = list(c.child_model())[0]
+            except:
+                continue
+        print(c)
+        return c.id
 
     def validate_parent(self, value):
         """
         Validate parent row
         """
         return value
+
+    def update(self, request, *args, **kwargs):
+        partial = kwargs.pop('partial', False)
+        instance = self.get_object()
+
+        ob = FirstObject.objects.all().first()
+        structure = ob.listModels
+        ind = BASE_STRUCTURE.index(self.serializer_class.Meta.model.__name__)
+        new_base = list(BASE_STRUCTURE[:ind])
+        new_base.reverse()
+        if 'parent' in request.data or self.serializer_class.Meta.model.__name__ != "Reserv_1":
+
+            for index, item in enumerate(structure):
+                if self.serializer_class.Meta.model.__name__ == item:
+                    if index == 0:
+                        print(kwargs)
+                        this = globals()[structure[index]].objects.get(pk=kwargs['pk'])
+                        parent = this.parent
+                        request.data['parent'] = parent.id
+                    else:
+                        parent = globals()[structure[index - 1]].objects.get(pk=request.data['parent'])
+                    print(parent)
+                    try:
+                        c = list(parent.child_model())[0]
+                    except:
+                        pass
+                    print(c)
+                    if c.__class__.__name__ not in structure:
+                        request.data['parent'] = c.id
+                        break
+
+        serializer = self.get_serializer(instance, data=request.data, partial=partial)
+        serializer.is_valid(raise_exception=True)
+        self.perform_update(serializer)
+
+        if getattr(instance, '_prefetched_objects_cache', None):
+            # If 'prefetch_related' has been applied to a queryset, we need to
+            # forcibly invalidate the prefetch cache on the instance.
+            instance._prefetched_objects_cache = {}
+
+        return Response(serializer.data)
 
 
 class Reserv_1View(MetaView, viewsets.ModelViewSet):

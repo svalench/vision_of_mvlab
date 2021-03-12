@@ -15,9 +15,9 @@ from structure.models import FirstObject, Shift, Department, Lunch
 from .models import *
 from .serializer import *
 
-
 import json
 import socket
+
 
 def send_status_to_server():
     try:
@@ -28,7 +28,7 @@ def send_status_to_server():
         print(data)
         data = json.dumps(data).encode('utf-8')
     except:
-        return {"error":"no connection to socket"}
+        return {"error": "no connection to socket"}
     try:
         sock.send(data)
     except:
@@ -36,11 +36,10 @@ def send_status_to_server():
     try:
         res = sock.recv(1024)
     except:
-        return {"error":"no connection to socket"}
+        return {"error": "no connection to socket"}
     print(res)
     sock.close()
     return json.loads(res)
-
 
 
 @permission_classes([IsAuthenticated])
@@ -49,6 +48,31 @@ class StatusConnections(APIView):
         res = send_status_to_server()
         return Response(res)
 
+
+def find_parent_id(prentid):
+    ob = FirstObject.objects.all().first()
+    structure = ob.listModels
+    if 'Department' in structure:
+        ind_struct = structure.index('Department')
+        parent_name = structure[ind_struct-1]
+        ind = BASE_STRUCTURE.index('Department')
+        ind_parent = BASE_STRUCTURE.index(parent_name)
+        counter = ind - ind_parent
+        a = globals()[parent_name].objects.get(pk=prentid)
+        print(a.child_model())
+        try:
+            c = list(a.child_model())[0]
+        except:
+            return prentid
+        for i in range(counter):
+            try:
+                c = list(c.child_model())[0]
+            except:
+                continue
+        print(c)
+        return c.id
+    else:
+        return prentid
 
 @permission_classes([IsAuthenticated])
 @renderer_classes((TemplateHTMLRenderer, JSONRenderer))
@@ -63,6 +87,7 @@ class Parametrs(APIView):
     - get_structure - GET - получаем первый созданный объект структуры
     - create_shift - POST - создает смены
     """
+
     @api_view(('POST',))
     def step1(self):
         """метод для создания первичной структуры"""
@@ -78,22 +103,23 @@ class Parametrs(APIView):
                          )
         last_id = 0
         start_id = 0
+        ob.save()
         for s in BASE_STRUCTURE:
             if s in BASE_STRUCTURE[data['structure']['levlel_0']]:
                 break
             a = globals()[s]()
-            if last_id!=0:
+            if last_id != 0:
                 a.parent_id = last_id
             if s == 'Reserv_1':
                 a.save(True)
             else:
                 a.save(True)
-            if last_id==0:
+            if last_id == 0:
                 start_id = a.id
             last_id = a.id
         ob.start_object = start_id
         ob.save()
-        return Response({'data': 'success'},status=201)
+        return Response({'data': 'success'}, status=201)
 
     @api_view(('GET',))
     def get_structure(self):
@@ -121,10 +147,14 @@ class Parametrs(APIView):
         structure = {'result': 'structure %s delete' % ob.id}
         return Response(structure)
 
+
+
+
     @api_view(('POST',))
     def create_shift(self):
         """метод созданиия цеха совместно со сменами и перерывами """
         data = self.data
+        data['parent'] = find_parent_id(data['parent'])
         dep = Department(
             name=data['name'],
             parent_id=data['parent']
@@ -150,6 +180,44 @@ class Parametrs(APIView):
             k += 1
         res = DepartmentShiftsSerializer(dep)
         return Response(res.data, status=201)
+
+    @api_view(('PUT',))
+    def update_shift(request, pk):
+        data = request.data
+        print(pk)
+        dep = Department.objects.get(id=pk)
+        dep.parent_id = data['parent']
+        dep.name = data['name']
+        dep.save()
+        for shift in data['shifts']:
+            if "id" in shift:
+                sh = Shift.objects.get(id=shift['id'])
+                sh.start = shift['start']
+                sh.end = shift['end']
+                sh.save()
+            else:
+                sh = Shift(start=shift['start'],end=shift['end'], parent_id=pk)
+                sh.save()
+            if 'lanch' in shift:
+                creat_or_udate_lunch(sh, shift['lanch'])
+        print(data)
+        dep = Department.objects.get(id=pk)
+        res = DepartmentShiftsSerializer(dep)
+        return Response(res.data, status=200)
+
+def creat_or_udate_lunch(shift, lunchs):
+    for lunch in lunchs:
+        if "id" in lunch:
+            print(lunch['id'])
+            ln = Lunch.objects.get(id=int(lunch['id']))
+            ln.start = lunch['start']
+            ln.end = lunch['end']
+            ln.save()
+        else:
+            ln = Lunch(start=shift.start, end=shift.end, parent_id=shift.pk)
+            ln.save()
+
+
 
 
 @permission_classes([IsAuthenticated])

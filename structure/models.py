@@ -101,11 +101,20 @@ class Reserv_1(models.Model):
     def save(self,*args, **kwargs):
         try:
             ob = FirstObject.objects.all().first()
+            structure = ob.listModels
             super(Reserv_1, self).save(force_insert=True, *args, **kwargs)
             ob.start_object = self.pk
             ob.save()
+            if (
+                    'Reserv_2' not in structure and not self.reserv_2_set.all().first()):
+                a = Reserv_2(parent_id=self.id)
+                a.save()
         except:
             super(Reserv_1, self).save(*args, **kwargs)
+            if (
+                    'Reserv_2' not in structure and not self.reserv_2_set.all().first()):
+                a = Reserv_2(parent_id=self.id)
+                a.save()
 
 
 
@@ -334,6 +343,27 @@ class Department(models.Model):
         now = datetime.now().time().strftime('%H:%M:%S')
         shift = self.shift_set.filter(start__lt=now, end__gte=now)
         return shift
+
+    def save(self, *args, **kwargs):
+        try:
+            a = args[0]
+            if not len(args)>1 and  args[0]:
+                super(Department, self).save()
+            else:
+                ob = FirstObject.objects.all().first()
+                structure = ob.listModels
+                super(Department, self).save(*args, **kwargs)
+                if('Agreagat' not in structure and not self.agreagat_set.all().first()):
+                    a = Agreagat(parent_id=self.id)
+                    a.save()
+        except IndexError as e:
+            ob = FirstObject.objects.all().first()
+            structure = ob.listModels
+            super(Department, self).save(*args, **kwargs)
+            if (
+                    'Agreagat' not in structure and not self.agreagat_set.all().first()):
+                a = Agreagat(parent_id=self.id)
+                a.save()
 
 
 class Shift(models.Model):
