@@ -1,5 +1,7 @@
 from django.core.exceptions import ValidationError
 from django.db import models, connection
+from django.utils import timezone
+
 from structure.models import Sensors
 import datetime
 from django.utils.translation import ugettext_lazy as _
@@ -70,7 +72,8 @@ class ValueSensor(models.Model):
 
     def get_last_shift(self) -> object:
         """метод возвращает данные за текущую смену"""
-        now = datetime.datetime.now().time().strftime('%H:%M:%S')
+
+        now = timezone.now().strftime('%H:%M:%S')
         now_t = datetime.datetime.now()
         shifts = self.sensor.parent.parent.shift_set.filter(start__lte=now, end__gt=now)
         if not shifts:
@@ -81,28 +84,28 @@ class ValueSensor(models.Model):
 
     def get_last_day(self) -> object:
         """метод возвращает данные за последний день"""
-        now = datetime.datetime.now()
+        now = timezone.now()
         end = datetime.datetime(now.year, now.month, now.day, now.hour, now.minute, 0)
         start = end - datetime.timedelta(days=1)
         return self._time_conversion(start=start, end=end)
 
     def get_last_week(self) -> object:
         """метод возвращает данные за последнию неделю"""
-        now = datetime.datetime.now()
+        now = timezone.now()
         end = datetime.datetime(now.year, now.month, now.day, now.hour, now.minute, 0)
         start = end - datetime.timedelta(days=7)
         return self._time_conversion(start=start, end=end)
 
     def get_last_month(self) -> object:
         """метод возвращает данные за последний месяц"""
-        now = datetime.datetime.now()
+        now = timezone.now()
         end = datetime.datetime(now.year, now.month, now.day, now.hour, now.minute, 0)
         start = end - datetime.timedelta(days=30)
         return self._time_conversion(start=start, end=end)
 
     def get_last_hour(self) -> object:
         """возвращает значения за последний час"""
-        now = datetime.datetime.now()
+        now = timezone.now()
         now = now - datetime.timedelta(hours=4)
         end = datetime.datetime(now.year, now.month, now.day, now.hour, now.minute, 0)
         start = end - datetime.timedelta(hours=1)
@@ -129,7 +132,7 @@ class ValueSensor(models.Model):
         :return: list
         """
         f = '%Y-%m-%d %H:%M:%S'
-        if (((datetime.datetime.strptime(end,f) - datetime.datetime.strptime(start,f))) < datetime.timedelta(hours=2)):
+        if (((datetime.datetime.strptime(end,f) - datetime.datetime.strptime(start,f))) < datetime.timedelta(hours=5)):
             curs = connection.cursor()
             curs.execute(
                 f"""SELECT now_time::timestamp, key, value FROM {str(self.table_name)} WHERE now_time >= '{
@@ -279,11 +282,11 @@ class ValueSensor(models.Model):
             return a.__str__()
         query = curs.fetchall()
         fieldnames = [name[0] for name in curs.description]
-        last_key = query[-1][0]
-        curs.execute(
-            f"""SELECT now_time::timestamp, key, value FROM {str(self.table_name)}  ORDER BY key desc LIMIT 10;""")
-        query_last = curs.fetchall()
-        query =query_last+query
+        # last_key = query[-1][0]
+        # curs.execute(
+        #     f"""SELECT now_time::timestamp, key, value FROM {str(self.table_name)}  ORDER BY key desc LIMIT 10;""")
+        # query_last = curs.fetchall()
+        # query =query_last+query
 
         result = []
         for row in query:
