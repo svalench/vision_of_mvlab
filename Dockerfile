@@ -15,7 +15,8 @@ ENV PYTHONUNBUFFERED=1 \
     SUPERUSER_EMAIL=info@mvlab.by\
     SUPERUSER_PASSWORD=z1x2c3\
     SOCKET_PORT=8086\
-    DEBUG=True
+    DEBUG=True\
+    TZ=Europe/Minsk
 
 WORKDIR /code
 COPY requirements.txt /code/
