@@ -278,12 +278,13 @@ class ValueSensor(models.Model):
         except Exception as a:
             return a.__str__()
         query = curs.fetchall()
+        fieldnames = [name[0] for name in curs.description]
         last_key = query[-1][0]
         curs.execute(
             f"""SELECT now_time::timestamp, key, value FROM {str(self.table_name)}  ORDER BY key desc LIMIT 10;""")
         query_last = curs.fetchall()
-        query =query+query_last
-        fieldnames = [name[0] for name in curs.description]
+        query1 =query_last+query
+
         result = []
         for row in query:
             rowset = []
