@@ -133,7 +133,7 @@ class ValueSensor(models.Model):
             curs = connection.cursor()
             curs.execute(
                 f"""SELECT now_time::timestamp, key, value FROM {str(self.table_name)} WHERE now_time >= '{
-                str(datetime.datetime.strptime(start,f))}' AND now_time<'{str(datetime.datetime.strptime(end,f))}';""")
+                str(datetime.datetime.strptime(start,f))}' AND now_time<'{str(datetime.datetime.strptime(end,f)+datetime.timedelta(hours=3))}';""")
             query = curs.fetchall()
             fieldnames = [name[0] for name in curs.description]
             result = []
