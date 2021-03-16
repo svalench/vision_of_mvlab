@@ -279,12 +279,6 @@ class ValueSensor(models.Model):
             return a.__str__()
         query = curs.fetchall()
         fieldnames = [name[0] for name in curs.description]
-        last_key = query[-1][0]
-        curs.execute(
-            f"""SELECT now_time::timestamp, key, value FROM {str(self.table_name)}  ORDER BY key desc LIMIT 10;""")
-        query_last = curs.fetchall()
-        query =query_last+query
-
         result = []
         for row in query:
             rowset = []
