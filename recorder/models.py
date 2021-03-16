@@ -285,6 +285,8 @@ class ValueSensor(models.Model):
             for field in zip(fieldnames, row):
                 rowset.append(field)
             result.append(dict(rowset))
+        if(result[0]['value']==None):
+            result[0]['value'] = 0
         return result
 
 
