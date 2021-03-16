@@ -102,12 +102,12 @@ class MetaView:
                     print(parent)
                     try:
                         c = list(parent.child_model())[0]
+                        if c.__class__.__name__ not in structure:
+                            request.data['parent'] = c.id
+                            break
                     except:
                         pass
-                    print(c)
-                    if c.__class__.__name__ not in structure:
-                        request.data['parent'] = c.id
-                        break
+
 
         serializer = self.get_serializer(instance, data=request.data, partial=partial)
         serializer.is_valid(raise_exception=True)
