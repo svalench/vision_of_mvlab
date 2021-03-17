@@ -7,16 +7,6 @@ from recorder.models import Workspace, Workarea, ValueSensor, WorkareaData
 from structure.serializer import SensorsSerializer, Sensors
 
 
-class WorkareaDataSerializer(serializers.ModelSerializer):
-    """класс сериализации для модели WorkareaData"""
-    class Meta:
-        model = WorkareaData
-        fields = "__all__"
-        extra_kwargs = {
-             "workarea": {"required": False},
-             "value": {"required": False},
-        }
-
 class ValueSensorSerializer(serializers.ModelSerializer):
     """ класс для сериализации модели ValueSensor
 
@@ -55,6 +45,20 @@ class ValueSensorSerializer(serializers.ModelSerializer):
         extra_kwargs = {
             "parent": {"required": False},
         }
+
+
+class WorkareaDataSerializer(serializers.ModelSerializer):
+    """класс сериализации для модели WorkareaData"""
+    sensors_data = ValueSensorSerializer(source='value', read_only=True)
+
+    class Meta:
+        model = WorkareaData
+        fields = "__all__"
+        extra_kwargs = {
+             "workarea": {"required": False},
+             "value": {"required": False},
+        }
+
 
 class WorkareaSerializer(serializers.ModelSerializer):
     """модель сериализации данных для рабочей области
