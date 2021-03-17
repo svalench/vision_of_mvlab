@@ -116,6 +116,8 @@ class TeldafaxErrorTablesAndStatusInIt(APIView):
 
 class TeldafaxErrorArchiveTablesAndStatusInIt(APIView):
     def get(self, request):
+        limit = self.request.query_params.get('limit', 40)
+        offset = self.request.query_params.get('offset', 0)
         with connection.cursor() as cursor:
             engine = connection.vendor
             if engine == 'sqlite':
@@ -127,7 +129,7 @@ class TeldafaxErrorArchiveTablesAndStatusInIt(APIView):
             a = cursor.fetchall()[0][0]
         if a:
             with connection.cursor() as cursor:
-                sql = """SELECT * FROM mvlab_alarms ORDER BY key desc LIMIT 200;"""
+                sql = f"""SELECT * FROM mvlab_alarms ORDER BY key desc LIMIT {limit} OFFSET {offset};"""
                 cursor.execute(sql)
                 res_alarms = cursor.fetchall()
                 fieldnames = [name[0] for name in cursor.description]
