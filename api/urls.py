@@ -3,7 +3,8 @@ from django.urls import path, register_converter
 from datetime import datetime
 from dashboard.viewset import *
 from api.views_teldafax import teldafax, Teldafax_status, GetStatusConnectionsTeldafax, \
-    TeldafaxErrorTablesAndStatusInIt, GetConnectionsTeldafax, GetConnectionsVariablesTeldafax
+    TeldafaxErrorTablesAndStatusInIt, GetConnectionsTeldafax, GetConnectionsVariablesTeldafax, \
+    TeldafaxErrorArchiveTablesAndStatusInIt
 
 
 class DateConverter:
@@ -41,6 +42,7 @@ urlpatterns = [
     path('teldafax/status/', Teldafax_status.as_view(), name='teldafax_status'),
 
     path('teldafax/messages/alarms/', TeldafaxErrorTablesAndStatusInIt.as_view()),
+    path('teldafax/messages/alarms/archive/', TeldafaxErrorArchiveTablesAndStatusInIt.as_view()),
     path('teldafax/status/connections/', GetStatusConnectionsTeldafax.as_view()),
     path('teldafax/connections/', GetConnectionsTeldafax.as_view()),
     path('teldafax/connections/variables/<int:id>/', GetConnectionsVariablesTeldafax.as_view()),
