@@ -114,6 +114,31 @@ class TeldafaxErrorTablesAndStatusInIt(APIView):
             res = {"error": "no Table Error in DB"}
         return Response(res)
 
+class TeldafaxErrorArchiveTablesAndStatusInIt(APIView):
+    def get(self, request):
+        with connection.cursor() as cursor:
+            engine = connection.vendor
+            if engine == 'sqlite':
+                sql = '''SELECT count(*) FROM sqlite_master WHERE type="table" AND name="'''
+            elif engine == 'postgresql':
+                sql = """SELECT count(*) FROM information_schema.tables WHERE table_schema = 'public' AND table_name ='"""
+            sql = sql + "mvlab_alarms" + "';"
+            cursor.execute(sql)
+            a = cursor.fetchall()[0][0]
+        if a:
+            with connection.cursor() as cursor:
+                sql = """SELECT * FROM mvlab_alarms ORDER BY key desc LIMIT 200;"""
+                cursor.execute(sql)
+                res_alarms = cursor.fetchall()
+            with connection.cursor() as cursor:
+                sql = """SELECT * FROM mvlab_warnings;"""
+                cursor.execute(sql)
+                res_warnings = cursor.fetchall()
+                res = {"alarms": res_alarms, "warnings": res_warnings}
+        else:
+            res = {"error": "no Table Error in DB"}
+        return Response(res)
+
 
 class Teldafax_status(APIView):
     def get(self, request):
