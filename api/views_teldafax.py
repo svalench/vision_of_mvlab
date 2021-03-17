@@ -130,11 +130,18 @@ class TeldafaxErrorArchiveTablesAndStatusInIt(APIView):
                 sql = """SELECT * FROM mvlab_alarms ORDER BY key desc LIMIT 200;"""
                 cursor.execute(sql)
                 res_alarms = cursor.fetchall()
+                fieldnames = [name[0] for name in cursor.description]
+                result = []
+                for row in res_alarms:
+                    rowset = []
+                    for field in zip(fieldnames, row):
+                        rowset.append(field)
+                    result.append(dict(rowset))
             with connection.cursor() as cursor:
                 sql = """SELECT * FROM mvlab_warnings;"""
                 cursor.execute(sql)
                 res_warnings = cursor.fetchall()
-                res = {"alarms": res_alarms, "warnings": res_warnings}
+                res = {"alarms": result, "warnings": res_warnings}
         else:
             res = {"error": "no Table Error in DB"}
         return Response(res)
