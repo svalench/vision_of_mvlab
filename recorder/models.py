@@ -105,9 +105,9 @@ class ValueSensor(models.Model):
         """возвращает значения за последний час"""
         now = datetime.datetime.now()
         end = datetime.datetime(now.year, now.month, now.day, now.hour, now.minute, 0)
-        start = now - datetime.timedelta(hours=1)
+        start = end - datetime.timedelta(hours=1)
 
-        return self._time_conversion(start=start, end=now)
+        return self._time_conversion(start=start, end=end)
 
     def _time_conversion(self, start, end) -> object:
         """
