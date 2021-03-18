@@ -133,7 +133,7 @@ class ValueSensor(models.Model):
             curs = connection.cursor()
             curs.execute(
                 f"""SELECT (now_time +('180 minute'::interval))::timestamp, key, value FROM {str(self.table_name)} WHERE now_time >= '{
-                str(start)}' AND now_time<'{str(end,)}';""")
+                str(datetime.datetime.fromisoformat(start)-datetime.timedelta(hours=3))}' AND now_time<'{str(end,)}';""")
             query = curs.fetchall()
             fieldnames = [name[0] for name in curs.description]
             result = []
