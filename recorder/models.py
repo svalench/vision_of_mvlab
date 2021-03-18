@@ -268,10 +268,10 @@ class ValueSensor(models.Model):
                 end) + "'::timestamp,'" + str(interval) + " minute'::interval) n)" \
             "SELECT ti as now_time, COALESCE((SELECT mode() WITHIN GROUP (ORDER BY value) as modevar" \
             " FROM " + str(self.table_name) + \
-            " r WHERE  r.now_time>=ti and r.now_time<(ti+('"+str(interval)+ \
+            " r WHERE  (r.now_time +('180 minute'::interval))::timestamp>=ti and (r.now_time +('180 minute'::interval))::timestamp<(ti+('"+str(interval)+ \
             " minutes'::interval))),NULL) as value from " \
               + str(self.table_name) + " b right join " \
-            "period_t a ON b.now_time>=ti AND b.now_time<(ti+('"+str(interval)+" minutes'::interval)) GROUP BY ti" \
+            "period_t a ON (b.now_time +('180 minute'::interval))::timestamp>=ti AND (b.now_time +('180 minute'::interval))::timestamp<(ti+('"+str(interval)+" minutes'::interval)) GROUP BY ti" \
             " ORDER BY ti desc"
         try:
             curs.execute(sql)
