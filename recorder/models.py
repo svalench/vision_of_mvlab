@@ -129,7 +129,7 @@ class ValueSensor(models.Model):
         :return: list
         """
         f = '%Y-%m-%d %H:%M:%S'
-        if (((datetime.datetime.strptime(end,f) - datetime.datetime.strptime(start,f))) < datetime.timedelta(hours=5)):
+        if (((datetime.datetime.strptime(end,f) - datetime.datetime.strptime(start,f))) < datetime.timedelta(hours=13)):
             curs = connection.cursor()
             curs.execute(
                 f"""SELECT now_time, key, value FROM {str(self.table_name)} WHERE now_time >= '{
