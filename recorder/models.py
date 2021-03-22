@@ -131,9 +131,19 @@ class ValueSensor(models.Model):
         f = '%Y-%m-%d %H:%M:%S'
         if (((datetime.datetime.strptime(end,f) - datetime.datetime.strptime(start,f))) < datetime.timedelta(hours=6)):
             curs = connection.cursor()
-            curs.execute(
-                f"""SELECT (now_time +('180 minute'::interval))::timestamp as now_time, key, value FROM {str(self.table_name)} WHERE now_time >= '{
-                str(datetime.datetime.fromisoformat(start)-datetime.timedelta(hours=3))}' AND now_time<'{datetime.datetime.fromisoformat(end)-datetime.timedelta(hours=3)}';""")
+            curs.execute(f"""SELECT count(*) FROM {str(self.table_name)} WHERE now_time >= 
+            '{str(datetime.datetime.fromisoformat(start)-datetime.timedelta(hours=3))}' 
+            AND now_time<'{datetime.datetime.fromisoformat(end)-datetime.timedelta(hours=3)}';""")
+            result = curs.fetchone()
+            if(int(result[0])<1000):
+                curs.execute(
+                f"""SELECT (now_time +('180 minute'::interval))::timestamp as now_time, key, value 
+                FROM {str(self.table_name)} WHERE now_time >= '{
+                str(datetime.datetime.fromisoformat(start)-datetime.timedelta(hours=3))}' AND 
+                now_time<'{datetime.datetime.fromisoformat(end)-datetime.timedelta(hours=3)}';""")
+            else:
+                a = self._generate_period_min(start, end,100)
+                return self.get_mode_by_periods_interval(start=start, end=end, interval=a['var'])
             query = curs.fetchall()
             fieldnames = [name[0] for name in curs.description]
             result = []
@@ -148,7 +158,7 @@ class ValueSensor(models.Model):
             # return self._get_mode_by_periods(var=a['var'], periods=a['periods'])
             return self.get_mode_by_periods_interval(start=start, end=end, interval=a['var'])
 
-    def _generate_period_min(self, start, end) -> dict:
+    def _generate_period_min(self, start, end,points = 200 ) -> dict:
         """
         пересчитывает время в интервалы для метода моды и среднего исходя из заданного количество точек points
 
@@ -157,7 +167,7 @@ class ValueSensor(models.Model):
         :return: dict {'var':real,'periods':real}
         """
         f = '%Y-%m-%d %H:%M:%S'
-        points = 200  # количество точек
+         # количество точек
         minutes = (datetime.datetime.strptime(end,f)- datetime.datetime.strptime(start,f)).total_seconds() / 60
         interval = minutes / points
         return {'var': interval, 'periods': minutes}
