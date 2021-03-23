@@ -133,7 +133,7 @@ class ValueSensor(models.Model):
             curs = connection.cursor()
             curs.execute(f"""SELECT count(*) FROM {str(self.table_name)} WHERE now_time >= 
             '{str(datetime.datetime.fromisoformat(start)-datetime.timedelta(hours=3))}' 
-            AND now_time<'{datetime.datetime.fromisoformat(end)-datetime.timedelta(hours=3)}' ORDER BY now_time asc;""")
+            AND now_time<'{datetime.datetime.fromisoformat(end)-datetime.timedelta(hours=3)}';""")
             result = curs.fetchone()
             if(int(result[0])<1000):
                 curs.execute(
