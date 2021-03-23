@@ -133,14 +133,14 @@ class ValueSensor(models.Model):
             curs = connection.cursor()
             curs.execute(f"""SELECT count(*) FROM {str(self.table_name)} WHERE now_time >= 
             '{str(datetime.datetime.fromisoformat(start)-datetime.timedelta(hours=3))}' 
-            AND now_time<'{datetime.datetime.fromisoformat(end)-datetime.timedelta(hours=3)}';""")
+            AND now_time<'{datetime.datetime.fromisoformat(end)-datetime.timedelta(hours=3)}' ORDER BY now_time asc;""")
             result = curs.fetchone()
             if(int(result[0])<1000):
                 curs.execute(
                 f"""SELECT (now_time +('180 minute'::interval))::timestamp as now_time, key, value 
                 FROM {str(self.table_name)} WHERE now_time >= '{
                 str(datetime.datetime.fromisoformat(start)-datetime.timedelta(hours=3))}' AND 
-                now_time<'{datetime.datetime.fromisoformat(end)-datetime.timedelta(hours=3)}';""")
+                now_time<'{datetime.datetime.fromisoformat(end)-datetime.timedelta(hours=3)}' ORDER BY now_time asc;""")
             else:
                 a = self._generate_period_min(start, end,100)
                 return self.get_mode_by_periods_interval(start=start, end=end, interval=a['var'])
