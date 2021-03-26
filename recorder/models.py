@@ -129,13 +129,13 @@ class ValueSensor(models.Model):
         :return: list
         """
         f = '%Y-%m-%d %H:%M:%S'
-        if (((datetime.datetime.strptime(end,f) - datetime.datetime.strptime(start,f))) < datetime.timedelta(hours=48)):
+        if (((datetime.datetime.strptime(end,f) - datetime.datetime.strptime(start,f))) < datetime.timedelta(hours=(24*7))):
             curs = connection.cursor()
             curs.execute(f"""SELECT count(*) FROM {str(self.table_name)} WHERE now_time >= 
             '{str(datetime.datetime.fromisoformat(start)-datetime.timedelta(hours=3))}' 
             AND now_time<'{datetime.datetime.fromisoformat(end)-datetime.timedelta(hours=3)}';""")
             result = curs.fetchone()
-            if(int(result[0])<4000):
+            if(int(result[0])<20000):
                 curs.execute(
                 f"""SELECT (now_time +('180 minute'::interval))::timestamp as now_time, key, value 
                 FROM {str(self.table_name)} WHERE now_time >= '{
