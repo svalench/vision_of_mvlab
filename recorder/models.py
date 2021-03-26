@@ -158,7 +158,7 @@ class ValueSensor(models.Model):
             # return self._get_mode_by_periods(var=a['var'], periods=a['periods'])
             return self.get_mode_by_periods_interval(start=start, end=end, interval=a['var'])
 
-    def _generate_period_min(self, start, end,points = 200 ) -> dict:
+    def _generate_period_min(self, start, end,points = 1000 ) -> dict:
         """
         пересчитывает время в интервалы для метода моды и среднего исходя из заданного количество точек points
 
