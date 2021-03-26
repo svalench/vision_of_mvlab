@@ -135,7 +135,7 @@ class ValueSensor(models.Model):
             '{str(datetime.datetime.fromisoformat(start)-datetime.timedelta(hours=3))}' 
             AND now_time<'{datetime.datetime.fromisoformat(end)-datetime.timedelta(hours=3)}';""")
             result = curs.fetchone()
-            if(int(result[0])<60000):
+            if(int(result[0])<8000):
                 curs.execute(
                 f"""SELECT (now_time +('180 minute'::interval))::timestamp as now_time, key, value 
                 FROM {str(self.table_name)} WHERE now_time >= '{
@@ -158,7 +158,7 @@ class ValueSensor(models.Model):
             # return self._get_mode_by_periods(var=a['var'], periods=a['periods'])
             return self.get_mode_by_periods_interval(start=start, end=end, interval=a['var'])
 
-    def _generate_period_min(self, start, end,points = 20 ) -> dict:
+    def _generate_period_min(self, start, end,points = 50 ) -> dict:
         """
         пересчитывает время в интервалы для метода моды и среднего исходя из заданного количество точек points
 
