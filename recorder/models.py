@@ -142,7 +142,7 @@ class ValueSensor(models.Model):
                 str(datetime.datetime.fromisoformat(start)-datetime.timedelta(hours=3))}' AND 
                 now_time<'{datetime.datetime.fromisoformat(end)-datetime.timedelta(hours=3)}' ORDER BY now_time asc;""")
             else:
-                a = self._generate_period_min(start, end,100)
+                a = self._generate_period_min(start, end,50)
                 return self.get_mode_by_periods_interval(start=start, end=end, interval=a['var'])
             query = curs.fetchall()
             fieldnames = [name[0] for name in curs.description]
@@ -158,7 +158,7 @@ class ValueSensor(models.Model):
             # return self._get_mode_by_periods(var=a['var'], periods=a['periods'])
             return self.get_mode_by_periods_interval(start=start, end=end, interval=a['var'])
 
-    def _generate_period_min(self, start, end,points = 50 ) -> dict:
+    def _generate_period_min(self, start, end,points = 40 ) -> dict:
         """
         пересчитывает время в интервалы для метода моды и среднего исходя из заданного количество точек points
 
