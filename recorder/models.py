@@ -135,7 +135,7 @@ class ValueSensor(models.Model):
             '{str(datetime.datetime.fromisoformat(start)-datetime.timedelta(hours=3))}' 
             AND now_time<'{datetime.datetime.fromisoformat(end)-datetime.timedelta(hours=3)}';""")
             result = curs.fetchone()
-            if(int(result[0])<8000):
+            if(int(result[0])<4000):
                 curs.execute(
                 f"""SELECT (now_time +('180 minute'::interval))::timestamp as now_time, key, value 
                 FROM {str(self.table_name)} WHERE now_time >= '{
