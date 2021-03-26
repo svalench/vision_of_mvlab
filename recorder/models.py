@@ -143,7 +143,8 @@ class ValueSensor(models.Model):
                 now_time<'{datetime.datetime.fromisoformat(end)-datetime.timedelta(hours=3)}' ORDER BY now_time asc;""")
             else:
                 a = self._generate_period_min(start, end,50)
-                return self.get_mode_by_periods_interval(start=start, end=end, interval=a['var'])
+                return self.__new_get_mode(start=start, end=end)
+                #return self.get_mode_by_periods_interval(start=start, end=end, interval=a['var'])
             query = curs.fetchall()
             fieldnames = [name[0] for name in curs.description]
             result = []
@@ -155,8 +156,9 @@ class ValueSensor(models.Model):
             return result
         else:
             a = self._generate_period_min(start, end)
+            return self.__new_get_mode(start=start, end=end)
             # return self._get_mode_by_periods(var=a['var'], periods=a['periods'])
-            return self.get_mode_by_periods_interval(start=start, end=end, interval=a['var'])
+            #return self.get_mode_by_periods_interval(start=start, end=end, interval=a['var'])
 
     def _generate_period_min(self, start, end,points = 40 ) -> dict:
         """
@@ -232,6 +234,36 @@ class ValueSensor(models.Model):
             result.append(dict(rowset))
         return result
 
+
+    def __new_get_mode(self, start, end, counter=40):
+        curs = connection.cursor()
+        sql = f"""
+                    WITH period_t as (
+                    SELECT  generate_series as seria FROM
+                    generate_series(
+                        '{str(start)}'::timestamp, '{str(end)}',
+                        (SELECT(SELECT extract(epoch from
+                            (('{str(end)}'::timestamp-'{str(start)}'::timestamp)/{counter})))||' seconds' )::interval))							  
+
+                    SELECT period_t.seria as now_time, (SELECT mode()WITHIN GROUP(ORDER BY value) as value
+                    FROM {str(self.table_name)}
+                    WHERE now_time>=period_t.seria AND now_time<=period_t.seria+
+                    (SELECT(SELECT extract(epoch from(('2021-03-25 14:12:12'::timestamp-'{str(start)}'::timestamp)/{counter})))||' seconds')::interval)
+                     from period_t;"""
+        try:
+            curs.execute(sql)
+        except Exception as a:
+            return False
+        query = curs.fetchall()
+        fieldnames = [name[0] for name in curs.description]
+        result = []
+        for row in query:
+            rowset = []
+            for field in zip(fieldnames, row):
+                rowset.append(field)
+            result.append(dict(rowset))
+        return result
+
     def _get_mode_by_periods(self, var=5, periods=100) -> list or bool:
         """
         Возвращет объект со значениями по МОДЫ из периода periods (в минутах) разбитый по частям на интервалы var минут
@@ -248,14 +280,14 @@ class ValueSensor(models.Model):
             var) + ") || 'minutes')::interval start_time," \
                    "(SELECT max(now_time)::timestamp from " + str(
             self.table_name) + ")+(n || 'minutes')::interval end_time " \
-                               "from generate_series(0,-" + str(periods) + ",-" + str(var) + ") n" \
-                                                                                             ")" \
+                               "from generate_series(0,-" + str(periods) + ",-" + str(var) + ") n   )" \
             "SELECT a.start_time, a.end_time, (SELECT mode() WITHIN GROUP (ORDER BY value) as modevar" \
             " FROM " + str(self.table_name) + \
             " r WHERE  r.now_time>=a.start_time and r.now_time<a.end_time) as value from " + str(
             self.table_name) + " b right join " \
                                "period_t a ON b.now_time>=a.start_time AND b.now_time<a.end_time GROUP BY a.start_time, a.end_time" \
                                " ORDER BY a.start_time desc"
+
         try:
             curs.execute(sql)
         except Exception as a:
