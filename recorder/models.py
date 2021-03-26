@@ -198,7 +198,7 @@ class ValueSensor(models.Model):
         else:
             return True
 
-    def _get_average_by_periods(self, var=5, periods=100) -> list or bool:
+    def _get_average_by_periods(self, var=5, periods=500) -> list or bool:
         """
         Возвращет объект с усреднеными значениями из периода periods (в минутах) разбитый по частям на интервалы var минут
 
