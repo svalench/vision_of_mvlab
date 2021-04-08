@@ -235,7 +235,7 @@ class ValueSensor(models.Model):
         return result
 
 
-    def __new_get_mode(self, start, end, counter=500):
+    def __new_get_mode(self, start, end, counter=1000):
         curs = connection.cursor()
         sql = f"""
                     WITH period_t as (
