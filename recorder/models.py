@@ -248,7 +248,7 @@ class ValueSensor(models.Model):
                     SELECT period_t.seria as now_time, (SELECT mode()WITHIN GROUP(ORDER BY value) as value
                     FROM {str(self.table_name)}
                     WHERE now_time>=period_t.seria AND now_time<=period_t.seria+
-                    (SELECT(SELECT extract(epoch from(('2021-03-25 14:12:12'::timestamp-'{str(start)}'::timestamp)/{counter})))||' seconds')::interval)
+                    (SELECT(SELECT extract(epoch from(('{str(end)}'::timestamp-'{str(start)}'::timestamp)/{counter})))||' seconds')::interval)
                      from period_t;"""
         try:
             curs.execute(sql)
