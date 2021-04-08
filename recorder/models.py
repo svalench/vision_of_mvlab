@@ -142,7 +142,7 @@ class ValueSensor(models.Model):
                 str(datetime.datetime.fromisoformat(start)-datetime.timedelta(hours=3))}' AND 
                 now_time<'{datetime.datetime.fromisoformat(end)-datetime.timedelta(hours=3)}' ORDER BY now_time asc;""")
             else:
-                a = self._generate_period_min(start, end,50)
+                a = self._generate_period_min(start, end,950)
                 return self.__new_get_mode(start=start, end=end)
                 #return self.get_mode_by_periods_interval(start=start, end=end, interval=a['var'])
             query = curs.fetchall()
