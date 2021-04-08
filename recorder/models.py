@@ -129,7 +129,7 @@ class ValueSensor(models.Model):
         :return: list
         """
         f = '%Y-%m-%d %H:%M:%S'
-        if (((datetime.datetime.strptime(end,f) - datetime.datetime.strptime(start,f))) < datetime.timedelta(hours=(24*7))):
+        if (((datetime.datetime.strptime(end,f) - datetime.datetime.strptime(start,f))) < datetime.timedelta(hours=(24*8))):
             curs = connection.cursor()
             curs.execute(f"""SELECT count(*) FROM {str(self.table_name)} WHERE now_time >= 
             '{str(datetime.datetime.fromisoformat(start)-datetime.timedelta(hours=3))}' 
