@@ -155,7 +155,7 @@ class Teldafax_status(APIView):
         with connection.cursor() as cursor:
             sql = """SELECT * FROM mvlab_warnings;"""
             cursor.execute(sql)
-            data = json.loads(cursor.fetchall()[0])
+            data = json.loads(cursor.fetchall())
         if "data1" in data:
             data1 = data['data1']
             data2 = data["data2"]
