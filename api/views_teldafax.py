@@ -152,6 +152,10 @@ class TeldafaxErrorArchiveTablesAndStatusInIt(APIView):
 class Teldafax_status(APIView):
     def get(self, request):
         data = get_dashboard({"dash_teldafax": True})
+        with connection.cursor() as cursor:
+            sql = """SELECT * FROM mvlab_warnings;"""
+            cursor.execute(sql)
+            data = json.loads(cursor.fetchall()[0][2])
         if "data1" in data:
             data1 = data['data1']
             data2 = data["data2"]
