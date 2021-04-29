@@ -154,7 +154,7 @@ class Teldafax_status(APIView):
         data = get_dashboard({"dash_teldafax": True})
         try:
             with connection.cursor() as cursor:
-                sql = """SELECT * FROM mvlab_warnings;"""
+                sql = """SELECT * FROM mvlab_status_var;"""
                 cursor.execute(sql)
                 resSql = cursor.fetchall()
                 data = json.loads(resSql)
