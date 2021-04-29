@@ -158,6 +158,7 @@ class Teldafax_status(APIView):
                 cursor.execute(sql)
                 resSql = cursor.fetchall()
                 data = json.loads(resSql)
+                data = data[0][2]
             if "data1" in data:
                 data1 = data['data1']
                 data2 = data["data2"]
