@@ -160,7 +160,8 @@ class Teldafax_status(APIView):
             data1 = data['data1']
             data2 = data["data2"]
         else:
-            raise ValidationError("Нет связи с микросервисом")
+            # raise ValidationError("Нет связи с микросервисом")
+            return Response(data)
         try:
             res = {
                 'power1': data1["power1"],
