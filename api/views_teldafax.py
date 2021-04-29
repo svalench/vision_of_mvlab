@@ -152,16 +152,20 @@ class TeldafaxErrorArchiveTablesAndStatusInIt(APIView):
 class Teldafax_status(APIView):
     def get(self, request):
         data = get_dashboard({"dash_teldafax": True})
-        with connection.cursor() as cursor:
-            sql = """SELECT * FROM mvlab_warnings;"""
-            cursor.execute(sql)
-            data = json.loads(cursor.fetchall())
-        if "data1" in data:
-            data1 = data['data1']
-            data2 = data["data2"]
-        else:
-            # raise ValidationError("Нет связи с микросервисом")
-            return Response(data)
+        try:
+            with connection.cursor() as cursor:
+                sql = """SELECT * FROM mvlab_warnings;"""
+                cursor.execute(sql)
+                resSql = cursor.fetchall()
+                data = json.loads(resSql)
+            if "data1" in data:
+                data1 = data['data1']
+                data2 = data["data2"]
+            else:
+                # raise ValidationError("Нет связи с микросервисом")
+                return Response(data)
+        except:
+            return Response(resSql)
         try:
             res = {
                 'power1': data1["power1"],
